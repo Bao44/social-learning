@@ -4,19 +4,19 @@
 
 Trong đó: **type** là loại của commit, có thể là:
 
-    `feat`: Thêm một chức năng mới
+`feat`: Thêm một chức năng mới
 
-    `fix`: Sửa một lỗi
+`fix`: Sửa một lỗi
 
-    `docs`: Sửa lỗi hoặc thêm mới về tài liệu (ví dụ README.md)
+`docs`: Sửa lỗi hoặc thêm mới về tài liệu (ví dụ README.md)
 
-    `style`: Sửa lỗi hoặc thêm mới về code style frontend
+`style`: Sửa lỗi hoặc thêm mới về code style frontend
 
-    `refactor`: Sửa lỗi hoặc thêm mới về code mà không ảnh hưởng đến chức năng
+`refactor`: Sửa lỗi hoặc thêm mới về code mà không ảnh hưởng đến chức năng
 
-    `perf`: Sửa lỗi hoặc thêm mới về hiệu suất
-    
-    `test`: Sửa lỗi hoặc thêm mới về test
+`perf`: Sửa lỗi hoặc thêm mới về hiệu suất
+
+`test`: Sửa lỗi hoặc thêm mới về test
 
 --- 
 
