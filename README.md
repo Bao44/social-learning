@@ -3,12 +3,19 @@
     <type>: message
 
 Trong đó: **type** là loại của commit, có thể là:
+
     `feat`: Thêm một chức năng mới
+
     `fix`: Sửa một lỗi
+
     `docs`: Sửa lỗi hoặc thêm mới về tài liệu (ví dụ README.md)
+
     `style`: Sửa lỗi hoặc thêm mới về code style frontend
+
     `refactor`: Sửa lỗi hoặc thêm mới về code mà không ảnh hưởng đến chức năng
+
     `perf`: Sửa lỗi hoặc thêm mới về hiệu suất
+    
     `test`: Sửa lỗi hoặc thêm mới về test
 
 --- 
