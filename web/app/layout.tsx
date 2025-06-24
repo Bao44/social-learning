@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Jost,Cabin, Overpass } from "next/font/google";
+import { Jost, Cabin, Overpass } from "next/font/google";
 import "./globals.css";
+import ChatBotAI from "./chatbot/ChatBotAI";
 
 const overpass = Overpass({
   subsets: ["latin"],
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={overpass.className}>{children}</body>
+      <body className={overpass.className}>
+        {children}
+        <ChatBotAI />
+      </body>
     </html>
   );
 }
