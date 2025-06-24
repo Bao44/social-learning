@@ -27,7 +27,11 @@ function ChatBotAI() {
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
-  return <div>ChatBotAI</div>;
+  return (
+    <div className="flex flex-col min-h-screen">
+
+    </div>
+  );
 }
 
 export default ChatBotAI;
