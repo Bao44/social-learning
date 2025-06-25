@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { sendMessageToGemini } from '../api/gemini/route';
+import { Home, MessageCircle, MessageCircleX, Search } from 'lucide-react-native';
 
 interface Message {
   id: string;
@@ -179,13 +180,17 @@ const ChatBotAI = () => {
 
   return (
     <View>
-        {/* Chat Button */}
+      {/* Chat Button */}
       <TouchableOpacity
         style={styles.chatToggle}
         onPress={toggleChat}
         activeOpacity={0.8}
       >
-        <Text style={styles.toggleIcon}>{isChatOpen ? 'X' : 'O'}</Text>
+        {isChatOpen ? (
+         <MessageCircleX size={28} color="#fff" strokeWidth={1.5} />
+        ) : (
+         <MessageCircle size={28} color="#fff" strokeWidth={1.5} />
+        )}
       </TouchableOpacity>
 
       {/* Chat Modal */}
@@ -406,7 +411,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  
+
   chatToggle: {
     position: 'absolute',
     bottom: 30, // Tương tự bottom-4
