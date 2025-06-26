@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jost, Cabin, Overpass } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 import ChatBotAI from "./chatbot/ChatBotAI";
 
 const overpass = Overpass({
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className={overpass.className}>
         {children}
         <ChatBotAI />
+        <ToastContainer />
       </body>
     </html>
   );
