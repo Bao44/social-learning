@@ -13,7 +13,7 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      
+
       {/* Main Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
@@ -22,7 +22,11 @@ const App = () => {
             Ứng dụng chat AI với Gemini - Hoàn toàn độc lập!
           </Text>
         </View>
-        
+
+        <View className="flex-1 items-center justify-center bg-yellow-400">
+          <Text className='text-gray-50'>Open up App.js to start working on your app!</Text>
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Tính năng</Text>
           <View style={styles.featureItem}>
