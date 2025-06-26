@@ -8,7 +8,6 @@ import remarkGfm from "remark-gfm";
 
 function ChatBotAI() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [showChatIcon, setShowChatIcon] = useState(false);
   const chatIconRef = useRef<HTMLButtonElement>(null);
 
   const {
