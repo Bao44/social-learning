@@ -37,11 +37,11 @@ function ChatBotAI() {
     // className="flex flex-col min-h-screen"
     <div>
       {/* Location button */}
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-50 ">
         <button
           ref={chatIconRef}
           onClick={toggleChat}
-          className="rounded-full size-14 p-2 shadow-lg bg-black text-white cursor-pointer"
+          className="rounded-full size-14 p-2 shadow-lg bg-gradient-to-r from-orange-500 to-pink-500 text-white cursor-pointer"
         >
           {!isChatOpen ? (
             <MessageCircle className="size-8 m-auto" />
