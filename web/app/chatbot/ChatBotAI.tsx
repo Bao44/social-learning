@@ -94,7 +94,7 @@ function ChatBotAI() {
                         className={`inline-block p-2 rounded-lg ${
                           message.role === "user"
                             ? "bg-black text-white"
-                            : "bg-muted bg-gray-100"
+                            : "bg-gray-100"
                         }`}
                       >
                         <ReactMarkdown
