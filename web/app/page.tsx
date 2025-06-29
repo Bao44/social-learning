@@ -52,20 +52,20 @@ export default function Page() {
               className="bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
               asChild
             >
-              <Link href="/login">Đăng Nhập</Link>
+              <Link href="/auth/login">Đăng Nhập</Link>
             </Button>
             <Button
               variant="outline"
               className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white"
               asChild
             >
-              <Link href="/register">Đăng kí</Link>
+              <Link href="/auth/register">Đăng kí</Link>
             </Button>
           </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <main className="container mx-auto px-4 py-12">
         <div className="text-center max-w-3xl mx-auto">
           <Badge className="mb-6 bg-orange-100 text-orange-800 hover:bg-orange-100">
@@ -92,7 +92,7 @@ export default function Page() {
               size="lg"
               className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-8 py-3 text-lg"
             >
-              <Link href="/login">Tham gia ngay</Link>
+              <Link href="auth/login">Tham gia ngay</Link>
             </Button>
             <Button
               size="lg"
@@ -104,9 +104,9 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Features Grid */}
+        {/* Nội dung chính */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Target className="w-6 h-6 text-white" />
@@ -121,7 +121,7 @@ export default function Page() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Users className="w-6 h-6 text-white" />
@@ -137,7 +137,7 @@ export default function Page() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Trophy className="w-6 h-6 text-white" />
@@ -153,7 +153,7 @@ export default function Page() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Bot className="w-6 h-6 text-white" />
@@ -169,12 +169,12 @@ export default function Page() {
           </Card>
         </div>
 
-        {/* How It Works */}
-        <div className="max-w-4xl mx-auto text-center mb-16">
+        {/* Cách hoạt động */}
+        <div className="max-w-4xl mx-auto text-center mb-16 ">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
             Cách hoạt động
           </h2>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 gap-6">
             <div className="flex flex-col items-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
                 <BookOpen className="w-8 h-8 text-orange-600" />
@@ -216,10 +216,10 @@ export default function Page() {
           </div>
         </div>
 
-        {/* CTA Section */}
+        {/* Bắt đầu */}
         <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-8 text-center text-white max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">
-            Sẵn sàng bắt đầu hành trình tiếng Anh của bạn?
+            Bắt đầu hành trình tiếng Anh của bạn?
           </h2>
           <p className="text-xl mb-6 opacity-90">
             Tham gia cùng hàng ngàn người học đang cải thiện kỹ năng viết tiếng
@@ -230,7 +230,7 @@ export default function Page() {
               size="lg"
               className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
             >
-              <Link href="/register">Tạo tài khoản miễn phí</Link>
+              <Link href="auth/register">Tạo tài khoản miễn phí</Link>
             </Button>
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function Page() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg">
+              <Card key={index} className="border-0 shadow-lg transition-transform hover:scale-105">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (

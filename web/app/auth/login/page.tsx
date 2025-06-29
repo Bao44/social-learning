@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,8 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookOpen, PenTool } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   return (
     <>
       {/* Logo */}
@@ -61,13 +65,18 @@ export default function LoginPage() {
                 Quên mật khẩu?
               </Link>
             </div>
-            <Button className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer">
+            <Button
+              onClick={() => {
+                router.push("/dashboard/user");
+              }}
+              className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+            >
               Đăng Nhập
             </Button>
             <div className="text-center text-sm">
               Bạn chưa có tài khoản?{" "}
               <Link
-                href="/register"
+                href="/auth/register"
                 className="text-orange-600 hover:underline"
               >
                 Đăng ký

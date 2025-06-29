@@ -82,12 +82,12 @@ export default function RegisterPage() {
                 </Link>
               </Label>
             </div>
-            <Button className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600">
+            <Button className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer">
               Tạo tài khoản
             </Button>
             <div className="text-center text-sm">
               Bạn đã có tài khoản?{" "}
-              <Link href="/login" className="text-orange-600 hover:underline">
+              <Link href="/auth/login" className="text-orange-600 hover:underline">
                 Đăng nhập
               </Link>
             </div>
