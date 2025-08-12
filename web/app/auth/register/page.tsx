@@ -1,3 +1,132 @@
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import { BookOpen, PenTool } from "lucide-react";
+// import Link from "next/link";
+// import { useState } from "react";
+// import axios from 'axios';
+
+// export default function RegisterPage() {
+
+//   const [phone, setPhone] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [otp, setOtp] = useState('');
+//   const [sentOtp, setSentOtp] = useState(false);
+
+//   const handleSignUp = async () => {
+//     try {
+//       const res = await axios.post('http://localhost:5000/auth/register', { phone, password });
+//       alert(res.data.message);
+//       setSentOtp(true);
+//     } catch (err:any) {
+//       alert(err.response.data.error);
+//     }
+//   };
+
+//   const handleVerify = async () => {
+//     try {
+//       const res = await axios.post('http://localhost:5000/auth/verify', { phone, otp });
+//       alert(res.data.message);
+//     } catch (err:any) {
+//       alert(err.response.data.error);
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* Logo */}
+//       <div className="absolute flex items-center px-4 py-6 ">
+//         <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center">
+//           <PenTool className="w-5 h-5 text-white" />
+//         </div>
+//         <span className="text-xl ml-2 font-bold text-gray-900">
+//           <Link href="/">SocialLearning</Link>
+//         </span>
+//       </div>
+
+//       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+//         <Card className="w-full max-w-md">
+//           <CardHeader className="text-center space-y-4">
+//             <div className="flex justify-center">
+//               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center">
+//                 <BookOpen className="w-6 h-6 text-white" />
+//               </div>
+//             </div>
+//             <CardTitle className="text-2xl">Tham gia SocialLearning</CardTitle>
+//             <CardDescription>
+//               Tạo tài khoản của bạn và bắt đầu học cùng nhau
+//             </CardDescription>
+//           </CardHeader>
+//           <CardContent className="space-y-4">
+//             <div className="grid grid-cols-2 gap-4">
+//               <div className="space-y-2">
+//                 <Label htmlFor="firstName">Họ</Label>
+//                 <Input id="firstName" placeholder="Nguyễn" />
+//               </div>
+//               <div className="space-y-2">
+//                 <Label htmlFor="lastName">Tên</Label>
+//                 <Input id="lastName" placeholder="A" />
+//               </div>
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="phone">Số điện thoại</Label>
+//               <Input id="phone" type="tel" placeholder="Nhập số điện thoại của bạn" />
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="password">Mật khẩu</Label>
+//               <Input
+//                 id="password"
+//                 type="password"
+//                 placeholder="Tạo mật khẩu mạnh"
+//               />
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+//               <Input
+//                 id="confirmPassword"
+//                 type="password"
+//                 placeholder="Xác nhận mật khẩu của bạn"
+//               />
+//             </div>
+//             <div className="flex items-center space-x-2">
+//               <Checkbox id="terms" />
+//               <Label htmlFor="terms" className="text-sm">
+//                 Tôi đồng ý với{" "}
+//                 <Link href="#" className="text-orange-600 hover:underline">
+//                   Điều khoản dịch vụ
+//                 </Link>{" "}
+//                 và{" "}
+//                 <Link href="#" className="text-orange-600 hover:underline">
+//                   Chính sách bảo mật
+//                 </Link>
+//               </Label>
+//             </div>
+//             <Button className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer">
+//               Tạo tài khoản
+//             </Button>
+//             <div className="text-center text-sm">
+//               Bạn đã có tài khoản?{" "}
+//               <Link href="/auth/login" className="text-orange-600 hover:underline">
+//                 Đăng nhập
+//               </Link>
+//             </div>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </>
+//   );
+// }
+
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +140,56 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BookOpen, PenTool } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { signUp } from "@/app/api/user/route";
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
+  // const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [sentOtp, setSentOtp] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      alert("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+
+    try {
+      const res = await signUp({ email, password, name });
+      alert(res.message);
+      setSentOtp(true);
+    } catch (err: any) {
+      alert(err.response?.data?.error || "Đã xảy ra lỗi.");
+    }
+  };
+
+  // const handleVerify = async () => {
+  //   if (!otp) {
+  //     alert("Vui lòng nhập mã OTP.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await axios.post("http://localhost:5000/api/auth/verify", {
+  //       phone,
+  //       otp,
+  //     });
+  //     alert(res.data.message);
+  //     // Sau khi xác thực OTP thành công, có thể chuyển hướng hoặc reset form
+  //   } catch (err: any) {
+  //     alert(err.response?.data?.error || "Xác thực OTP thất bại.");
+  //   }
+  // };
+
   return (
     <>
       {/* Logo */}
@@ -39,55 +216,95 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">Họ</Label>
-                <Input id="firstName" placeholder="Nguyễn" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Tên</Label>
-                <Input id="lastName" placeholder="A" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="a@gmail.com" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Tạo mật khẩu mạnh"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Xác nhận mật khẩu của bạn"
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <Label htmlFor="terms" className="text-sm">
-                Tôi đồng ý với{" "}
-                <Link href="#" className="text-orange-600 hover:underline">
-                  Điều khoản dịch vụ
-                </Link>{" "}
-                và{" "}
-                <Link href="#" className="text-orange-600 hover:underline">
-                  Chính sách bảo mật
-                </Link>
-              </Label>
-            </div>
-            <Button className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer">
-              Tạo tài khoản
-            </Button>
+            {!sentOtp ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Tên tài khoản</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Nhập tên tài khoản của bạn"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Nhập email của bạn"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                    
+                <div className="space-y-2">
+                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Tạo mật khẩu mạnh"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Xác nhận mật khẩu của bạn"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="terms" />
+                  <Label htmlFor="terms" className="text-sm">
+                    Tôi đồng ý với{" "}
+                    <Link href="#" className="text-orange-600 hover:underline">
+                      Điều khoản dịch vụ
+                    </Link>{" "}
+                    và{" "}
+                    <Link href="#" className="text-orange-600 hover:underline">
+                      Chính sách bảo mật
+                    </Link>
+                  </Label>
+                </div>
+                <Button
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+                  onClick={handleSignUp}
+                >
+                  Tạo tài khoản
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="otp">Nhập mã OTP đã gửi đến SĐT</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="Nhập OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                  />
+                </div>
+                <Button
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+                  // onClick={handleVerify}
+                >
+                  Xác thực OTP
+                </Button>
+              </>
+            )}
             <div className="text-center text-sm">
               Bạn đã có tài khoản?{" "}
-              <Link href="/auth/login" className="text-orange-600 hover:underline">
+              <Link
+                href="/auth/login"
+                className="text-orange-600 hover:underline"
+              >
                 Đăng nhập
               </Link>
             </div>

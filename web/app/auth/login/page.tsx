@@ -42,11 +42,11 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email hoặc số điện thoại</Label>
+              <Label htmlFor="phone">Số điện thoại</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Nhập email hoặc số điện thoại"
+                id="phone"
+                type="tel"
+                placeholder="Nhập số điện thoại của bạn"
               />
             </div>
             <div className="space-y-2">
