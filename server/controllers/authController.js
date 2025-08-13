@@ -1,35 +1,13 @@
 const authService = require("../services/authService");
 
 const authController = {
-  async getUser(req, res) {
-    try {
-      const { data, error } = await authService.getUser();
-
-      if (error) {
-        return res.status(400).json({ success: false, message: error.message });
-      }
-
-      return res.status(200).json({ success: true, data });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  },
   async register(req, res) {
     try {
       const { email, password, name } = req.body;
-      const userData = { name };
-
-      console.log("Registering user:", {
-        email,
-        password,
-        userData,
-      });
 
       // kiểm tra tồn tại nếu có
 
-      const { data, error } = await authService.register(email, password, userData);
-
-      console.log("authController register response CONTROLLER:", { data, error });
+      const { data, error } = await authService.register(email, password, name);
 
       if (error) {
         console.error("Error during registration:", error);
@@ -45,11 +23,11 @@ const authController = {
     }
   },
 
-  async verifyOtp(req, res) {
+  async verifyRegisterOtp(req, res) {
     try {
-      const { phone, otp } = req.body;
+      const { email, otp } = req.body;
 
-      const { data, error } = await authService.verifyOtp(phone, otp);
+      const { data, error } = await authService.verifyRegisterOtp(email, otp);
 
       if (error) {
         return res.status(400).json({ success: false, message: error.message });
