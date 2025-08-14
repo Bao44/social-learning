@@ -1,6 +1,5 @@
 "use client";
 
-import { login } from "@/app/api/user/route";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +15,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { login } from "@/app/api/auth/route";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,19 +24,30 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      toast.warning("Vui lòng điền đầy đủ thông tin.");
-      return;
-    }
-
     try {
       const res = await login({ email, password });
-      console.log("res", res.message);
+
+      if (!res.success || !res?.data?.session) {
+        toast.error("Đăng nhập thất bại.");
+        console.error("Login failed:", res.message || "No session data");
+        return;
+      }
+
+      // Đặt phiên với dữ liệu session từ response
+      const { error: setError } = await supabase.auth.setSession(
+        res.data.session
+      );
+
+      if (setError) {
+        toast.error("Lỗi khi đặt phiên.");
+        console.error("Lỗi khi đặt phiên:", setError.message);
+        return;
+      }
       toast.success("Đăng nhập thành công.");
+      // Chuyển hướng tới trang được bảo vệ
       router.push("/dashboard/user");
-    } catch (err: any) {
-      console.log("error", err.response?.data?.error);
-      toast.error("Đăng nhập thất bại.");
+    } catch (error: any) {
+      toast.error("Đăng nhập thất bại. Vui lòng thử lại.");
     }
   };
 
