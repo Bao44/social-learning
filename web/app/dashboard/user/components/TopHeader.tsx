@@ -45,7 +45,7 @@ export function TopHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                  <AvatarImage src="/globe.svg?height=32&width=32" />
                   <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
                     JD
                   </AvatarFallback>
