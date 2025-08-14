@@ -10,9 +10,9 @@ import useAuth from "@/hooks/useAuth";
 import { getUserData } from "@/app/api/user/route";
 
 export default function Page() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  console.log("User in dashboard page:", user);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Left Sidebar */}

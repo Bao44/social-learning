@@ -41,7 +41,7 @@ export default function RegisterPage() {
     try {
       const res = await register({ email, password, name });
       console.log("res", res.message);
-      toast.success("Đăng ký thành công.");
+      toast.success("OTP đã được gửi đến email của bạn.");
       setSentOtp(true);
     } catch (err: any) {
       console.log("error", err.response?.data?.error);
@@ -159,7 +159,7 @@ export default function RegisterPage() {
             ) : (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="otp">Nhập mã OTP đã gửi đến SĐT</Label>
+                  <Label htmlFor="otp">Nhập mã OTP đã gửi đến email của bạn</Label>
                   <Input
                     id="otp"
                     type="text"
