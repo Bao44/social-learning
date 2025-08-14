@@ -7,37 +7,27 @@ const api = axios.create({
   },
 });
 
-export const register = async ({ email, password, name }: any) => {
+export const getUserData = async (userId: string) => {
   try {
-    const response = await api.post("/api/auth/register", {
-      email,
-      password,
-      name,
-    });
+    const response = await api.get(`/api/users/${userId}`);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error;
   }
 };
 
-export const verifyOtp = async ({ email, otp }: any) => {
+export const getUsersData = async () => {
   try {
-    const response = await api.post("/api/auth/verify", {
-      email,
-      otp,
-    });
+    const response = await api.get("/api/users");
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error;
   }
 };
 
-export const login = async ({ email, password }: any) => {
+export const updateUserData = async (userId: string, data: any) => {
   try {
-    const response = await api.post("/api/auth/login", {
-      email,
-      password,
-    });
+    const response = await api.put(`/api/users/${userId}`, data);
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error;

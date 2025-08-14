@@ -12,8 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { supabase } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
+import useAuth from "@/hooks/useAuth"
 
 export function TopHeader() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    supabase.auth.signOut();
+    // Xử lý sau khi đăng xuất
+    router.push("/");
+  };
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 hidden lg:block">
       <div className="flex h-16 items-center justify-end px-6">
@@ -47,7 +58,7 @@ export function TopHeader() {
               <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
               <DropdownMenuItem>Cài đặt</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { BookOpen, PenTool } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { register, verifyOtp } from "@/app/api/user/route";
+import { register, verifyOtp } from "@/app/api/auth/route";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
