@@ -13,6 +13,7 @@ import {
   BookOpen,
   Trophy,
   TrendingUp,
+  Volume2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,25 +22,26 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 
 const mainNavItems = [
-  { icon: Home, label: "Trang chủ", active: true },
-  { icon: Search, label: "Tìm kiếm" },
-  { icon: Compass, label: "Khám phá" },
-  { icon: MessageCircle, label: "Tin nhắn", badge: 3 },
-  { icon: Heart, label: "Thông báo", badge: 5 },
-  { icon: PlusSquare, label: "Tạo" },
-  { icon: User, label: "Trang cá nhân" },
+  { icon: Home, path: "/dashboard", label: "Trang chủ", active: true },
+  { icon: Search, path: "/dashboard/search", label: "Tìm kiếm" },
+  { icon: Compass, path: "/dashboard/explore", label: "Khám phá" },
+  { icon: MessageCircle, path: "/dashboard/chat", label: "Tin nhắn", badge: 3 },
+  { icon: Heart, path: "/dashboard/notifications", label: "Thông báo", badge: 5 },
+  { icon: PlusSquare, path: "/dashboard/create", label: "Tạo" },
+  { icon: User, path: "/dashboard/profile", label: "Trang cá nhân" },
 ];
 
 const learningNavItems = [
-  { icon: PenTool, path: "/learning", label: "Luyện tập tiếng Anh", special: true },
-  { icon: BookOpen, path: "/library", label: "Thư viện học tập" },
-  { icon: Trophy, path: "/ranking", label: "Bảng xếp hạng" },
-  { icon: TrendingUp, path: "/progress", label: "Tiến trình của tôi" },
+  { icon: PenTool, path: "/dashboard/writing", label: "Luyện viết tiếng Anh", special: true },
+  { icon: Volume2, path: "/dashboard/listening", label: "Luyện nghe tiếng Anh" },
+  { icon: BookOpen, path: "/dashboard/vocabulary", label: "Từ vựng của bạn" },
+  { icon: Trophy, path: "/dashboard/ranking", label: "Bảng xếp hạng" },
+  { icon: TrendingUp, path: "/dashboard/progress", label: "Tiến trình của tôi" },
 ];
 
 export function LeftSidebar() {
   const router = useRouter();
-  const handleMenuLearningClick = (path: string) => {
+  const handleMenuClick = (path: string) => {
     // Handle menu click
     router.push(path);
   };
@@ -65,10 +67,11 @@ export function LeftSidebar() {
             <Button
               key={item.label}
               variant="ghost"
-              className={`w-full justify-start h-12 px-3 ${item.active
+              className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${item.active
                 ? "bg-gray-100 text-gray-900 font-medium"
                 : "text-gray-700 hover:bg-gray-50"
                 }`}
+              onClick={() => handleMenuClick(item.path)}
             >
               <div className="relative">
                 <item.icon className="h-6 w-6 mr-4" />
@@ -93,10 +96,10 @@ export function LeftSidebar() {
           <nav className="space-y-1">
             {learningNavItems.map((item) => (
               <Button
-                onClick={() => handleMenuLearningClick(item.path)}
+                onClick={() => handleMenuClick(item.path)}
                 key={item.label}
                 variant="ghost"
-                className={`w-full justify-start h-12 px-3 ${item.special
+                className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${item.special
                   ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 hover:from-orange-100 hover:to-pink-100 border border-orange-200"
                   : "text-gray-700 hover:bg-gray-50"
                   }`}
