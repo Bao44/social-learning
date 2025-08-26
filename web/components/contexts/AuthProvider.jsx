@@ -4,7 +4,6 @@ import { getUserData } from "@/app/api/user/route";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 const AuthContext = createContext(null);
 
@@ -20,6 +19,7 @@ const AuthProvider = ({ children }) => {
       }
       setUser(data?.session?.user || null);
       setLoading(false);
+      console.log("User sau getSession:", data?.session?.user || null); // Log ở đây để thời gian chính xác
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -35,13 +35,14 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
+      // console.log("session user", session?.user?.id);
+
       if (session) {
         setUser(session?.user);
         updateUserData(session?.user, session?.user?.email);
         router.replace("/dashboard");
       } else {
         setUser(null);
-        toast.error("Chưa đăng nhập.");
         router.replace("/");
       }
     });
@@ -51,6 +52,7 @@ const AuthProvider = ({ children }) => {
     let res = await getUserData(user?.id);
     if (res.success) setUser({ ...res.data, email });
   };
+
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
