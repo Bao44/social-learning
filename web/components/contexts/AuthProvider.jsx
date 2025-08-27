@@ -19,7 +19,6 @@ const AuthProvider = ({ children }) => {
       }
       setUser(data?.session?.user || null);
       setLoading(false);
-      console.log("User sau getSession:", data?.session?.user || null); // Log ở đây để thời gian chính xác
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -35,7 +34,6 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
-      // console.log("session user", session?.user?.id);
 
       if (session) {
         setUser(session?.user);
