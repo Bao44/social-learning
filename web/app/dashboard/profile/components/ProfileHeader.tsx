@@ -44,20 +44,19 @@ export default function ProfileHeader() {
       const res = await uploadFile("profiles", file, true);
 
       if (res?.success === false) {
-        toast.error(res.msg || "Upload thất bại");
+        toast.error(res.msg || "Upload thất bại", {autoClose: 1500});
         return;
       }
 
       const updateData = { avatar: res.data.path };
       await updateUserData(user.id, updateData);
 
-      toast.success("Tải ảnh thành công!");
+      toast.success("Tải ảnh thành công!", {autoClose: 1500});
 
       setUser({ ...user, avatar: res.data.path });
       setOpen(false);
     } catch (err: any) {
-      console.error("Upload error:", err);
-      toast.error("Đã xảy ra lỗi khi upload ảnh.");
+      toast.error("Đã xảy ra lỗi khi upload ảnh.", {autoClose: 1500});
     } finally {
       setIsLoading(false);
     }
@@ -72,12 +71,12 @@ export default function ProfileHeader() {
       const updateData = { avatar: null };
       await updateUserData(user.id, updateData);
 
-      toast.success("Đã gỡ ảnh đại diện!");
+      toast.success("Đã gỡ ảnh đại diện!", {autoClose: 1500});
 
       setUser({ ...user, avatar: undefined });
       setOpen(false);
     } catch (err: any) {
-      toast.error("Đã xảy ra lỗi khi gỡ ảnh.");
+      toast.error("Đã xảy ra lỗi khi gỡ ảnh.", {autoClose: 1500});
     } finally {
       setIsLoading(false);
     }
@@ -186,8 +185,8 @@ export default function ProfileHeader() {
       </div>
 
       {/* Bio */}
-      <div className="text-sm">
-        <p className="font-medium">Link fb</p>
+      <div className="text-sm text-center md:text-left">
+        <p>{user?.bio}</p>
       </div>
     </div>
   );
