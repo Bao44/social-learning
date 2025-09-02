@@ -25,6 +25,17 @@ export const verifyOtp = async ({ email, otp }: any) => {
   }
 };
 
+export const resendOtp = async ({ email }: any) => {
+  try {
+    const response = await api.post("/api/auth/resend-otp", {
+      email,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error;
+  }
+};
+
 export const login = async ({ email, password }: any) => {
   try {
     const response = await api.post("/api/auth/login", {
