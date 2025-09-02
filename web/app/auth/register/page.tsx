@@ -19,8 +19,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BookOpen, Eye, EyeOff, PenTool } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { register, verifyOtp } from "@/app/api/auth/route";
+import { useEffect, useState } from "react";
+import { register, resendOtp, verifyOtp } from "@/app/api/auth/route";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -34,10 +34,42 @@ export default function RegisterPage() {
   const [sentOtp, setSentOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const nameRegex = /^[a-zA-Z0-9\s]{1,30}$/; // chỉ chữ và số, khoảng trắng, tối đa 30 ký tự
+  const emailRegex = /^[^\s@]+@[^\s@]+\.com$/; // kết thúc bằng đuôi .com
+  const passwordRegex = /^.{8,}$/;
+
+  // đếm ngược time
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (sentOtp && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [sentOtp, countdown]);
 
   const handleSignUp = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       toast.warning("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    if (!nameRegex.test(name)) {
+      toast.warning("Tên tài khoản không hợp lệ.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      toast.warning("Email không hợp lệ.");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.");
       return;
     }
 
@@ -47,17 +79,19 @@ export default function RegisterPage() {
     }
 
     try {
+      setLoading(true);
       const res = await register({ email, password, name });
-      console.log("res", res.message);
       if (res.message == "Email đã tồn tại") {
         toast.warning("Email đã tồn tại");
       } else {
         toast.success("OTP đã được gửi đến email của bạn.");
         setSentOtp(true);
+        setCountdown(60);
       }
     } catch (err: any) {
-      console.log("error", err.response?.data?.error);
       toast.error("Đã xảy ra lỗi.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,14 +102,29 @@ export default function RegisterPage() {
     }
 
     try {
+      setLoading(true);
       const res = await verifyOtp({ email, otp });
-      console.log("res", res.data.message);
       toast.success("Xác nhận thành công");
-      // Sau khi xác thực OTP thành công, có thể chuyển hướng hoặc reset form
       router.push("/auth/login");
     } catch (err: any) {
       console.log("error", err.response?.data?.error);
       toast.error("Xác thực OTP thất bại.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setLoading(true);
+      await resendOtp({ email });
+      toast.success("OTP mới đã được gửi đến email.");
+      setOtp("");
+      setCountdown(60);
+    } catch (err: any) {
+      toast.error("Không thể gửi lại OTP.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,6 +156,7 @@ export default function RegisterPage() {
           <CardContent className="space-y-4">
             {!sentOtp ? (
               <>
+                {/* Form đăng ký */}
                 <div className="space-y-2">
                   <Label htmlFor="name">Tên tài khoản</Label>
                   <Input
@@ -194,14 +244,16 @@ export default function RegisterPage() {
                   </Label>
                 </div>
                 <Button
+                  disabled={loading}
                   className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full"
                   onClick={handleSignUp}
                 >
-                  Tạo tài khoản
+                  {loading ? "Đang xử lý..." : "Tạo tài khoản"}
                 </Button>
               </>
             ) : (
               <>
+                {/* Nhập OTP */}
                 <div className="space-y-2">
                   <Label htmlFor="otp" className="text-center block">
                     Nhập mã OTP đã gửi đến email của bạn
@@ -228,11 +280,30 @@ export default function RegisterPage() {
                 </div>
 
                 <Button
+                  disabled={loading}
                   className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full"
                   onClick={handleVerifyOtp}
                 >
-                  Xác thực OTP
+                  {loading ? "Đang xác thực..." : "Xác thực OTP"}
                 </Button>
+
+                {countdown > 0 ? (
+                  <p className="text-center text-sm text-gray-600">
+                    Vui lòng nhập OTP trong{" "}
+                    <span className="font-bold">{countdown}</span> giây
+                  </p>
+                ) : (
+                  <div className="text-center">
+                    <Button
+                      disabled={loading}
+                      variant="outline"
+                      className="mt-2 cursor-pointer"
+                      onClick={handleResendOtp}
+                    >
+                      {loading ? "Đang gửi..." : "Gửi lại OTP"}
+                    </Button>
+                  </div>
+                )}
               </>
             )}
             <div className="text-center text-sm">
