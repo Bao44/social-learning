@@ -116,7 +116,7 @@ export default function ProfileEditPage() {
         const res = await uploadFile("profiles", file, true);
 
         if (res?.success === false) {
-          toast.error(res.msg || "Upload thất bại");
+          toast.error(res.msg || "Upload thất bại", { autoClose: 1500 });
           return;
         }
 
@@ -127,7 +127,7 @@ export default function ProfileEditPage() {
 
         setOpen(false);
       } catch (err) {
-        toast.error("Đã xảy ra lỗi khi upload ảnh.");
+        toast.error("Đã xảy ra lỗi khi upload ảnh.", { autoClose: 1500 });
       } finally {
         setIsLoading(false);
       }
@@ -151,13 +151,15 @@ export default function ProfileEditPage() {
 
       // Validate phone
       if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
-        toast.error("Số điện thoại không hợp lệ.");
+        toast.error("Số điện thoại không hợp lệ.", { autoClose: 1500 });
         return;
       }
 
       // Validate bio
       if (formData.bio && formData.bio.length > 300) {
-        toast.error("Tiểu sử không được vượt quá 300 ký tự.");
+        toast.error("Tiểu sử không được vượt quá 300 ký tự.", {
+          autoClose: 1500,
+        });
         return;
       }
 
@@ -165,7 +167,7 @@ export default function ProfileEditPage() {
       if (formData.dob) {
         const dobDate = new Date(formData.dob);
         if (isNaN(dobDate.getTime())) {
-          toast.error("Ngày sinh không hợp lệ.");
+          toast.error("Ngày sinh không hợp lệ.", { autoClose: 1500 });
           return;
         }
       }
@@ -188,7 +190,7 @@ export default function ProfileEditPage() {
         updatedUser.avatar = formData.avatar;
 
       if (Object.keys(updatedUser).length === 0) {
-        toast.info("Không có thay đổi nào để cập nhật.");
+        toast.info("Không có thay đổi nào để cập nhật.", { autoClose: 1500 });
         router.push("/dashboard/profile");
         return;
       }
@@ -197,11 +199,11 @@ export default function ProfileEditPage() {
 
       try {
         const res = await updateUserData(user?.id, updatedUser);
-        toast.success("Cập nhật thành công!");
+        toast.success("Cập nhật thành công!", { autoClose: 1500 });
         setUser({ ...user, ...updatedUser });
         router.push("/dashboard/profile");
       } catch (err: any) {
-        toast.error("Đã xảy ra lỗi.");
+        toast.error("Đã xảy ra lỗi.", { autoClose: 1500 });
       } finally {
         setIsLoading(false);
       }
@@ -209,7 +211,7 @@ export default function ProfileEditPage() {
     [formData, user, isLoading, setUser, router]
   );
 
-  // ✅ Show loading state nếu user chưa load
+  // Show loading state nếu user chưa load
   if (!user) {
     return (
       <div className="mx-auto w-full max-w-md pt-6 sm:max-w-2xl lg:max-w-3xl max-xl:ml-10 max-lg:mx-auto max-md:ml-5 max-sm:ml-5 px-4">

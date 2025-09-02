@@ -78,7 +78,7 @@ export function LeftSidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Đăng xuất thành công!");
+    toast.success("Đăng xuất thành công!", { autoClose: 1500 });
     router.push("/");
   };
 

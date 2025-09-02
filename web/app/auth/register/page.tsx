@@ -54,27 +54,27 @@ export default function RegisterPage() {
 
   const handleSignUp = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      toast.warning("Vui lòng điền đầy đủ thông tin.");
+      toast.warning("Vui lòng điền đầy đủ thông tin.", { autoClose: 1500 });
       return;
     }
 
     if (!nameRegex.test(name)) {
-      toast.warning("Tên tài khoản không hợp lệ.");
+      toast.warning("Tên tài khoản không hợp lệ.", { autoClose: 1500 });
       return;
     }
 
     if (!emailRegex.test(email)) {
-      toast.warning("Email không hợp lệ.");
+      toast.warning("Email không hợp lệ.", { autoClose: 1500 });
       return;
     }
 
     if (!passwordRegex.test(password)) {
-      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.");
+      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.", { autoClose: 1500 });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.warning("Mật khẩu xác nhận không khớp.");
+      toast.warning("Mật khẩu xác nhận không khớp.", { autoClose: 1500 });
       return;
     }
 
@@ -82,14 +82,16 @@ export default function RegisterPage() {
       setLoading(true);
       const res = await register({ email, password, name });
       if (res.message == "Email đã tồn tại") {
-        toast.warning("Email đã tồn tại");
+        toast.warning("Email đã tồn tại", { autoClose: 1500 });
       } else {
-        toast.success("OTP đã được gửi đến email của bạn.");
+        toast.success("OTP đã được gửi đến email của bạn.", {
+          autoClose: 1500,
+        });
         setSentOtp(true);
         setCountdown(60);
       }
     } catch (err: any) {
-      toast.error("Đã xảy ra lỗi.");
+      toast.error("Đã xảy ra lỗi.", { autoClose: 1500 });
     } finally {
       setLoading(false);
     }
@@ -97,18 +99,18 @@ export default function RegisterPage() {
 
   const handleVerifyOtp = async () => {
     if (!otp) {
-      toast.warning("Vui lòng nhập mã OTP.");
+      toast.warning("Vui lòng nhập mã OTP.", { autoClose: 1500 });
       return;
     }
 
     try {
       setLoading(true);
       const res = await verifyOtp({ email, otp });
-      toast.success("Xác nhận thành công");
+      toast.success("Xác nhận thành công", { autoClose: 1500 });
       router.push("/auth/login");
     } catch (err: any) {
       console.log("error", err.response?.data?.error);
-      toast.error("Xác thực OTP thất bại.");
+      toast.error("Xác thực OTP thất bại.", { autoClose: 1500 });
     } finally {
       setLoading(false);
     }
@@ -118,11 +120,11 @@ export default function RegisterPage() {
     try {
       setLoading(true);
       await resendOtp({ email });
-      toast.success("OTP mới đã được gửi đến email.");
+      toast.success("OTP mới đã được gửi đến email.", { autoClose: 1500 });
       setOtp("");
       setCountdown(60);
     } catch (err: any) {
-      toast.error("Không thể gửi lại OTP.");
+      toast.error("Không thể gửi lại OTP.", { autoClose: 1500 });
     } finally {
       setLoading(false);
     }

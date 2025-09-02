@@ -63,7 +63,7 @@ export default function Page() {
     try {
       await supabase.auth.signOut();
       setUser(null);
-      toast.success("Đăng xuất thành công");
+      toast.success("Đăng xuất thành công", { autoClose: 1500 });
     } catch (error) {
       console.error("Logout error:", error);
     }
