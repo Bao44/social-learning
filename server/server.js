@@ -1,11 +1,13 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./app');
-// const { setupSocket } = require('./socket');
+const socketInit = require('./socket/socket');
 const connectDB = require('./config/db');
 
 const server = http.createServer(app);
-// setupSocket(server);
+
+// Khởi tạo socket
+const io = socketInit(server);
 
 const PORT = process.env.PORT || 5000;
 
@@ -13,11 +15,15 @@ const authRoute = require('./routes/authRoute');
 const userRoute = require('./routes/userRoute');
 const imageRoute = require('./routes/imageRoute');
 const learningRoute = require('./routes/learningRoute');
+const conversationRoute = require('./routes/conversationRoute');
+const messageRoute = require('./routes/messageRoute');
 
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
 app.use('/api/images', imageRoute);
 app.use('/api/learning', learningRoute);
+app.use('/api/conversations', conversationRoute);
+app.use('/api/messages', messageRoute);
 
 connectDB().then(() => {
   server.listen(PORT, () => {
