@@ -1,131 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, SquarePen } from "lucide-react";
 import CardUser from "./CardUser";
 import CardGroup from "./CardGroup";
 import { useRouter } from "next/navigation";
-const conversations = [
-    {
-        id: "1",
-        name: "John Doe asfasdfasdf sdfasdfasdf ádfasdf ádfasdfad",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-        members: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-        ],
-        lastMessage: "Hey, how's it going?",
-        type: "user",
-    },
-    {
-        id: "2",
-        name: "Jane Smith",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-        members: [
-            {
-                id: "2",
-                name: "Jane Smith",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-        ],
-        lastMessage: "Are we still on for tomorrow?",
-        type: "user",
-    },
-    {
-        id: "3",
-        name: "Alice Johnson",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-        members: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "3",
-                name: "Alice Johnson",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "2",
-                name: "Jane Smith",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            }
-        ],
-        lastMessage: "Let's catch up soon!",
-        type: "group",
-    },
-    {
-        id: "4",
-        name: "Alice Johnson",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-        members: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "3",
-                name: "Alice Johnson",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "2",
-                name: "Jane Smith",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "4",
-                name: "Bob Brown",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-        ],
-        lastMessage: "Let's catch up soon!",
-        type: "group",
-    },
-    {
-        id: "5",
-        name: "Alice Johnson",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-        members: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "3",
-                name: "Alice Johnson",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "2",
-                name: "Jane Smith",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "4",
-                name: "Bob Brown",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-            {
-                id: "5",
-                name: "Charlie Davis",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-        ],
-        lastMessage: "Let's catch up soon!",
-        type: "group",
-    },
-];
+import useAuth from "@/hooks/useAuth";
+import { fetchConversations } from "@/app/api/chat/conversation/route";
 
 export default function ListConversation() {
     const router = useRouter();
+    const { user, loading } = useAuth();
     const [isSearchMode, setIsSearchMode] = useState(false);
+    const [conversations, setConversations] = useState<any[]>([]);
+
+    // Lấy danh sách cuộc trò chuyện của người dùng từ API hoặc context
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user?.id || loading) return;
+            try {
+                const res = await fetchConversations(user.id);
+                setConversations(res);
+            } catch (error) {
+                console.error("Error fetching conversations:", error);
+            }
+        };
+
+        fetchData();
+    }, [user?.id, loading]);
 
     //Handle card click
     const handleCardClick = (conversationId: string) => {
@@ -160,7 +62,7 @@ export default function ListConversation() {
                     <h3 className="px-4 py-2 font-semibold">Tin nhắn</h3>
                     <div className="flex-1 overflow-y-auto pb-18">
                         {conversations.map((conversation) => (
-                            conversation.type === "user" ? (
+                            conversation.type === "private" ? (
                                 <CardUser key={conversation.id} conversation={conversation} onClick={() => handleCardClick(conversation.id)} />
                             ) : (
                                 <CardGroup key={conversation.id} conversation={conversation} onClick={() => handleCardClick(conversation.id)} />
