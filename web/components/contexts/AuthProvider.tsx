@@ -4,6 +4,7 @@ import { getUserData } from "@/app/api/user/route";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import socket from "@/socket/socketClient"
 
 interface User {
   id: string;
