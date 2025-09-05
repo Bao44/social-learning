@@ -22,10 +22,11 @@ import {
   Video,
   File,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { getUserImageSrc } from "@/app/api/image/route";
+import { createOrUpdatePost, toBase64 } from "@/app/api/post/route";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -36,8 +37,7 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [caption, setCaption] = useState("");
-  const [location, setLocation] = useState("");
+  const [content, setContent] = useState("");
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -48,16 +48,43 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
     setStep(2);
   };
 
-  const handleShare = () => {
-    onClose();
-    resetModal();
+  const handleShare = async () => {
+    try {
+      let fileData = null;
+
+      if (selectedFiles.length > 0) {
+        const file = selectedFiles[0];
+        fileData = {
+          name: file.name,
+          type: getFileType(file),
+          uri: await toBase64(file),
+        };
+      }
+
+      const payload = {
+        content,
+        file: fileData,
+        userId: user?.id,
+      };
+
+      const res = await createOrUpdatePost(payload as any);
+
+      if (res.success) {
+        console.log("Đăng post thành công:", res.data);
+        resetModal();
+        onClose();
+      } else {
+        console.error("Lỗi đăng post:", res);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
 
   const resetModal = () => {
     setStep(1);
     setSelectedFiles([]);
-    setCaption("");
-    setLocation("");
+    setContent("");
   };
 
   const handleClose = () => {
@@ -85,6 +112,17 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
     if (file.type.includes("excel") || file.type.includes("spreadsheet"))
       return <File className="h-8 w-8 text-green-600" />;
     return <File className="h-8 w-8 text-gray-500" />;
+  };
+
+  const getFileType = (file: File) => {
+    if (file.type.startsWith("image/")) return "image";
+    if (file.type.startsWith("video/")) return "video";
+    if (file.type.includes("pdf")) return "pdf";
+    if (file.type.includes("word") || file.type.includes("document"))
+      return "word";
+    if (file.type.includes("excel") || file.type.includes("spreadsheet"))
+      return "excel";
+    return "file";
   };
 
   return (
@@ -240,47 +278,12 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
                 {/* Caption */}
                 <div className="flex-1 p-4">
                   <Textarea
-                    placeholder="Viết chú thích..."
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="Viết nội dung..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                     className="border-none resize-none focus:ring-0 p-0 text-sm"
                     rows={8}
                   />
-                </div>
-
-                {/* Additional Options */}
-                <div className="p-4 space-y-4 border-t">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Thêm vị trí</span>
-                    <MapPin className="h-4 w-4 text-gray-400" />
-                  </div>
-
-                  <Input
-                    placeholder="Thêm vị trí"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="text-sm"
-                  />
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
-                      Khả năng tiếp cận
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-blue-500 p-0"
-                    >
-                      Chỉnh sửa
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
-                      Cài đặt nâng cao
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-gray-400" />
-                  </div>
                 </div>
               </div>
             </>
