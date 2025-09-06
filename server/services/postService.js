@@ -13,24 +13,26 @@ const postService = {
     return { data, error: null };
   },
 
-  async getPosts(userId = null) {
+  async getPosts(userId) {
     let query = supabase
       .from("posts")
       .select(
         `
         *,
-        users:user_id (
+        user:users (
           id,
           name,
           nick_name,
           avatar
-        )
+        ),
+        postLikes(id, postId, userId),
+        comments(count)
       `
       )
       .order("created_at", { ascending: false });
 
     if (userId) {
-      query = query.eq("user_id", userId);
+      query = query.eq("userId", userId);
     }
 
     const { data, error } = await query;

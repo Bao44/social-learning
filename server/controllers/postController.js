@@ -83,6 +83,7 @@ const postController = {
   // API để lấy danh sách posts
   async getPosts(req, res) {
     try {
+      const limit = parseInt(req.query.limit) || 10;
       const { userId } = req.query;
       const { data, error } = await postService.getPosts(userId);
 
@@ -92,8 +93,7 @@ const postController = {
           message: error.message,
         });
       }
-
-     
+      return res.status(200).json({ success: true, data: data || [] });
     } catch (error) {
       console.error("getPosts error:", error);
       return res.status(500).json({
