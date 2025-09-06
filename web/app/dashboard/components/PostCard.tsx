@@ -13,27 +13,19 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { CommentModal } from "./CommentModal";
+import { get } from "http";
+import { getSupabaseFileUrl } from "@/app/api/image/route";
 
 interface PostCardProps {
-  post: {
-    id: number;
-    username: string;
-    avatar: string;
-    timeAgo: string;
-    originalSentence: string;
-    rewrittenSentence: string;
-    score: number;
-    likes: number;
-    comments: number;
-    caption: string;
-    level: string;
-  };
+  post: any;
 }
 
 export function PostCard({ post }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+
+  console.log("POST", post);
 
   return (
     <>
@@ -42,22 +34,19 @@ export function PostCard({ post }: PostCardProps) {
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-3">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={post.avatar || "/globe.svg"} />
-              <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
-                {post.username.slice(0, 2).toUpperCase()}
-              </AvatarFallback>
+              <AvatarImage src={post?.user?.avatar} />
             </Avatar>
             <div>
               <p className="text-sm font-semibold text-gray-900">
-                {post.username}
+                {post?.user?.nick_name}
               </p>
-              <p className="text-xs text-gray-500">{post.timeAgo}</p>
+              <p className="text-xs text-gray-500">{post?.created_at}</p>
             </div>
             <Badge
               variant="secondary"
               className="text-xs bg-orange-100 text-orange-800"
             >
-              {post.level}
+              {post?.user?.name}
             </Badge>
           </div>
           <Button variant="ghost" size="icon">
@@ -68,44 +57,20 @@ export function PostCard({ post }: PostCardProps) {
         {/* Post Content */}
         <CardContent className="px-4 pb-4">
           <div className="space-y-4">
-            {/* Original vs Rewritten */}
-            <div className="bg-gradient-to-r from-orange-50 to-pink-50 rounded-lg p-4 space-y-3">
-              <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">
-                  Original:
-                </p>
-                <p className="text-sm text-gray-800 line-through opacity-75">
-                  {post.originalSentence}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">
-                  Rewritten:
-                </p>
-                <p className="text-sm text-gray-900 font-medium">
-                  {post.rewrittenSentence}
-                </p>
-              </div>
-              <div className="flex items-center justify-between">
-                <Badge
-                  className={`text-xs ${
-                    post.score >= 90
-                      ? "bg-green-100 text-green-800"
-                      : post.score >= 80
-                      ? "bg-orange-100 text-orange-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  Score: {post.score}/100
-                </Badge>
-              </div>
-            </div>
+            {/* Image */}
+            {post?.file && (
+              <img
+                src={getSupabaseFileUrl(post?.file) ?? undefined}
+                alt="Post Image"
+                className="w-full h-auto max-h-96 object-cover rounded-md"
+              />
+            )}
 
             {/* Caption */}
             <div>
               <p className="text-sm text-gray-900">
-                <span className="font-semibold">{post.username}</span>{" "}
-                {post.caption}
+                <span className="font-semibold">{post?.user?.nick_name}</span>{" "}
+                {post?.content}
               </p>
             </div>
           </div>
@@ -155,14 +120,12 @@ export function PostCard({ post }: PostCardProps) {
 
           {/* Likes and Comments */}
           <div className="space-y-1">
-            <p className="text-sm font-semibold text-gray-900">
-              {post.likes.toLocaleString()} likes
-            </p>
+            <p className="text-sm font-semibold text-gray-900">likes</p>
             <button
               onClick={() => setIsCommentModalOpen(true)}
               className="text-sm text-gray-500 hover:text-gray-700"
             >
-              View all {post.comments} comments
+              View all comments
             </button>
           </div>
         </div>

@@ -141,9 +141,6 @@ export function CommentModal({ isOpen, onClose, post }: CommentModalProps) {
               <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={post.avatar || "/placeholder.svg"} />
-                  <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
-                    {post.username.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
                 </Avatar>
                 <span className="font-semibold text-sm">{post.username}</span>
               </div>
@@ -154,9 +151,6 @@ export function CommentModal({ isOpen, onClose, post }: CommentModalProps) {
               <div className="flex items-start space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={post.avatar || "/placeholder.svg"} />
-                  <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
-                    {post.username.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <p className="text-sm">
@@ -174,9 +168,6 @@ export function CommentModal({ isOpen, onClose, post }: CommentModalProps) {
                 <div key={comment.id} className="flex items-start space-x-3">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={comment.avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
-                      {comment.username.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="text-sm">
