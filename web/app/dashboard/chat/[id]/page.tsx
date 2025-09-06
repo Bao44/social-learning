@@ -1,103 +1,65 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
 import { Paperclip, Smile } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageSender from "./components/MessageSender";
 import MessageReceiver from "./components/MessageReceiver";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const messages = [
-    {
-        id: "1",
-        content: {
-            type: "text",
-            text: "Hello, how are you?",
-            images: [],
-            file: null,
-        },
-        sender: {
-            id: "1",
-            name: "John Doe",
-            avatarUrl: "/default-avatar-profile-icon.jpg",
-        },
-        replyTo: null,
-        revoked: false,
-        memberSeens: [
-            {
-                id: "2",
-                name: "Jane Smith",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            },
-        ],
-        like: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-    {
-        id: "2",
-        content: {
-            type: "text",
-            text: "I'm good, thanks!",
-            images: [],
-            file: null,
-        },
-        sender: {
-            id: "2",
-            name: "Jane Smith",
-            avatarUrl: "/default-avatar-profile-icon.jpg",
-        },
-        replyTo: null,
-        revoked: false,
-        memberSeens: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            }
-        ],
-        like: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-    {
-        id: "3",
-        content: {
-            type: "text",
-            text: "What about you?",
-            images: [],
-            file: null,
-        },
-        sender: {
-            id: "1",
-            name: "John Doe",
-            avatarUrl: "/default-avatar-profile-icon.jpg",
-        },
-        replyTo: null,
-        revoked: false,
-        memberSeens: [
-            {
-                id: "1",
-                name: "John Doe",
-                avatarUrl: "/default-avatar-profile-icon.jpg",
-            }
-        ],
-        like: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-];
+import { fetchMessages, sendMessage } from "@/app/api/chat/message/route";
+import { getSocket } from "@/socket/socketClient";
 
 export default function ChatDetail() {
     const [text, setText] = useState("");
-    const user = {
-        id: "1",
-        name: "John Doe",
-        avatarUrl: "/default-avatar-profile-icon.jpg",
-    };
+    const { user } = useAuth();
+    const [files, setFiles] = useState<File[]>([]);
+    const [messages, setMessages] = useState<any[]>([]);
 
-    // Handle sending message
-    const handleSendMessage = () => {
-        console.log("Send message:", text);
+    // Lắng nghe sự kiện tin nhắn mới từ socket
+    useEffect(() => {
+        const socket = getSocket();
+        // join room
+        const conversationId = localStorage.getItem("selectedConversation") || "";
+        if (conversationId) {
+            socket.emit("joinRoom", conversationId);
+        }
+        
+        socket.on("newMessage", (newMessage: any) => {
+            setMessages(prev => [newMessage, ...prev]);
+        });
+
+        return () => {
+            socket.off("newMessage");
+        };
+    }, []);
+
+    // Hàm lấy tin nhắn từ server
+    useEffect(() => {
+        const fetchDataMessages = async () => {
+            const conversationId = localStorage.getItem("selectedConversation") || "";
+            if (!conversationId) return;
+            // Gọi API lấy tin nhắn
+            const data = await fetchMessages(conversationId);
+            setMessages(data);
+        };
+        fetchDataMessages();
+    }, []);
+
+    // Hàm xử lý logic gửi tin nhắn dạng text
+    const handleSendMessage = async () => {
+        const formData = new FormData();
+        formData.append("conversationId", localStorage.getItem("selectedConversation") || "");
+        formData.append("senderId", user.id);
+        if (text) formData.append("text", text);
+        if (files.length > 0) {
+            files.forEach(f => formData.append("files", f));
+        }
+
+        const res = await sendMessage({
+            conversationId: localStorage.getItem("selectedConversation") || "",
+            senderId: user.id,
+            text,
+            files
+        });
         setText("");
     };
 
@@ -106,23 +68,23 @@ export default function ChatDetail() {
             {/* Chat header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
                 <div className="flex items-center gap-4">
-                    <Avatar>
-                        <AvatarImage src={user.avatarUrl} alt={user.name} className="rounded-full" />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    <Avatar className="w-10 h-10">
+                        <AvatarImage src={user?.avatarUrl} alt={user?.name} className="rounded-full" />
+                        <AvatarFallback className="bg-gray-300">{user?.name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <span className="font-semibold">Chat with {user.name}</span>
+                    <span className="font-semibold">{user?.name}</span>
                 </div>
-                
+
             </div>
 
             {/* Chat messages */}
             <div className="flex-1 overflow-y-auto p-4 gap-4 flex flex-col-reverse">
                 {/* Nội dung tin nhắn */}
                 {messages.map((message) => (
-                    message.sender.id === user.id ? (
-                        <MessageSender key={message.id} message={message} />
+                    message?.senderId === user?.id ? (
+                        <MessageSender key={message?._id} message={message} />
                     ) : (
-                        <MessageReceiver key={message.id} message={message} />
+                        <MessageReceiver key={message?._id} message={message} />
                     )
                 ))}
             </div>

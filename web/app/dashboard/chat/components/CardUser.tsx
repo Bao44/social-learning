@@ -1,9 +1,11 @@
 "use client";
 
+import { fetchUnreadCount } from "@/app/api/chat/conversation/route";
 import { Badge } from "@/components/ui/badge";
 import useAuth from "@/hooks/useAuth";
+import { convertToTime } from "@/utils/formatTime";
 import Image from "next/image";
-import { use } from "react";
+import { useEffect, useState } from "react";
 
 interface User {
     id: string;
@@ -16,8 +18,27 @@ interface Conversation {
     name: string;
     avatarUrl: string;
     members: User[];
-    lastMessage: string;
+    lastMessage: LastMessage | null;
 }
+
+type MessageContent = {
+    system?: boolean;
+    type: "text" | "image" | "file";
+    text?: string;
+    images?: string[];
+    file?: {
+        name: string;
+        url: string;
+    } | null;
+};
+
+type LastMessage = {
+    id: string;
+    senderId: string;
+    content: MessageContent;
+    createdAt: string;
+    updatedAt: string;
+};
 
 type CardUserProps = {
     conversation: Conversation;
@@ -26,6 +47,22 @@ type CardUserProps = {
 
 export default function CardUser({ conversation, onClick }: CardUserProps) {
     const { user } = useAuth();
+
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetchUnreadCount(conversation.id, user?.id);
+                setUnreadCount(response);
+            } catch (error) {
+                console.error("Error fetching unread count:", error);
+            }
+        };
+
+        fetchData();
+    }, [conversation.id, user?.id]);
+
     return (
         <>
             <button onClick={onClick} className="w-full flex justify-start items-center px-4 gap-3 py-2 border-b border-gray-200 hover:cursor-pointer hover:bg-gray-200">
@@ -33,13 +70,22 @@ export default function CardUser({ conversation, onClick }: CardUserProps) {
                 <div className="flex flex-col items-start gap-2 w-full">
                     <div className="flex items-center justify-between w-full">
                         <span className="font-semibold truncate max-w-64">{conversation.members.filter(member => member.id !== user?.id)[0]?.name}</span>
-                        <Badge className="h-7 w-7 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
-                            {99}
-                        </Badge>
+                        {unreadCount > 0 && (
+                            <Badge className="h-7 w-7 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
+                                {unreadCount}
+                            </Badge>
+                        )}
                     </div>
                     <div className="flex items-center justify-between w-full text-sm text-gray-500">
-                        <span>{conversation.lastMessage}</span>
-                        <span>{`14m ago`}</span>
+                        <div>
+                            <span>{conversation.lastMessage?.senderId === user?.id ? "Bạn: " : ""}</span>
+                            <span>
+                                {typeof conversation.lastMessage?.content === "string"
+                                    ? conversation.lastMessage?.content
+                                    : conversation.lastMessage?.content?.text || "[Nội dung không hỗ trợ]"}
+                            </span>
+                        </div>
+                        <span>{convertToTime(conversation.lastMessage?.createdAt)}</span>
                     </div>
                 </div>
             </button>

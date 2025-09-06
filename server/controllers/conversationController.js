@@ -1,4 +1,5 @@
 const conversationService = require("../services/conversationService");
+const { getMessageById } = require("../services/messageService");
 const userService = require("../services/userService");
 
 const conversationController = {
@@ -19,34 +20,32 @@ const conversationController = {
         const userId = req.params.userId;
         try {
             const conversations = await conversationService.getUserConversations(userId);
-
             const formattedConversations = await Promise.all(
                 conversations.map(async (conversation) => {
                     // Lấy thông tin members
                     const members = await Promise.all(
-                        conversation.members.map(async (memberId) => {
-                            const user = await userService.getUserData(memberId);
+                        conversation.members.map(async (member) => {
+                            const user = await userService.getUserData(member.userId);
                             return {
-                                id: user ? user.data.id : memberId,
+                                id: user ? user.data.id : member.userId,
                                 name: user ? user.data.name : "Unknown",
-                                avatarUrl: user?.data.avatar || "/default-avatar-profile-icon.jpg"
+                                avatarUrl: user?.data.avatar || "/default-avatar-profile-icon.jpg",
+                                role: member.role,
+                                addBy: member.addBy,
+                                joinedAt: member.joinedAt,
                             };
                         })
                     );
 
-                    // Lấy tin nhắn cuối cùng
-                    let lastMessageText = "";
-                    if (conversation.lastMessage) {
-                        const lastMessage = await conversation.populate("lastMessage");
-                        lastMessageText = lastMessage?.lastMessage?.content || "";
-                    }
+                    // Tim last message
+                    const lastMessage = await getMessageById(conversation.lastMessage);
 
                     return {
                         id: conversation._id.toString(),
                         name: conversation.name || "", // có thể để fallback từ member nếu là private
                         avatarUrl: conversation.avatar || "/default-avatar-profile-icon.jpg",
                         members,
-                        lastMessage: lastMessageText,
+                        lastMessage: lastMessage,
                         type: conversation.type
                     };
                 })
@@ -55,6 +54,19 @@ const conversationController = {
             res.status(200).json(formattedConversations);
         } catch (error) {
             console.error("Error fetching user conversations:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    },
+
+    // Đếm số tin nhắn chưa đọc trong một cuộc trò chuyện của user
+    countUnreadMessages: async (req, res) => {
+        const { conversationId, userId } = req.params;
+        console.log("Counting unread messages for conversation:", conversationId, "and user:", userId);
+        try {
+            const count = await conversationService.countUnreadMessages(conversationId, userId);
+            res.status(200).json({ count });
+        } catch (error) {
+            console.error("Error counting unread messages:", error);
             res.status(500).json({ error: "Internal Server Error" });
         }
     }

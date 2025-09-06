@@ -13,8 +13,15 @@ const ConversationSchema = new mongoose.Schema(
         },
         members: [
             {
-                type: String
-            }
+                userId: { type: String, required: true },
+                role: {
+                    type: String,
+                    enum: ["member", "admin"],
+                    default: "member",
+                },
+                addBy: { type: String },
+                joinedAt: { type: Date, default: Date.now },
+            },
         ],
         avatar: {
             type: String,
@@ -29,21 +36,15 @@ const ConversationSchema = new mongoose.Schema(
         },
         delete_history: [
             {
-                _id: false,
-                userId: {
-                    type: String
-                },
-                time_delete: {
-                    type: Date,
-                    default: Date.now,
-                }
+                userId: { type: String },
+                deletedAt: { type: Date, default: Date.now },
             }
         ],
         isDeleted: {
             type: Boolean,
             default: false,
         },
-        approvedMembers: {
+        isApprovedMembers: {
             type: Boolean,
             default: false,
         },

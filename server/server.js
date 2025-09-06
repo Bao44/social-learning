@@ -1,13 +1,13 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./app');
-const socketInit = require('./socket/socket');
+const { socketInit } = require('./socket/socket');
 const connectDB = require('./config/db');
 
 const server = http.createServer(app);
 
 // Khởi tạo socket
-const io = socketInit(server);
+socketInit(server);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,8 +1,14 @@
 const express = require('express');
-const router = express.Router();
+const multer = require('multer');
 const messageController = require('../controllers/messageController');
 
-// Lưu tin nhắn mới
-router.post('/save', messageController.saveMessage);
+const router = express.Router();
+const upload = multer({ dest: "uploads/" });
+
+// Gửi tin nhắn, có thể text + file
+router.post('/save', upload.array("files"), messageController.saveMessage);
+
+// Lấy danh sách tin nhắn trong cuộc trò chuyện với phân trang
+router.get('/conversation/:conversationId', messageController.getMessagesByConversationId);
 
 module.exports = router;
