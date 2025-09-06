@@ -8,4 +8,7 @@ router.post('/create', conversationController.createConversation);
 // Lấy danh sách cuộc trò chuyện của người dùng
 router.get('/user/:userId', conversationController.getUserConversations);
 
+// Đếm số tin nhắn chưa đọc trong một cuộc trò chuyện của user
+router.get('/:conversationId/unread/:userId', conversationController.countUnreadMessages);
+
 module.exports = router;

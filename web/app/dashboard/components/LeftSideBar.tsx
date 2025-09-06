@@ -73,11 +73,19 @@ export function LeftSidebar() {
   const pathname = usePathname(); // Get the current path
 
   const handleMenuClick = (path: string) => {
+    // Handle menu item click
+    if (path === "/dashboard/chat") {
+      if (localStorage.getItem("selectedConversation")) {
+        router.push(`/dashboard/chat/${localStorage.getItem("selectedConversation")}`);
+        return;
+      }
+    }
     router.push(path);
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem("selectedConversation");
     toast.success("Đăng xuất thành công!", { autoClose: 1500 });
     router.push("/");
   };
@@ -103,11 +111,10 @@ export function LeftSidebar() {
             <Button
               key={item.label}
               variant="ghost"
-              className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${
-                pathname === item.path
-                  ? "bg-gray-100 text-gray-900 font-medium"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+              className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${pathname === item.path
+                ? "bg-gray-100 text-gray-900 font-medium"
+                : "text-gray-700 hover:bg-gray-100"
+                }`}
               onClick={() => handleMenuClick(item.path)}
             >
               <div className="relative">
@@ -136,18 +143,16 @@ export function LeftSidebar() {
                 onClick={() => handleMenuClick(item.path)}
                 key={item.label}
                 variant="ghost"
-                className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${
-                  item.special
-                    ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 hover:from-orange-100 hover:to-pink-100 border border-orange-200"
-                    : pathname === item.path
+                className={`w-full justify-start h-12 px-3 hover:cursor-pointer ${item.special
+                  ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 hover:from-orange-100 hover:to-pink-100 border border-orange-200"
+                  : pathname === item.path
                     ? "bg-gray-100 text-gray-900 font-medium"
                     : "text-gray-700 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 <item.icon
-                  className={`h-6 w-6 mr-4 ${
-                    item.special ? "text-orange-600" : ""
-                  }`}
+                  className={`h-6 w-6 mr-4 ${item.special ? "text-orange-600" : ""
+                    }`}
                 />
                 <span className="text-base font-medium">{item.label}</span>
                 {item.special && (

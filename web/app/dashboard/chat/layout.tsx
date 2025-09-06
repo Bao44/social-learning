@@ -7,7 +7,7 @@ export default function ChatLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex w-full max-h-[calc(100vh-66px)]">
+        <div className="flex w-full max-h-[calc(100vh-0px)]">
             {/* List Conversations */}
             <div className="h-full min-w-sm border-r border-gray-200">
                 <ListConversation />

@@ -38,3 +38,8 @@ export const convertToTime = (date: any) => {
     return daysDiff + " ngày trước";
   }
 };
+
+export const formatTime = (timestamp: string | number | Date) => {
+  const date = timestamp && new Date(timestamp);
+        return date ? `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}` : "";
+};
