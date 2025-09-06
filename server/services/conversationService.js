@@ -11,8 +11,33 @@ const conversationService = {
 
     // Lấy danh sách cuộc trò chuyện của người dùng
     async getUserConversations(userId) {
-        const conversations = await Conversation.find({ members: userId }).sort({ updatedAt: -1 }); 
+        const conversations = await Conversation.find({
+            "members.userId": userId,
+        }).sort({ updatedAt: -1 });
+
         return conversations;
+    },
+
+    // Đếm số tin nhắn chưa đọc trong một cuộc trò chuyện của user
+    async countUnreadMessages(conversationId, userId) {
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) throw new Error("Conversation not found");
+
+        const unreadCount = await Message.countDocuments({
+            conversationId,
+            senderId: { $ne: userId },
+            $or: [
+                { seens: { $exists: false } },
+                { seens: { $size: 0 } },
+                { seens: { $not: { $elemMatch: { userId } } } }
+            ]
+        });
+
+        console.log(
+            `Unread messages for user ${userId} in conversation ${conversationId}: ${unreadCount}`
+        );
+
+        return unreadCount;
     },
 };
 
