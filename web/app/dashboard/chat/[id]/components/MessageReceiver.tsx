@@ -1,10 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-interface MessageSenderProps {
-    message: Message;
-}
+import { formatTime } from "@/utils/formatTime";
 
 type MemberSeen = {
     id: string;
@@ -43,11 +40,12 @@ export default function MessageReceiver({ message }: MessageReceiverProps) {
         <div className="flex justify-start">
             <div className="max-w-2/3 flex items-center gap-2">
                 <Avatar>
-                    <AvatarImage src={message.sender.avatarUrl} alt={message.sender.name} className="rounded-full" />
-                    <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={message?.sender?.avatarUrl} alt={message?.sender?.name} className="rounded-full" />
+                    <AvatarFallback className="bg-gray-300">{message?.sender?.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="bg-gray-100 text-gray-800 p-3 rounded-lg shadow-md">
-                    <p>{message.content.text}</p>
+                    <p className="text-base">{message.content.text}</p>
+                    <p className="text-gray-500 text-sm text-right">{formatTime(message.createdAt)}</p>
                 </div>
             </div>
         </div>

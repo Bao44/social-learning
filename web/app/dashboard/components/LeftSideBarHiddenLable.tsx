@@ -69,11 +69,18 @@ export function LeftSideBarHiddenLabel() {
 
   const handleMenuClick = (path: string) => {
     // Handle menu item click
+    if(path === "/dashboard/chat"){
+      if(localStorage.getItem("selectedConversation")){
+        router.push(`/dashboard/chat/${localStorage.getItem("selectedConversation")}`);
+        return;
+      }
+    }
     router.push(path);
   };
 
   const handleLogout = () => {
     supabase.auth.signOut();
+    localStorage.removeItem("selectedConversation");
     // Xử lý sau khi đăng xuất
     toast.success("Đăng xuất thành công!", { autoClose: 1500 });
     router.push("/");

@@ -48,6 +48,19 @@ const userService = {
     if (error) throw error;
     return { data, error };
   },
+
+  async getUsersByIds(userIds) {
+    // đảm bảo userIds là mảng string
+    const ids = userIds.map(id => id.toString());
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("id, name, avatar")
+      .in("id", ids);
+
+    if (error) throw error;
+    return { data, error };
+  },
 };
 
 module.exports = userService;

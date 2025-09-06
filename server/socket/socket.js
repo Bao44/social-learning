@@ -1,20 +1,26 @@
-// server/socket/socket.js
 const { Server } = require("socket.io");
 
+let io;
+
 function socketInit(server) {
-    const io = new Server(server, {
-        cors: {
-            origin: "*", // đổi thành domain frontend của bạn (vd: http://localhost:3000)
-        },
+    io = new Server(server, {
+        cors: { origin: "*" },
         transports: ["websocket", "polling"]
     });
 
     io.on("connection", (socket) => {
         console.log("🟢 User connected:", socket.id);
 
-        // Lắng nghe sự kiện từ client
+        socket.on("joinRoom", (conversationId) => {
+            console.log("User joined room:", conversationId);
+            socket.join(conversationId);
+        });
 
-        // Khi user ngắt kết nối
+        socket.on("leaveRoom", (conversationId) => {
+            console.log("User left room:", conversationId);
+            socket.leave(conversationId);
+        });
+
         socket.on("disconnect", () => {
             console.log("🔴 User disconnected:", socket.id);
         });
@@ -23,4 +29,11 @@ function socketInit(server) {
     return io;
 }
 
-module.exports = socketInit;
+function getIO() {
+    if (!io) {
+        throw new Error("Socket.io has not been initialized! Call socketInit(server) first.");
+    }
+    return io;
+}
+
+module.exports = { socketInit, getIO };
