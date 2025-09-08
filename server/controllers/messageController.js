@@ -1,5 +1,6 @@
 const messageService = require("../services/messageService");
 const userService = require("../services/userService");
+const conversationService = require("../services/conversationService");
 const { getIO } = require("../socket/socket");
 
 const messageController = {
@@ -43,6 +44,18 @@ const messageController = {
             // Gửi socket tới các thành viên trong conversation (nếu có)
             const io = getIO();
             io.to(conversationId).emit("newMessage", customMessage);
+
+            const conversationMembers = await conversationService.getConversationMembers(conversationId);
+            for (const member of conversationMembers) {
+                const userSocket = io.userSockets.get(member.userId);
+                if (userSocket) {
+                    io.to(userSocket.id).emit("notificationNewMessage", {
+                        type: "newMessage",
+                        conversationId,
+                        message: customMessage
+                    });
+                }
+            }
 
             res.status(201).json(message);
         } catch (error) {
