@@ -68,10 +68,12 @@ export default function CardUser({ conversation, onClick }: CardUserProps) {
     return (
         <>
             <button onClick={onClick} className="w-full flex justify-start items-center px-4 gap-3 py-2 border-b border-gray-200 hover:cursor-pointer hover:bg-gray-200">
-                <Avatar className="w-12 h-12">
-                    <AvatarImage src={getUserImageSrc(conversation.members.filter(member => member.id !== user?.id)[0]?.avatarUrl)} alt={conversation.members.filter(member => member.id !== user?.id)[0]?.name} />
-                    <AvatarFallback className="bg-gray-300">{conversation.members.filter(member => member.id !== user?.id)[0]?.name.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <div className="min-w-[60px] flex justify-center items-center">
+                    <Avatar className="w-12 h-12">
+                        <AvatarImage src={getUserImageSrc(conversation.members.filter(member => member.id !== user?.id)[0]?.avatarUrl)} alt={conversation.members.filter(member => member.id !== user?.id)[0]?.name} />
+                        <AvatarFallback className="bg-gray-300">{conversation.members.filter(member => member.id !== user?.id)[0]?.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                </div>
                 <div className="flex flex-col items-start gap-2 w-full">
                     <div className="flex items-center justify-between w-full">
                         <span className="font-semibold truncate max-w-64">{conversation.members.filter(member => member.id !== user?.id)[0]?.name}</span>

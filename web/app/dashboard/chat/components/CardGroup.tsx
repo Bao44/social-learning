@@ -86,7 +86,7 @@ export default function CardGroup({ conversation, onClick }: CardGroupProps) {
                     <div className="flex items-center justify-between w-full text-sm text-gray-500">
                         <div className="flex items-center">
                             <p className="truncate max-w-52">
-                                {conversation.lastMessage?.senderId === user?.id ? "Bạn: " : ""}
+                                {conversation.lastMessage?.senderId === user?.id ? "Bạn: " : conversation.members.find(m => m.id === conversation.lastMessage?.senderId)?.name + ": "}  
                                 {typeof conversation.lastMessage?.content === "string"
                                     ? conversation.lastMessage?.content
                                     : conversation.lastMessage?.content?.text || "[Nội dung không hỗ trợ]"}
