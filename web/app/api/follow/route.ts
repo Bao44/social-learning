@@ -29,3 +29,11 @@ export const getFollowing = async (followerId: string) => {
   const response = await api.get(`/api/follows/following/${followerId}`);
   return response.data;
 };
+
+// Kiểm tra A có follow B không
+export const checkIsFollowing = async (followerId: string, userId: string) => {
+  const response = await api.get(`/api/follows/is-following`, {
+    params: { followerId, userId },
+  });
+  return response.data;
+};
