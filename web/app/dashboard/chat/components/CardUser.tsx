@@ -5,6 +5,7 @@ import { getUserImageSrc } from "@/app/api/image/route";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import useAuth from "@/hooks/useAuth";
+import { getSocket } from "@/socket/socketClient";
 import { convertToTime } from "@/utils/formatTime";
 import { useEffect, useState } from "react";
 
@@ -52,6 +53,7 @@ export default function CardUser({ conversation, onClick }: CardUserProps) {
     const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
+        const socket = getSocket();
         const fetchData = async () => {
             try {
                 const response = await fetchUnreadCount(conversation.id, user?.id);
@@ -60,6 +62,11 @@ export default function CardUser({ conversation, onClick }: CardUserProps) {
                 console.error("Error fetching unread count:", error);
             }
         };
+
+        // Lắng nghe sự kiện 'newMessage' từ server để cập nhật số lượng tin nhắn chưa đọc
+        socket.on("notificationNewMessage", () => {
+            fetchData();
+        });
 
         fetchData();
     }, [conversation.id, user?.id]);

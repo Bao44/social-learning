@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { ChevronDown, SquarePen } from "lucide-react";
 import CardUser from "./CardUser";
 import CardGroup from "./CardGroup";
@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import { fetchConversations } from "@/app/api/chat/conversation/route";
 import { ConversationSkeleton } from "./ConversationSkeleton";
+import { getSocket } from "@/socket/socketClient";
+import { useConversation } from "@/components/contexts/ConversationContext";
 
 export default function ListConversation() {
     const router = useRouter();
@@ -15,9 +17,11 @@ export default function ListConversation() {
     const [isSearchMode, setIsSearchMode] = useState(false);
     const [conversations, setConversations] = useState<any[]>([]);
     const [loadingConversations, setLoadingConversations] = useState(true);
+    const { setSelectedConversation } = useConversation();
 
     // Lấy danh sách cuộc trò chuyện của người dùng từ API hoặc context
     useEffect(() => {
+        const socket = getSocket();
         const fetchData = async () => {
             if (!user?.id || loading) return;
             setLoadingConversations(true);
@@ -31,13 +35,19 @@ export default function ListConversation() {
             }
         };
 
+        // Lắng nghe sự kiện 'newMessage' từ server để cập nhật danh sách cuộc trò chuyện
+        socket.on("notificationNewMessage", () => {
+            fetchData();
+        });
+
         fetchData();
     }, [user?.id, loading]);
 
     //Handle card click
-    const handleCardClick = async (conversationId: string) => {
+    const handleCardClick = async (conversationId: string, conversation: any) => {
         // Navigate to the chat detail page for the selected conversation
-        localStorage.setItem("selectedConversation", conversationId);
+        setSelectedConversation(conversation);
+        localStorage.setItem("selectedConversation", JSON.stringify(conversation));
         router.push(`/dashboard/chat/${conversationId}`);
     };
 
@@ -66,27 +76,23 @@ export default function ListConversation() {
             {!isSearchMode && (
                 <>
                     <h3 className="px-4 py-2 font-semibold">Tin nhắn</h3>
-                    {loadingConversations ? (
-                        <ConversationSkeleton />
-                    ) : (
-                        <div className="flex-1 overflow-y-auto pb-18">
-                            {conversations.map((conversation) =>
-                                conversation.type === "private" ? (
-                                    <CardUser
-                                        key={conversation.id}
-                                        conversation={conversation}
-                                        onClick={() => handleCardClick(conversation.id)}
-                                    />
-                                ) : (
-                                    <CardGroup
-                                        key={conversation.id}
-                                        conversation={conversation}
-                                        onClick={() => handleCardClick(conversation.id)}
-                                    />
-                                )
-                            )}
-                        </div>
-                    )}
+                    <div className="flex-1 overflow-y-auto pb-18">
+                        {conversations.map((conversation) =>
+                            conversation.type === "private" ? (
+                                <CardUser
+                                    key={conversation.id}
+                                    conversation={conversation}
+                                    onClick={() => handleCardClick(conversation.id, conversation)}
+                                />
+                            ) : (
+                                <CardGroup
+                                    key={conversation.id}
+                                    conversation={conversation}
+                                    onClick={() => handleCardClick(conversation.id, conversation)}
+                                />
+                            )
+                        )}
+                    </div>
                 </>
             )}
 
