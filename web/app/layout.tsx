@@ -4,8 +4,6 @@ import "./globals.css";
 import { AuthProvider } from "@/components/contexts/AuthProvider";
 import ClientWrapper from "./ClientWrapper";
 import { ConversationProvider } from "@/components/contexts/ConversationContext";
-import { use } from "react";
-import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import OnlineStatusProvider from "@/components/contexts/OnlineStatusProvider";
 
 const overpass = Overpass({

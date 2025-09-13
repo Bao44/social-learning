@@ -29,12 +29,12 @@ export default function NewPasswordPage() {
 
   const handleNewPassword = async () => {
     if (!passwordRegex.test(password)) {
-      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.", { autoClose: 1500 });
+      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.", { autoClose: 1000 });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.warning("Mật khẩu xác nhận không khớp.", { autoClose: 1500 });
+      toast.warning("Mật khẩu xác nhận không khớp.", { autoClose: 1000 });
       return;
     }
     setLoading(true);

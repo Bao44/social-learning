@@ -59,13 +59,11 @@ export default function Page() {
 
   const { user, setUser } = useAuth();
 
-  
-
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
       setUser(null);
-      toast.success("Đăng xuất thành công", { autoClose: 1500 });
+      toast.success("Đăng xuất thành công", { autoClose: 1000 });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -160,21 +158,55 @@ export default function Page() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              // Hiển thị khi chưa đăng nhập
               <>
-                <Button
-                  variant="outline"
-                  className="bg-white text-gray-800 border-gray-300 hover:bg-gray-100 rounded-full p-6 text-[16px]"
-                  asChild
-                >
-                  <Link href="/auth/login">Đăng Nhập</Link>
-                </Button>
-                <Button
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px]"
-                  asChild
-                >
-                  <Link href="/auth/register">Đăng kí</Link>
-                </Button>
+                {/* Desktop View */}
+                <div className="hidden md:flex items-center space-x-3">
+                  <Button
+                    variant="outline"
+                    className="bg-white text-gray-800 border-gray-300 hover:bg-gray-100 rounded-full p-6 text-[16px]"
+                    asChild
+                  >
+                    <Link href="/auth/login">Đăng Nhập</Link>
+                  </Button>
+                  <Button
+                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px]"
+                    asChild
+                  >
+                    <Link href="/auth/register">Đăng Ký</Link>
+                  </Button>
+                </div>
+
+                {/* Mobile View */}
+                <div className="md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="p-2 rounded-full">
+                        <svg
+                          className="w-6 h-6 text-gray-700"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 6h16M4 12h16M4 18h16"
+                          />
+                        </svg>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem asChild>
+                        <Link href="/auth/login">Đăng Nhập</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/auth/register">Đăng Ký</Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </>
             )}
           </div>
