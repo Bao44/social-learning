@@ -1,5 +1,6 @@
 "use client";
 
+import { sendResetOtp } from "@/app/api/auth/route";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,64 +11,43 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, PenTool, Eye, EyeOff } from "lucide-react";
+import { BookOpen, PenTool } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { login } from "@/app/api/auth/route";
-import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSendOtp = async () => {
+    setLoading(true);
     try {
-      const res = await login({ email, password });
-
-      if (!res.success || !res?.data?.session) {
-        toast.error("Đăng nhập thất bại", { autoClose: 1500 });
-        console.error("Login failed:", res.message || "No session data");
-        return;
+      const res = await sendResetOtp({ email });
+      if (res.message == "Email không tồn tại") {
+        toast.warn("Email không tồn tại", { autoClose: 1000 });
       }
-
-      const { error: setError } = await supabase.auth.setSession(
-        res.data.session
-      );
-
-      const { data, error } = await supabase.functions.invoke(
-        "update-last-seen",
-        {
-          body: { name: "Functions" },
-          method: "POST",
-          headers: { Authorization: `Bearer ${res.data.session.access_token}` },
-        }
-      );
-
-      if (error) console.error("Error updating last_seen:", error);
-      else console.log("Updated last_seen:", data);
-
-      if (setError) {
-        toast.error("Lỗi khi đặt phiên.", { autoClose: 1500 });
-        console.error("Lỗi khi đặt phiên:", setError.message);
-        return;
+      if (res.success) {
+        toast.success("OTP đã được gửi đến email của bạn.", {
+          autoClose: 1000,
+        });
+        localStorage.setItem("email", JSON.stringify(email));
+        router.push("/auth/forgotPassword/verify");
       }
-      toast.success("Đăng nhập thành công.", { autoClose: 1500 });
-      router.replace("/dashboard");
-    } catch (error: any) {
-      toast.error("Đăng nhập thất bại. Vui lòng thử lại.", { autoClose: 1500 });
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.", { autoClose: 1000 });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleLogin();
+      handleSendOtp();
     }
   };
-
   return (
     <>
       {/* Logo */}
@@ -87,9 +67,9 @@ export default function LoginPage() {
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl">Chào mừng trở lại</CardTitle>
+            <CardTitle className="text-2xl">Quên mật khẩu</CardTitle>
             <CardDescription>
-              Đăng nhập để tiếp tục hành trình nào
+              Nhập email của bạn để nhận liên kết đặt lại mật khẩu
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -105,43 +85,19 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="space-y-2 relative">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Nhập mật khẩu của bạn"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-0 top-3 h-full px-3 py-2 text-gray-500 hover:text-gray-700 cursor-pointer"
-              >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-
             <div className="flex items-center justify-between">
               <Link
-                href="/auth/forgotPassword"
+                href="/auth/login"
                 className="text-sm text-orange-600 hover:underline"
               >
-                Quên mật khẩu?
+                Quay lại đăng nhập
               </Link>
             </div>
             <Button
-              onClick={handleLogin}
+              onClick={handleSendOtp}
               className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full"
             >
-              Đăng Nhập
+              {loading ? "Đang gửi..." : " Gửi OTP đặt lại mật khẩu"}
             </Button>
             <div className="text-center text-sm">
               Bạn chưa có tài khoản?{" "}
