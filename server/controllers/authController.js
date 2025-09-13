@@ -98,6 +98,70 @@ const authController = {
       return res.status(500).json({ success: false, message: error.message });
     }
   },
+
+  async sendResetOtp(req, res) {
+    try {
+      const { email } = req.body;
+
+      const { data: existingUser, err } = await supabase.auth.admin.listUsers();
+      const existing = existingUser.users.find((u) => u.email === email);
+      if (!existing) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Email không tồn tại" });
+      }
+
+      const { data, error } = await authService.sendResetOtp(email);
+      if (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      return res.status(200).json({
+        success: true,
+        data,
+        message: "Vui lòng kiểm tra email để lấy OTP.",
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  async verifyResetOtp(req, res) {
+    try {
+      const { email, otp } = req.body;
+
+      const { data, error } = await authService.verifyResetOtp(email, otp);
+
+      if (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+
+      return res
+        .status(200)
+        .json({ success: true, data, message: "Xác thực thành công." });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  async newPassword(req, res) {
+    try {
+      const { session, newPassword } = req.body;
+      const { data, error } = await authService.newPassword(
+        session,
+        newPassword
+      );
+
+      if (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+
+      return res
+        .status(200)
+        .json({ success: true, data, message: "Đặt lại mật khẩu thành công." });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
 };
 
 module.exports = authController;
