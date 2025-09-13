@@ -29,7 +29,7 @@ export default function LoginPage() {
       const res = await login({ email, password });
 
       if (!res.success || !res?.data?.session) {
-        toast.error("Đăng nhập thất bại", { autoClose: 1500 });
+        toast.error("Đăng nhập thất bại", { autoClose: 1000 });
         console.error("Login failed:", res.message || "No session data");
         return;
       }
@@ -51,14 +51,14 @@ export default function LoginPage() {
       else console.log("Updated last_seen:", data);
 
       if (setError) {
-        toast.error("Lỗi khi đặt phiên.", { autoClose: 1500 });
+        toast.error("Lỗi khi đặt phiên.", { autoClose: 1000 });
         console.error("Lỗi khi đặt phiên:", setError.message);
         return;
       }
-      toast.success("Đăng nhập thành công.", { autoClose: 1500 });
+      toast.success("Đăng nhập thành công.", { autoClose: 1000 });
       router.replace("/dashboard");
     } catch (error: any) {
-      toast.error("Đăng nhập thất bại. Vui lòng thử lại.", { autoClose: 1500 });
+      toast.error("Đăng nhập thất bại. Vui lòng thử lại.", { autoClose: 1000 });
     }
   };
 

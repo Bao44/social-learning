@@ -54,27 +54,27 @@ export default function RegisterPage() {
 
   const handleSignUp = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      toast.warning("Vui lòng điền đầy đủ thông tin.", { autoClose: 1500 });
+      toast.warning("Vui lòng điền đầy đủ thông tin.", { autoClose: 1000 });
       return;
     }
 
     if (!nameRegex.test(name)) {
-      toast.warning("Tên tài khoản không hợp lệ.", { autoClose: 1500 });
+      toast.warning("Tên tài khoản không hợp lệ.", { autoClose: 1000 });
       return;
     }
 
     if (!emailRegex.test(email)) {
-      toast.warning("Email không hợp lệ.", { autoClose: 1500 });
+      toast.warning("Email không hợp lệ.", { autoClose: 1000 });
       return;
     }
 
     if (!passwordRegex.test(password)) {
-      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.", { autoClose: 1500 });
+      toast.warning("Mật khẩu phải có ít nhất 8 ký tự.", { autoClose: 1000 });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.warning("Mật khẩu xác nhận không khớp.", { autoClose: 1500 });
+      toast.warning("Mật khẩu xác nhận không khớp.", { autoClose: 1000 });
       return;
     }
 
@@ -82,16 +82,16 @@ export default function RegisterPage() {
       setLoading(true);
       const res = await register({ email, password, name });
       if (res.message == "Email đã tồn tại") {
-        toast.warning("Email đã tồn tại", { autoClose: 1500 });
+        toast.warning("Email đã tồn tại", { autoClose: 1000 });
       } else {
         toast.success("OTP đã được gửi đến email của bạn.", {
-          autoClose: 1500,
+          autoClose: 1000,
         });
         setSentOtp(true);
         setCountdown(60);
       }
     } catch (err: any) {
-      toast.error("Đã xảy ra lỗi.", { autoClose: 1500 });
+      toast.error("Đã xảy ra lỗi.", { autoClose: 1000 });
     } finally {
       setLoading(false);
     }
@@ -99,18 +99,18 @@ export default function RegisterPage() {
 
   const handleVerifyOtp = async () => {
     if (!otp) {
-      toast.warning("Vui lòng nhập mã OTP.", { autoClose: 1500 });
+      toast.warning("Vui lòng nhập mã OTP.", { autoClose: 1000 });
       return;
     }
 
     try {
       setLoading(true);
       const res = await verifyOtp({ email, otp });
-      toast.success("Xác nhận thành công", { autoClose: 1500 });
+      toast.success("Xác nhận thành công", { autoClose: 1000 });
       router.push("/auth/login");
     } catch (err: any) {
       console.log("error", err.response?.data?.error);
-      toast.error("Xác thực OTP thất bại.", { autoClose: 1500 });
+      toast.error("Xác thực OTP thất bại.", { autoClose: 1000 });
     } finally {
       setLoading(false);
     }
@@ -120,11 +120,11 @@ export default function RegisterPage() {
     try {
       setLoading(true);
       await resendOtp({ email });
-      toast.success("OTP mới đã được gửi đến email.", { autoClose: 1500 });
+      toast.success("OTP mới đã được gửi đến email.", { autoClose: 1000 });
       setOtp("");
       setCountdown(60);
     } catch (err: any) {
-      toast.error("Không thể gửi lại OTP.", { autoClose: 1500 });
+      toast.error("Không thể gửi lại OTP.", { autoClose: 1000 });
     } finally {
       setLoading(false);
     }
@@ -232,19 +232,6 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" />
-                  <Label htmlFor="terms" className="text-sm">
-                    Tôi đồng ý với{" "}
-                    <Link href="#" className="text-orange-600 hover:underline">
-                      Điều khoản dịch vụ
-                    </Link>{" "}
-                    và{" "}
-                    <Link href="#" className="text-orange-600 hover:underline">
-                      Chính sách bảo mật
-                    </Link>
-                  </Label>
-                </div>
                 <Button
                   disabled={loading}
                   className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full"
