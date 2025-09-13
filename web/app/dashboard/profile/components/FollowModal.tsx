@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
@@ -16,6 +18,7 @@ import {
   unfollowUser,
 } from "@/app/api/follow/route";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -39,10 +42,11 @@ export default function FollowModal({
   currentUserId,
   data,
 }: UserListModalProps) {
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [followStatus, setFollowStatus] = useState<Record<string, boolean>>({});
   const [isLoadingAll, setIsLoadingAll] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   // Khi mở modal -> check trạng thái follow
   useEffect(() => {
@@ -126,9 +130,14 @@ export default function FollowModal({
                     return (
                       <div
                         key={u.id}
-                        className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer"
+                        className="flex items-center justify-between p-3 hover:bg-gray-50"
                       >
-                        <div className="flex items-center gap-3">
+                        <div
+                          className="flex items-center gap-3 cursor-pointer"
+                          onClick={() =>
+                            router.push(`/dashboard/profile/${u.nick_name}`)
+                          }
+                        >
                           <Avatar className="w-12 h-12">
                             <AvatarImage
                               src={getUserImageSrc(u.avatar)}
@@ -149,7 +158,7 @@ export default function FollowModal({
                           <Button
                             variant="secondary"
                             size="sm"
-                            onClick={() => setOpen(true)}
+                            onClick={() => setSelectedUserId(u.id)}
                             className="bg-gray-200 hover:bg-gray-300 text-black cursor-pointer"
                           >
                             Xóa
@@ -164,33 +173,6 @@ export default function FollowModal({
                             Theo dõi lại
                           </Button>
                         )}
-
-                        <Dialog open={open} onOpenChange={setOpen}>
-                          <DialogContent className="sm:max-w-md rounded-2xl p-0">
-                            <DialogHeader className="p-4 pb-2">
-                              <DialogTitle className="text-center text-lg">
-                                Xác nhận hủy theo dõi
-                              </DialogTitle>
-                            </DialogHeader>
-                            <div className="flex flex-col divide-y">
-                              <button
-                                className="py-3 text-red-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer"
-                                onClick={() => {
-                                  handleUnfollow(u.id);
-                                  setOpen(false);
-                                }}
-                              >
-                                Hủy theo dõi
-                              </button>
-                              <button
-                                className="py-3 font-medium cursor-pointer"
-                                onClick={() => setOpen(false)}
-                              >
-                                Đóng
-                              </button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
                       </div>
                     );
                   })
@@ -202,6 +184,37 @@ export default function FollowModal({
               </div>
             )}
           </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal xác nhận hủy theo dõi */}
+      <Dialog
+        open={!!selectedUserId}
+        onOpenChange={() => setSelectedUserId(null)}
+      >
+        <DialogContent className="sm:max-w-md rounded-2xl p-0">
+          <DialogHeader className="p-4 pb-2">
+            <DialogTitle className="text-center text-lg">
+              Xác nhận hủy theo dõi
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col divide-y">
+            <button
+              className="py-3 text-red-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer"
+              onClick={() => {
+                if (selectedUserId) handleUnfollow(selectedUserId);
+                setSelectedUserId(null);
+              }}
+            >
+              Hủy theo dõi
+            </button>
+            <button
+              className="py-3 font-medium cursor-pointer"
+              onClick={() => setSelectedUserId(null)}
+            >
+              Đóng
+            </button>
+          </div>
         </DialogContent>
       </Dialog>
     </>
