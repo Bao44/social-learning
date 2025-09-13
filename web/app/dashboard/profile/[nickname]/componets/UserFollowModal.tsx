@@ -17,6 +17,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { getUserImageSrc } from "@/app/api/image/route";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -39,6 +40,7 @@ export default function UserFollowModal({
   data,
 }: UserFollowModalProps) {
   const { user } = useAuth();
+  const router = useRouter();
   const [followStates, setFollowStates] = useState<Record<string, boolean>>({});
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
     {}
@@ -104,18 +106,25 @@ export default function UserFollowModal({
                   key={item.id}
                   className="flex items-center justify-between p-3 hover:bg-muted/50"
                 >
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-12 h-12">
-                      <AvatarImage
-                        src={getUserImageSrc(item.avatar)}
-                        alt={item.name}
-                      />
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-semibold">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.nick_name}
-                      </p>
+                  <div>
+                    <div
+                      className="flex items-center gap-3 cursor-pointer"
+                      onClick={() =>
+                        router.push(`/dashboard/profile/${item.nick_name}`)
+                      } 
+                    >
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage
+                          src={getUserImageSrc(item.avatar)}
+                          alt={item.name}
+                        />
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-semibold">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {item.nick_name}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
