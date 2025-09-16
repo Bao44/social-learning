@@ -39,7 +39,12 @@ export const convertToTime = (date: any) => {
   }
 };
 
-export const formatTime = (timestamp: string | number | Date) => {
+export const formatTime = (timestamp: any | number | Date) => {
   const date = timestamp && new Date(timestamp);
-        return date ? `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}` : "";
+  return date
+    ? `${date.getHours().toString().padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`
+    : "";
 };
