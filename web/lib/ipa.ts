@@ -110,7 +110,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ɑː/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/a%20d%C3%A0i.mp3",
     shortDescription: "Âm 'a' kéo dài (như trong 'car' ở nhiều giọng Anh).",
     articulation: "Môi mở rộng, lưỡi hạ sâu.",
     examples: [
@@ -122,7 +122,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ɒ/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/o%20ng%E1%BA%AFn.mp3",
     shortDescription:
       "Âm 'o' ngắn trong giọng Anh (British) — tương đương /ɑ/ hay /ɔ/ trong một số giọng khác.",
     articulation: "Môi mở tròn vừa phải, lưỡi hơi thấp.",
