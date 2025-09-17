@@ -48,7 +48,72 @@ const botCoverLearningService = {
         }
 
         return insertedData;
+    },
+
+    // Generate listening exercise lưu vào bảng listeningExercises
+    async createListeningExercise(data) {
+        // Insert listenParagraph
+        const { data: insertedData, error } = await supabase
+            .from("listenParagraphs")
+            .insert([
+                {
+                    title: data.title,
+                    text_content: data.text_content,
+                    audio_url: null,
+                    level_id: data.level_id,
+                    topic_id: data.topic_id,
+                    created_at: new Date().toISOString()
+                }
+            ])
+            .select();
+
+        if (error) {
+            console.error("Error inserting listening exercise:", error);
+            throw new Error("Error creating listening exercise");
+        }
+
+        const listening_exercise = insertedData[0];
+
+        // Tách text_content thành mảng từ
+        const words = listening_exercise.text_content
+            .replace(/[.,!?]/g, "") // bỏ dấu câu cơ bản
+            .split(/\s+/);
+
+        // Insert word_hiddens với vị trí chính xác
+        if (data.word_hiddens && data.word_hiddens.length > 0) {
+            const wordHiddenRecords = [];
+
+            data.word_hiddens.forEach((hiddenWord) => {
+                words.forEach((w, idx) => {
+                    if (w.toLowerCase() === hiddenWord.toLowerCase()) {
+                        wordHiddenRecords.push({
+                            position: idx + 1, // vị trí theo thứ tự từ trong đoạn text
+                            answer: hiddenWord,
+                            created_at: new Date().toISOString(),
+                            listen_para_id: listening_exercise.id
+                        });
+                    }
+                });
+            });
+
+            if (wordHiddenRecords.length > 0) {
+                const { error: wordError } = await supabase
+                    .from("wordHidden")
+                    .insert(wordHiddenRecords);
+
+                if (wordError) {
+                    console.error("Error inserting word_hiddens:", wordError);
+                    throw new Error("Error creating word_hiddens");
+                }
+            }
+        }
+
+        return {
+            message: "Tạo bài tập nghe thành công",
+            data: listening_exercise
+        };
     }
+
 };
 
 module.exports = botCoverLearningService;

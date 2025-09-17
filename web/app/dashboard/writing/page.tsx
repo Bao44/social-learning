@@ -1,4 +1,3 @@
-import { RightSidebar } from "../components/RightSidebar";
 import { CardTypeEx } from "./components/CardTypeEx";
 
 export default function WritingPage() {
@@ -18,12 +17,6 @@ export default function WritingPage() {
                     </div>
                 </div>
             </div>
-            {/* Right Sidebar */}
-            {/* <div className="w-90 p-6 hidden xl:block">
-                <div className="sticky top-24">
-                    <RightSidebar />
-                </div>
-            </div> */}
         </>
     );
 }

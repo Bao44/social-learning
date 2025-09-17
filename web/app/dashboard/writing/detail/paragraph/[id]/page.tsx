@@ -4,7 +4,6 @@ import { getProgressWritingParagraph, getWritingParagraphById, submitWritingPara
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import useAuth from '@/hooks/useAuth';
-import axios from 'axios';
 import { ArrowLeftFromLine, BookMarked, CircleEqual, Lightbulb, Snowflake, Target } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -22,12 +21,19 @@ interface ExerciseDetail {
 
 export default function PageExerciseDetail() {
     const { user } = useAuth();
+    const userData = user;
     const { id } = useParams();
     const [exerciseDetail, setExerciseDetail] = useState<ExerciseDetail | null>(null);
     const [inputValue, setInputValue] = useState<string>('');
     const [completedCount, setCompletedCount] = useState<number>(0);
     const [feedback, setFeedback] = useState<any>(null);
     const [progress, setProgress] = useState<any>(null);
+
+    console.log("Exercise Detail:", exerciseDetail);
+    console.log("Input Value:", user);
+    console.log("User Progress:", progress);
+    console.log("Completed Count:", completedCount);
+    console.log("Feedback:", feedback);
 
 
     const sentences = exerciseDetail?.content_vi.match(/[^.!?]+[.!?]?/g) || [];
@@ -39,6 +45,11 @@ export default function PageExerciseDetail() {
             try {
                 const response = await getWritingParagraphById(Number(id));
                 setExerciseDetail(response);
+                if (user) {
+                    const progressResponse = await getProgressWritingParagraph(userData.id, Number(id));
+                    setProgress(progressResponse);
+                    setCompletedCount(progressResponse ? progressResponse.completed_sentences : 0);
+                }
             } catch (error) {
                 console.error("Error fetching exercise detail:", error);
             }
@@ -50,10 +61,10 @@ export default function PageExerciseDetail() {
     // Xử lý submit bài tập
     const handleSubmit = async () => {
         // Logic xử lý submit bài tập
-        if (!exerciseDetail && !user) return;
+        if (!exerciseDetail && !userData) return;
         try {
             const response = await submitWritingParagraphExercise(
-                user!.id,
+                userData.id,
                 exerciseDetail!.id,
                 exerciseDetail!.content_vi.split('.')[completedCount],
                 inputValue

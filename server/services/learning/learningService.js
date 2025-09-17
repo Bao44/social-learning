@@ -221,6 +221,27 @@ const learningService = {
         return data;
     },
 
+    // Get topic by slug
+    async getTopicBySlug(slug) {
+        const { data, error } = await supabase
+            .from("topics")
+            .select(`
+            id,
+            name,
+            description,
+            slug,
+            icon: icon_id (name, color)
+        `)
+            .eq("slug", slug)
+            .single();
+
+        if (error) {
+            console.error("Error fetching topic by slug:", error);
+            throw error;
+        }
+        return data;
+    },
+
     // Get type paragraph by id
     async getTypeParagraphById(id) {
         const { data, error } = await supabase

@@ -104,8 +104,10 @@ const writingController = {
                     await writingService.saveProgressWritingParagraph(dataProgress);
                 } else {
                     // Nếu đã có progress rồi, không lưu nữa mà chỉ cập nhật
+                    console.log("Current progress:", user_id, paragraph_id, progress.completed_sentences + 1);
                     const submitTimes = await writingService.countSubmitsForCurrentSentence(user_id, paragraph_id, progress.completed_sentences + 1);
                     // Đếm số lần submit bài tập của user
+                    console.log("Submit times for current sentence:", user_id, paragraph_id);
                     const submitCount = await writingService.countSubmitsWritingParagraph(user_id, paragraph_id);
 
                     const updatedProgress = {
