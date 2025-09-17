@@ -34,6 +34,7 @@ import { useState } from "react";
 import { CreatePostModal } from "./CreatePost";
 import { SearchPanel } from "./Search";
 import { useConversation } from "@/components/contexts/ConversationContext";
+import { NotificationsPanel } from "./Notifications";
 
 // Remove the hardcoded `active` property from mainNavItems
 const mainNavItems = [
@@ -77,6 +78,7 @@ export function LeftSidebar() {
   const pathname = usePathname(); // Get the current path
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
 
   const handleMenuClick = (path: string) => {
@@ -90,6 +92,11 @@ export function LeftSidebar() {
 
     if (path === "/dashboard/search") {
       setIsSearchOpen(true);
+      return;
+    }
+
+    if (path === "/dashboard/notifications") {
+      setIsNotificationOpen(true);
       return;
     }
 
@@ -227,6 +234,11 @@ export function LeftSidebar() {
         <SearchPanel
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
+        />
+
+        <NotificationsPanel
+          isOpen={isNotificationOpen}
+          onClose={() => setIsNotificationOpen(false)}
         />
 
         <CreatePostModal
