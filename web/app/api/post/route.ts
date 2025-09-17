@@ -38,9 +38,13 @@ export const createOrUpdatePost = async (data: CreatePostData) => {
   return response.data;
 };
 
-export const fetchPosts = async (currentUserId: string, limit = 10) => {
+export const fetchPosts = async (
+  currentUserId: string,
+  limit = 10,
+  offset = 0
+) => {
   const response = await api.get("/api/posts/posts", {
-    params: { currentUserId, limit },
+    params: { currentUserId, limit, offset },
   });
   return response.data;
 };
@@ -52,8 +56,10 @@ export const fetchPostsByUserId = async (userId?: string) => {
   return response.data;
 };
 
-export const getPostById = async (postId: string) => {
-  const response = await api.get(`/api/posts/post/${postId}`);
+export const getPostById = async (postId: number) => {
+  const response = await api.get(`/api/posts/post/detail`, {
+    params: { postId },
+  });
   return response.data;
 };
 
@@ -69,5 +75,17 @@ export const likePost = async (postLike: any) => {
 
 export const unlikePost = async (postId: number, userId: string) => {
   const response = await api.post("/api/posts/post/unlike", { postId, userId });
+  return response.data;
+};
+
+export const addComment = async (commentData: any) => {
+  const response = await api.post("/api/posts/post/add-comment", commentData);
+  return response.data;
+};
+
+export const deleteComment = async (commentId: number) => {
+  const response = await api.delete("/api/posts/post/delete-comment", {
+    data: { commentId },
+  });
   return response.data;
 };

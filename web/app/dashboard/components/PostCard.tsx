@@ -197,6 +197,7 @@ export function PostCard({ post }: PostCardProps) {
                 className="hover:bg-gray-100 cursor-pointer"
               >
                 <MessageCircle className="h-6 w-6 text-gray-700" />
+                <span className="mt-1">{post?.comments[0]?.count}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -268,7 +269,7 @@ export function PostCard({ post }: PostCardProps) {
       <PostModal
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
-        post={post}
+        postId={post.id}
       />
     </>
   );
