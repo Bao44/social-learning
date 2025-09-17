@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { RightSidebar } from "../../components/RightSidebar";
-import { Level } from "../components/Level";
-import { Topic } from "../components/Topic";
+import { Level } from "../../components/Level";
+import { Topic } from "../../components/Topic";
 import { useRouter, useParams } from 'next/navigation';
 import { useState } from "react";
-import { TypeParagraph } from "../components/TypeParagraph";
+import { TypeParagraph } from "../../components/TypeParagraph";
 import { generateWritingParagraphByAI } from "@/app/api/learning/writing/route";
 import { Loader2 } from "lucide-react"; // icon loading
 
