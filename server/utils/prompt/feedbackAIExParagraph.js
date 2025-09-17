@@ -12,7 +12,7 @@ NHIỆM VỤ DỊCH:
 Hãy đánh giá bản dịch với tinh thần khuyến khích và đưa ra phản hồi theo format JSON:
 
 {
-  "accuracy": "tỷ lệ chính xác (ví dụ: 85%)",
+  "accuracy": "tỷ lệ chính xác (ví dụ: 85%) định dạng số nguyên từ 0-100",
   "highlighted": "câu dịch của học viên, trong đó: (lỗi cần sửa) và [gợi ý đúng]",
   "suggestions": [
     "Giải thích ngắn gọn, dễ hiểu về cách cải thiện",
@@ -34,7 +34,7 @@ LƯU Ý QUAN TRỌNG:
 
 ĐỊNH DẠNG CHÍNH XÁC - CHỈ JSON THUẦN:
 {
-  "accuracy": "95%",
+  "accuracy": 95,
   "highlighted": "Perfect translation!",
   "suggestions": [],
   "comment": "Xuất sắc! 🎉 Bản dịch rất chính xác và tự nhiên.",

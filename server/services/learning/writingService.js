@@ -164,7 +164,7 @@ const writingService = {
             .select("*", { count: "exact", head: true })
             .eq("user_id", user_id)
             .eq("exParagraph_id", paragraph_id)
-            .eq("sentence_index", sentence_index);
+            .eq("index_sentence", sentence_index);
 
         if (error) {
             console.error("Error counting submits for current sentence:", error);
