@@ -1,6 +1,7 @@
 import api from "@/lib/api";
 
 export interface CreatePostData {
+  id?: number;
   content: string;
   userId: string;
   file: any;
@@ -33,10 +34,16 @@ export const convertFileToBase64 = (
   });
 };
 
-export const createOrUpdatePost = async (data: CreatePostData) => {
+export const createPost = async (data: CreatePostData) => {
   const response = await api.post("/api/posts/post", data);
   return response.data;
 };
+
+export const updatePost = async (data: CreatePostData) => {
+  const response = await api.put("/api/posts/update-post", data);
+  return response.data;
+};
+
 
 export const fetchPosts = async (
   currentUserId: string,
@@ -63,8 +70,8 @@ export const getPostById = async (postId: number) => {
   return response.data;
 };
 
-export const deletePost = async (postId: string) => {
-  const response = await api.delete(`/api/posts/post/${postId}`);
+export const deletePost = async (postId: number) => {
+  const response = await api.delete(`/api/posts/post/delete/${postId}`);
   return response.data;
 };
 
@@ -75,6 +82,13 @@ export const likePost = async (postLike: any) => {
 
 export const unlikePost = async (postId: number, userId: string) => {
   const response = await api.post("/api/posts/post/unlike", { postId, userId });
+  return response.data;
+};
+
+export const fetchComments = async (postId: number) => {
+  const response = await api.get("/api/posts/post/comments", {
+    params: { postId },
+  });
   return response.data;
 };
 

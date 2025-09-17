@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   AudioLines,
   BookOpen,
-  Compass,
   Heart,
   Home,
   MenuIcon,
@@ -29,7 +28,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { CreatePostModal } from "./CreatePost";
+import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
 import { SearchPanel } from "./Search";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { NotificationsPanel } from "./Notifications";
@@ -214,7 +213,7 @@ export function LeftSideBarHiddenLabel() {
         onClose={() => setIsNotificationOpen(false)}
       />
 
-      <CreatePostModal
+      <CreateOrUpdatePostModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
       />

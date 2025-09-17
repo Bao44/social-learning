@@ -119,7 +119,9 @@ export default function PhotoGrid() {
         <PostModal
           isOpen={isCommentModalOpen}
           onClose={() => setIsCommentModalOpen(false)}
+          postId={selectedPost.id}
           post={selectedPost}
+          userId={user?.id}
         />
       )}
     </>

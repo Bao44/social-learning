@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/postController");
 
-// Tạo hoặc cập nhật bài post
-router.post("/post", postController.createOrUpdatePost);
+// Tạo bài post
+router.post("/post", postController.createPost);
+
+// Tạo bài post
+router.put("/update-post", postController.updatePost);
 
 // Lấy tất cả bài posts
 router.get("/posts", postController.getPosts);
@@ -15,13 +18,16 @@ router.get("/posts-user", postController.getPostsByUserId);
 router.get("/post/detail", postController.getPostById);
 
 // Delete post
-// router.delete("/post/:id", postController.deletePost);
+router.delete("/post/delete/:id", postController.deletePost);
 
 // Like a post
 router.post("/post/like", postController.likePost);
 
 // Unlike a post
 router.post("/post/unlike", postController.unlikePost);
+
+// fetchComments
+router.get("/post/comments", postController.fetchComments);
 
 // add comment
 router.post("/post/add-comment", postController.addComment);

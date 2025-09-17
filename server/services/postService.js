@@ -1,15 +1,33 @@
 const supabase = require("../lib/supabase").supabase;
 
 const postService = {
-  async createOrUpdatePost(post) {
+  async createPost(post) {
     const { data, error } = await supabase
       .from("posts")
-      .upsert(post)
+      .insert(post)
       .select()
       .single();
 
     if (error) throw error;
 
+    return { data, error: null };
+  },
+
+  async updatePost(post) {
+    if (!post.id) throw new Error("Missing post.id for update");
+
+    // tách payload để không update id/created_at
+    const { id, created_at, ...payload } = post;
+
+    // chỉ update các trường cần thiết
+    const { data, error } = await supabase
+      .from("posts")
+      .update(payload)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
     return { data, error: null };
   },
 
@@ -98,7 +116,7 @@ const postService = {
     return { data, error: null };
   },
 
-  async deletePost(postId, userId) {
+  async deletePost(postId) {
     await Promise.all([
       supabase.from("postLikes").delete().eq("postId", postId),
       supabase.from("comments").delete().eq("postId", postId),
@@ -107,9 +125,7 @@ const postService = {
       .from("posts")
       .delete()
       .eq("id", postId)
-      .eq("userId", userId)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
@@ -138,6 +154,24 @@ const postService = {
 
     if (error) throw error;
 
+    return { data, error: null };
+  },
+
+  async fetchComments(postId) {
+    const { data, error } = await supabase
+      .from("comments")
+      .select(
+        `
+        id,
+        created_at,
+        content,
+        postId,
+        user: users(id, name, nick_name, avatar)
+      `
+      )
+      .eq("postId", postId)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
     return { data, error: null };
   },
 

@@ -5,7 +5,6 @@ import { PostCard } from "./PostCard";
 import { useEffect, useState, useRef } from "react";
 import { fetchPosts } from "@/app/api/post/route";
 import { supabase } from "@/lib/supabase";
-import { getUserData } from "@/app/api/user/route";
 
 interface Post {
   id: number;
@@ -30,19 +29,7 @@ export function MainFeed() {
   const limit = 10;
   const isInitialLoad = useRef(true);
 
-  const handlePostEvent = async (payload: any) => {
-    console.log("Real-time payload:", payload);
-    if (payload.eventType === "INSERT" && payload?.new?.id) {
-      let newPost = { ...payload.new };
-      let res = await getUserData(newPost.userId);
-      newPost.postLikes = [];
-      newPost.comments = [{ count: 0 }];
-      newPost.user = res.success ? res.data : {};
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
-      setHasMorePosts(true);
-    }
-  };
-
+  // Load dữ liệu ban đầu
   useEffect(() => {
     if (loading || !user?.id) return;
 
@@ -51,6 +38,45 @@ export function MainFeed() {
       isInitialLoad.current = false;
     }
   }, [loading, user?.id]);
+
+  // Lắng nghe realtime posts
+  useEffect(() => {
+    const postChannel = supabase
+      .channel("posts")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "posts" },
+        (payload) => {
+          const newPost = payload.new as Post;
+          setPosts((prev) => [newPost, ...prev]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "posts" },
+        (payload) => {
+          const updatedPost = payload.new as Post;
+          setPosts((prev) =>
+            prev.map((p) =>
+              p.id === updatedPost.id ? { ...p, ...updatedPost } : p
+            )
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "posts" },
+        (payload) => {
+          const deletedId = payload.old.id;
+          setPosts((prev) => prev.filter((p) => p.id !== deletedId));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(postChannel);
+    };
+  }, []);
 
   const loadInitialPosts = async () => {
     setLoadingPost(true);
@@ -74,25 +100,18 @@ export function MainFeed() {
     setLoadingPost(false);
   };
 
-  useEffect(() => {
-    const postChannel = supabase
-      .channel("posts")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "posts" },
-        handlePostEvent
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(postChannel);
-    };
-  }, []);
+  const handleRemovePostFromList = (postId: number) => {
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
+  };
 
   return (
     <div className="space-y-0">
       {posts.map((post) => (
-        <PostCard key={post?.id} post={post} />
+        <PostCard
+          key={post?.id}
+          post={post}
+          onDelete={handleRemovePostFromList}
+        />
       ))}
       {loadingPost && <p className="text-center text-gray-500">Đang tải...</p>}
       {posts.length === 0 && !loadingPost && (

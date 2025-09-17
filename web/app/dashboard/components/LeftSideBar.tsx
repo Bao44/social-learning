@@ -31,10 +31,10 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useState } from "react";
-import { CreatePostModal } from "./CreatePost";
 import { SearchPanel } from "./Search";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { NotificationsPanel } from "./Notifications";
+import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
 
 // Remove the hardcoded `active` property from mainNavItems
 const mainNavItems = [
@@ -241,7 +241,7 @@ export function LeftSidebar() {
           onClose={() => setIsNotificationOpen(false)}
         />
 
-        <CreatePostModal
+        <CreateOrUpdatePostModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
         />

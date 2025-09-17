@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,42 +9,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import {
-  X,
-  Upload,
-  ArrowLeft,
-  ArrowRight,
-  MapPin,
-  FileText,
-  Video,
-  File,
-} from "lucide-react";
+import { X, Upload, ArrowLeft, FileText, Video, File } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { getUserImageSrc } from "@/app/api/image/route";
 import {
-  createOrUpdatePost,
   convertFileToBase64,
   CreatePostData,
+  updatePost,
+  createPost,
 } from "@/app/api/post/route";
 import { toast } from "react-toastify";
 
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPostCreated?: () => void;
+  post?: any;
+  isEdit?: boolean;
 }
 
-export function CreatePostModal({
+export function CreateOrUpdatePostModal({
   isOpen,
   onClose,
-  onPostCreated,
+  post,
+  isEdit,
 }: CreatePostModalProps) {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // Chỉ lưu một file
   const [content, setContent] = useState("");
+  const [postId, setPostId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +52,7 @@ export function CreatePostModal({
     if (file.size > maxFileSize) {
       toast.error(
         `File "${file.name}" quá lớn. Vui lòng chọn file nhỏ hơn 30MB.`
-      );
+      , { autoClose: 1000 });
       return;
     }
 
@@ -67,6 +62,15 @@ export function CreatePostModal({
   const proceedToNextStep = () => {
     setStep(2);
   };
+
+  useEffect(() => {
+    if (isEdit && post) {
+      setPostId(post.id || null);
+      setContent(post.content || "");
+      setSelectedFile(null);
+      setStep(2);
+    }
+  }, [isEdit, post]);
 
   const handleShare = async () => {
     if (!content.trim() && !selectedFile) {
@@ -88,18 +92,52 @@ export function CreatePostModal({
         file: fileData,
       };
 
-      const result = await createOrUpdatePost(postData);
+      const result = await createPost(postData);
 
       if (result.success) {
-        toast.success("Đã tạo bài viết thành công!", { autoClose: 1500 });
-        onPostCreated?.();
+        toast.success("Đã tạo bài viết thành công!", { autoClose: 1000 });
         handleClose();
       } else {
-        toast.error(result.message || "Có lỗi xảy ra khi tạo bài viết");
+        toast.error("Có lỗi xảy ra khi tạo bài viết", { autoClose: 1000 });
       }
     } catch (error: any) {
-      console.error("Error creating post:", error);
-      toast.error("Có lỗi xảy ra khi tạo bài viết");
+      toast.error("Có lỗi xảy ra khi tạo bài viết", { autoClose: 1000 });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!content.trim() && !selectedFile) {
+      toast.error("Vui lòng nhập nội dung hoặc chọn file", { autoClose: 1000 });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      let fileData = null;
+      if (selectedFile) {
+        fileData = await convertFileToBase64(selectedFile);
+      }
+      if (!postId) return;
+      const postData: CreatePostData = {
+        id: postId,
+        content: content.trim(),
+        userId: user?.id,
+        file: fileData,
+      };
+
+      const res = await updatePost(postData);
+
+      if (res.success) {
+        toast.success("Đã cập nhật bài viết thành công!", { autoClose: 1000 });
+        handleClose();
+      } else {
+        toast.error("Có lỗi xảy ra khi cập nhật bài viết", { autoClose: 1000 });
+      }
+    } catch (error: any) {
+      toast.error("Có lỗi xảy ra khi cập nhật bài viết", { autoClose: 1000 });
     } finally {
       setIsLoading(false);
     }
@@ -169,13 +207,21 @@ export function CreatePostModal({
             </DialogTitle>
           </div>
           <div className="flex items-center space-x-2">
-            {step === 2 && (
+            {step === 2 && !isEdit ? (
               <Button
                 onClick={handleShare}
                 disabled={isLoading}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 mr-[30px] cursor-pointer disabled:opacity-50"
               >
                 {isLoading ? "Đang đăng..." : "Chia sẻ"}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleUpdate}
+                disabled={isLoading}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 mr-[30px] cursor-pointer disabled:opacity-50"
+              >
+                {isLoading ? "Đang cập nhật..." : "Cập nhật"}
               </Button>
             )}
           </div>
