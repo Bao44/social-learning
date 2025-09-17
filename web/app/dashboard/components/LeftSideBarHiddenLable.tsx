@@ -32,6 +32,7 @@ import { useState } from "react";
 import { CreatePostModal } from "./CreatePost";
 import { SearchPanel } from "./Search";
 import { useConversation } from "@/components/contexts/ConversationContext";
+import { NotificationsPanel } from "./Notifications";
 
 const mainNavItems = [
   { icon: Home, path: "/dashboard", label: "Trang chủ", active: true },
@@ -73,6 +74,7 @@ export function LeftSideBarHiddenLabel() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
 
   const handleMenuClick = (path: string) => {
@@ -86,6 +88,11 @@ export function LeftSideBarHiddenLabel() {
 
     if (path === "/dashboard/search") {
       setIsSearchOpen(true);
+      return;
+    }
+
+    if (path === "/dashboard/notifications") {
+      setIsNotificationOpen(true);
       return;
     }
 
@@ -200,6 +207,11 @@ export function LeftSideBarHiddenLabel() {
       <SearchPanel
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
+      />
+
+      <NotificationsPanel
+        isOpen={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
       />
 
       <CreatePostModal
