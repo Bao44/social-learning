@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -22,21 +21,25 @@ import { getSupabaseFileUrl, getUserImageSrc } from "@/app/api/image/route";
 import { convertToDate, formatTime } from "@/utils/formatTime";
 import { PostModal } from "./PostModal";
 import useAuth from "@/hooks/useAuth";
-import { likePost, unlikePost } from "@/app/api/post/route";
+import { deletePost, likePost, unlikePost } from "@/app/api/post/route";
 import { toast } from "react-toastify";
+import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
 
 interface PostCardProps {
   post: any;
+  onDelete?: (postId: number) => void;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, onDelete }: PostCardProps) {
   const { user } = useAuth();
   const [likes, setLikes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-
   const [isSaved, setIsSaved] = useState(false);
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
 
   useEffect(() => {
     setLikes(post?.postLikes);
@@ -62,6 +65,20 @@ export function PostCard({ post }: PostCardProps) {
       if (!res.success) {
         toast.error("Something went wrong!");
       }
+    }
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    // Xóa bài viết
+    if (!postId) return;
+    try {
+      const res = await deletePost(postId);
+      if (res.success) {
+        toast.success("Xóa bài viết thành công!", { autoClose: 1000 });
+        onDelete?.(postId);
+      }
+    } catch (error) {
+      toast.error("Xóa bài viết thất bại", { autoClose: 1000 });
     }
   };
 
@@ -197,7 +214,7 @@ export function PostCard({ post }: PostCardProps) {
                 className="hover:bg-gray-100 cursor-pointer"
               >
                 <MessageCircle className="h-6 w-6 text-gray-700" />
-                <span className="mt-1">{post?.comments[0]?.count}</span>
+                <span className="mt-1">{post?.comments?.[0]?.count ?? 0}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -242,26 +259,59 @@ export function PostCard({ post }: PostCardProps) {
           </DialogHeader>
 
           <div className="flex flex-col divide-y">
-            <label className="py-3 text-red-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer">
-              Báo cáo
-            </label>
-            <label className="py-3 text-red-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer">
-              Bỏ theo dõi
-            </label>
-            <label className="py-3 border-t font-medium hover:bg-gray-50 text-center cursor-pointer">
-              Đi đến bài viết
-            </label>
-            <label className="py-3 border-t font-medium hover:bg-gray-50 text-center cursor-pointer">
-              Giới thiệu về tài khoản này
-            </label>
-            <DialogClose asChild>
-              <button
-                className="py-3 font-medium cursor-pointer"
-                onClick={() => setIsOptionsModalOpen(false)}
-              >
-                Hủy
-              </button>
-            </DialogClose>
+            {post.userId == user?.id ? (
+              <>
+                <label
+                  onClick={() => {
+                    setEditingPost(post); // state cha giữ post đang sửa
+                    setIsEdit(true);
+                    setIsOpenModal(true); // mở modal
+                  }}
+                  className="py-3 border-t font-medium hover:bg-gray-50 text-center cursor-pointer text-blue-500"
+                >
+                  Chỉnh sửa
+                </label>
+                <label
+                  onClick={() => setIsOpenDeleteModal(true)}
+                  className="py-3 font-medium hover:bg-gray-50 text-center cursor-pointer text-red-500"
+                >
+                  Xóa
+                </label>
+                <label className="py-3 font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Đi đến bài viết
+                </label>
+                <label className="py-3 font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Giới thiệu về tài khoản này
+                </label>
+                <button
+                  className="py-3 font-medium cursor-pointer"
+                  onClick={() => setIsOptionsModalOpen(false)}
+                >
+                  Đóng
+                </button>
+              </>
+            ) : (
+              <>
+                <label className="py-3 text-red-600 font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Báo cáo
+                </label>
+                <label className="py-3 text-red-600 font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Bỏ theo dõi
+                </label>
+                <label className="py-3  font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Đi đến bài viết
+                </label>
+                <label className="py-3 font-medium hover:bg-gray-50 text-center cursor-pointer">
+                  Giới thiệu về tài khoản này
+                </label>
+                <button
+                  className="py-3 font-medium cursor-pointer"
+                  onClick={() => setIsOptionsModalOpen(false)}
+                >
+                  Đóng
+                </button>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -270,7 +320,52 @@ export function PostCard({ post }: PostCardProps) {
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
         postId={post.id}
+        post={post}
+        userId={user?.id}
       />
+
+      <CreateOrUpdatePostModal
+        isOpen={isOpenModal}
+        onClose={() => {
+          setIsOpenModal(false);
+          setIsEdit(false);
+          setEditingPost(null);
+        }}
+        isEdit={isEdit}
+        post={editingPost}
+      />
+
+      {/* Modal xác nhận xóa bài viết */}
+      <Dialog
+        open={isOpenDeleteModal}
+        onOpenChange={() => setIsOpenDeleteModal(false)}
+      >
+        <DialogContent className="sm:max-w-md rounded-2xl p-0">
+          <DialogHeader className="p-4 pb-2">
+            <DialogTitle className="text-center text-lg">
+              Xác nhận xóa bài viết
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col divide-y">
+            <button
+              className="py-3 text-red-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer"
+              onClick={() => {
+                handleDeletePost(post.id);
+                setIsOpenDeleteModal(false);
+                setIsOptionsModalOpen(false);
+              }}
+            >
+              Xóa
+            </button>
+            <button
+              className="py-3 font-medium cursor-pointer"
+              onClick={() => setIsOpenDeleteModal(false)}
+            >
+              Đóng
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
