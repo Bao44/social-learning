@@ -45,7 +45,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/e/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/e.mp3",
     shortDescription:
       "Âm e ngắn (giữa), tương tự âm 'e' trong một số từ tiếng Việt nhưng không hoàn toàn giống.",
     articulation: "Môi hơi hé, lưỡi ở vị trí trung bình.",
@@ -58,7 +58,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/æ/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/ae.mp3",
     shortDescription:
       "Âm giống 'a' gần mặt chữ nhưng mở miệng rộng hơn; thường thấy ở từ như 'cat'.",
     articulation: "Môi mở rộng, lưỡi hơi hạ thấp về phía trước.",
@@ -71,7 +71,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ʌ/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/a%20ng%E1%BA%AFn.mp3",
     shortDescription:
       "Âm 'u' ngắn (ở một số giọng Anh - British) — không giống 'u' tiếng Việt.",
     articulation: "Môi không tròn, lưỡi ở vị trí trung tâm hơi thấp.",
@@ -84,7 +84,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ɜː/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/%C6%A1%20d%C3%A0i.mp3",
     shortDescription:
       "Âm giữa dài (như trong 'bird' với giọng Anh), thường được kết hợp với /r/ trong accent Mỹ.",
     articulation: "Lưỡi ở vị trí trung tâm, phát âm hơi kéo dài.",
@@ -97,7 +97,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ə/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/%C6%A1%20ng%E1%BA%AFn.mp3",
     shortDescription:
       "Schwa — âm yếu, thường xuất hiện trong âm tiết không nhấn trọng âm (unstressed syllables).",
     articulation: "Môi thư giãn, lưỡi ở vị trí trung tâm.",
@@ -392,7 +392,7 @@ const IPA_DATA: IPAEntry[] = [
 
   {
     symbol: "/ʒ/",
-    audio: null,
+    audio: "https://st.ielts-fighter.com/src/ielts-fighter/2019/09/09/%CA%92.mp3",
     shortDescription: "Âm giống 'zh' (vision) — hữu thanh.",
     articulation: "Giống /ʃ/ nhưng rung dây thanh.",
     examples: [
