@@ -1,6 +1,7 @@
 const botCoverLearningService = require("../../services/learning/botCoverLearningService");
 const learningService = require("../../services/learning/learningService");
 const promptGenerateParagraph = require("../../utils/prompt/generateParagraph");
+const promptGenerateListening = require("../../utils/prompt/generateListening");
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -70,6 +71,60 @@ const botCoverLearningController = {
             res.status(500).json({ error: 'Lỗi khi gọi Gemini API', raw: err.message });
         }
     },
+
+    // Generate listening exercise lưu vào bảng listeningExercises
+    createGenerateListeningExercise: async (req, res) => {
+        const { level_slug, topic_slug } = req.body;
+
+        if (!level_slug || !topic_slug) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        // Lấy thông tin level từ Supabase
+        const level = await learningService.getLevelBySlug(level_slug);
+        if (!level) {
+            return res.status(400).json({ error: "Invalid level_slug" });
+        }
+        // Lấy thông tin topic từ Supabase
+        const topic = await learningService.getTopicBySlug(topic_slug);
+        if (!topic) {
+            return res.status(400).json({ error: "Invalid topic_slug" });
+        }
+
+        // Prompt để gọi Gemini
+        const prompt = promptGenerateListening(level.name, topic.name);
+
+        try {
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+            const result = await model.generateContent(prompt);
+
+            const text = result.response.text();
+            // Lọc JSON thuần từ Gemini
+            const match = text.match(/\{[\s\S]*\}/);
+            if (!match) {
+                return res.status(500).json({ error: "Gemini không trả JSON hợp lệ", raw: text });
+            }
+            const json = JSON.parse(match[0]);
+
+            // Lưu bài tập nghe vào Supabase
+            const data = {
+                title: json.title,
+                text_content: json.text_content,
+                word_hiddens: json.word_hiddens // Mảng các từ bị ẩn
+                    ? json.word_hiddens.map(word => word.trim()).filter(word => word.length > 0)
+                    : [],
+                level_id: level.id,
+                topic_id: topic.id
+            };
+
+            const resultSave = await botCoverLearningService.createListeningExercise(data);
+
+            res.json({ message: "Tạo bài tập nghe thành công", data: resultSave.data });
+        } catch (error) {
+            console.error("Error generating content:", error);
+            return res.status(500).json({ error: "Error generating content" });
+        }
+    }
 };
 
 module.exports = botCoverLearningController;

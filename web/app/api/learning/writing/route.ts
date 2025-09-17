@@ -74,7 +74,7 @@ export const submitWritingParagraphExercise = async (
 // Get progress writing-paragraph by user_id and paragraph_id
 export const getProgressWritingParagraph = async (user_id: string, paragraph_id: number) => {
     try {
-        const response = await api.get(`/api/learning/writing/writing-paragraphs/progress/${user_id}/${paragraph_id}`);
+        const response = await api.get(`/api/learning/writing/get-progress/${user_id}/${paragraph_id}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching progress writing paragraph:", error);

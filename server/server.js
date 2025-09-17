@@ -21,6 +21,7 @@ const conversationRoute = require("./routes/conversationRoute");
 const messageRoute = require("./routes/messageRoute");
 const botCoverLearningRoute = require("./routes/learning/botCoverLearningRoute");
 const writtingRoute = require("./routes/learning/writingRoute");
+const listeningRoute = require("./routes/learning/listeningRoute");
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -32,6 +33,8 @@ app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/bot-cover-learning", botCoverLearningRoute);
 app.use("/api/learning/writing", writtingRoute);
+app.use("/api/learning/listening", listeningRoute);
+
 
 connectDB().then(() => {
   server.listen(PORT, () => {
