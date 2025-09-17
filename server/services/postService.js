@@ -13,24 +13,24 @@ const postService = {
     return { data, error: null };
   },
 
-  async getPosts(currentUserId, limit) {
+  async getPosts(currentUserId, limit, offset) {
     let query = supabase
       .from("posts")
       .select(
         `
-          id,
-          created_at,
-          content,
-          file,
-          userId,
-          original_name,
-          user:users(id, name, nick_name, avatar),
-          postLikes(id, postId, userId),
-          comments(count)
-        `
+        id,
+        created_at,
+        content,
+        file,
+        userId,
+        original_name,  
+        user:users(id, name, nick_name, avatar),
+        postLikes(id, postId, userId),
+        comments(count)
+      `
       )
       .order("created_at", { ascending: false })
-      .limit(limit);
+      .range(offset, offset + limit - 1);
 
     // lọc theo các bài posts không có currentUserId
     // if (currentUserId) {
@@ -78,17 +78,19 @@ const postService = {
     const { data, error } = await supabase
       .from("posts")
       .select(
+        ` 
+        id,
+        created_at,
+        content,
+        file,
+        original_name,
+        user:users(id, name, nick_name, avatar),
+        postLikes(id, postId, userId),
+        comments(*, user: users(id, name, nick_name, avatar))
         `
-        *,
-        users:user_id (
-          id,
-          name,
-          nick_name,
-          avatar
-        )
-      `
       )
       .eq("id", postId)
+      .order("created_at", { foreignTable: "comments", ascending: false })
       .single();
 
     if (error) throw error;
@@ -97,6 +99,10 @@ const postService = {
   },
 
   async deletePost(postId, userId) {
+    await Promise.all([
+      supabase.from("postLikes").delete().eq("postId", postId),
+      supabase.from("comments").delete().eq("postId", postId),
+    ]);
     const { data, error } = await supabase
       .from("posts")
       .delete()
@@ -127,10 +133,32 @@ const postService = {
       .from("postLikes")
       .delete()
       .eq("postId", postId)
-      .eq("userId", userId);
+      .eq("userId", userId)
+      .select();
 
     if (error) throw error;
 
+    return { data, error: null };
+  },
+
+  async addComment(comment) {
+    const { data, error } = await supabase
+      .from("comments")
+      .insert(comment)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return { data, error: null };
+  },
+
+  async deleteComment(commentId) {
+    const { data, error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentId);
+
+    if (error) throw error;
     return { data, error: null };
   },
 };

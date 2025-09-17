@@ -88,8 +88,13 @@ const postController = {
   async getPosts(req, res) {
     try {
       const limit = parseInt(req.query.limit) || 10;
+      const offset = parseInt(req.query.offset) || 0;
       const currentUserId = req.query.currentUserId;
-      const { data, error } = await postService.getPosts(currentUserId, limit);
+      const { data, error } = await postService.getPosts(
+        currentUserId,
+        limit,
+        offset
+      );
 
       if (error) {
         return res.status(400).json({
@@ -134,37 +139,18 @@ const postController = {
   // API để lấy post theo ID
   async getPostById(req, res) {
     try {
-      const { id } = req.params;
-      const { data, error } = await postService.getPostById(id);
+      const postId = req.query.postId;
+      const { data, error } = await postService.getPostById(postId);
 
       if (error) {
-        return res.status(404).json({
+        return res.status(400).json({
           success: false,
-          message: "Post not found",
+          message: error.message,
         });
       }
-
-      // Parse file data
-      let fileObject = null;
-      if (data.file_path) {
-        fileObject = {
-          path: data.file_path,
-          url: `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${data.file_path}`,
-          type: data.file_type,
-        };
-      }
-
-      const postWithFiles = {
-        ...data,
-        file: fileObject,
-      };
-
-      return res.status(200).json({
-        success: true,
-        data: postWithFiles,
-      });
+      return res.status(200).json({ success: true, data: data || [] });
     } catch (error) {
-      console.error("getPostById error:", error);
+      console.error("getPostDetail error:", error);
       return res.status(500).json({
         success: false,
         message: "Internal Server Error",
@@ -236,6 +222,51 @@ const postController = {
     try {
       const { postId, userId } = req.body;
       const { data, error } = await postService.unLikePost(postId, userId);
+      if (error) {
+        return res.status(400).json({
+          success: false,
+          message: error.message,
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
+  async addComment(req, res) {
+    try {
+      const { data, error } = await postService.addComment(req.body);
+      if (error) {
+        return res.status(400).json({
+          success: false,
+          message: error.message,
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
+  async deleteComment(req, res) {
+    try {
+      const { commentId } = req.body;
+      const { data, error } = await postService.deleteComment(commentId);
       if (error) {
         return res.status(400).json({
           success: false,

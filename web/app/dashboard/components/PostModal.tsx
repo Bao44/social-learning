@@ -2,76 +2,153 @@
 
 import type React from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Heart, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getSupabaseFileUrl, getUserImageSrc } from "@/app/api/image/route";
 import { convertToDate, formatTime } from "@/utils/formatTime";
+import useAuth from "@/hooks/useAuth";
+import { addComment, deleteComment, getPostById } from "@/app/api/post/route";
+import { toast } from "react-toastify";
+import { getUserData } from "@/app/api/user/route";
+import { supabase } from "@/lib/supabase";
 
 interface Comment {
   id: number;
-  username: string;
-  avatar: string;
-  text: string;
-  timeAgo: string;
-  likes: number;
+  postId: string;
+  content: string;
+  created_at: string;
   isLiked: boolean;
+  user?: {
+    id: string;
+    name: string;
+    nick_name: string;
+    avatar?: string | null;
+  };
 }
 
 interface PostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  post: {
-    id: number;
-    content: string;
-    created_at: string;
-    file?: string | null;
-    original_name?: string | null;
-    user?: {
-      id: string;
-      name: string;
-      nick_name: string;
-      avatar?: string | null;
-    };
+  postId: number;
+}
+
+interface PostDetail {
+  id: number;
+  content: string;
+  created_at: string;
+  file?: string | null;
+  original_name?: string | null;
+  user?: {
+    id: string;
+    name: string;
+    nick_name: string;
+    avatar?: string | null;
   };
 }
 
-const mockComments: Comment[] = [
-  {
-    id: 1,
-    username: "grammar_guru",
-    avatar: "/globe.svg?height=32&width=32",
-    text: "Tuyệt vời! Câu viết lại rất tự nhiên và hay 👏",
-    timeAgo: "2h",
-    likes: 5,
-    isLiked: false,
-  },
-  {
-    id: 2,
-    username: "english_ace",
-    avatar: "/globe.svg?height=32&width=32",
-    text: "Mình cũng đang học cách viết như thế này. Cảm ơn bạn đã chia sẻ!",
-    timeAgo: "1h",
-    likes: 3,
-    isLiked: true,
-  },
-  {
-    id: 3,
-    username: "vocab_master",
-    avatar: "/globe.svg?height=32&width=32",
-    text: "Từ 'contentment' rất hay! Mình sẽ nhớ để dùng 📝",
-    timeAgo: "45m",
-    likes: 8,
-    isLiked: false,
-  },
-];
-
-export function PostModal({ isOpen, onClose, post }: PostModalProps) {
-  const [comments, setComments] = useState<Comment[]>(mockComments);
+export function PostModal({ isOpen, onClose, postId }: PostModalProps) {
+  const { user } = useAuth();
+  const [postDetail, setPostDetail] = useState<PostDetail>();
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleNewComment = async (payload: any) => {
+    if (payload.new) {
+      let newComment = { ...payload.new };
+      let res = await getUserData(newComment.userId);
+      newComment.user = res.success ? res.data : {};
+
+      // Update cả hai state
+      setComments((prevComments) => [newComment, ...prevComments]);
+      setPostDetail((prevPost: any) => ({
+        ...prevPost,
+        comments: [newComment, ...(prevPost?.comments || [])],
+      }));
+    }
+  };
+
+  useEffect(() => {
+    let commentChannel = supabase
+      .channel("comments")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "comments",
+          filter: `postId=eq.${postId}`,
+        },
+        handleNewComment
+      )
+      .subscribe();
+
+    fetchPostDetail();
+
+    return () => {
+      supabase.removeChannel(commentChannel);
+    };
+  }, []);
+
+  const fetchPostDetail = async () => {
+    if (!postId) return;
+    setLoading(true);
+    let res = await getPostById(postId);
+    if (res.success) {
+      setPostDetail(res.data); // Lưu postDetail
+      setComments(res.data.comments); // Lưu danh sách bình luận
+    } else {
+      toast.error("Không thể tải bài viết", { autoClose: 1000 });
+      onClose();
+    }
+    setLoading(false);
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+    let data = {
+      userId: user?.id,
+      postId: postDetail?.id,
+      content: newComment,
+    };
+
+    setLoading(true);
+    let res = await addComment(data);
+    if (res.success) {
+      setNewComment("");
+      toast.success("Bình luận đã được thêm", { autoClose: 1000 });
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    setLoading(true);
+    let res = await deleteComment(commentId);
+    if (res.success) {
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.id !== commentId)
+      );
+      toast.success("Bình luận đã bị xóa", { autoClose: 1000 });
+    } else {
+      toast.error("Không thể xóa bình luận", { autoClose: 1000 });
+    }
+    setLoading(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleAddComment();
+    }
+  };
 
   const handleLikeComment = (commentId: number) => {
     setComments(
@@ -80,33 +157,10 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
           ? {
               ...comment,
               isLiked: !comment.isLiked,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
             }
           : comment
       )
     );
-  };
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const comment: Comment = {
-        id: Date.now(),
-        username: "you",
-        avatar: "/default-avatar-profile-icon.jpg",
-        text: newComment,
-        timeAgo: "now",
-        likes: 0,
-        isLiked: false,
-      };
-      setComments([...comments, comment]);
-      setNewComment("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleAddComment();
-    }
   };
 
   return (
@@ -118,10 +172,10 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
         <div className="flex h-full">
           {/* Post content */}
           <div className="flex-1 flex justify-center items-center bg-gray-50">
-            {post?.file &&
+            {postDetail?.file &&
               (() => {
-                const fileUrl = getSupabaseFileUrl(post.file);
-                const ext = post.file.split(".").pop()?.toLowerCase();
+                const fileUrl = getSupabaseFileUrl(postDetail.file);
+                const ext = postDetail.file.split(".").pop()?.toLowerCase();
 
                 if (!fileUrl) return null;
 
@@ -154,14 +208,14 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline text-sm"
                     >
-                      {post?.original_name}
+                      {postDetail?.original_name}
                     </a>
                   </div>
                 );
               })()}
-            {!post?.file && (
+            {!postDetail?.file && (
               <div className="p-4">
-                <p className="text-sm text-gray-500">{post?.content}</p>
+                <p className="text-sm text-gray-500">{postDetail?.content}</p>
               </div>
             )}
           </div>
@@ -172,10 +226,12 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
             <DialogHeader className="p-4 border-b">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={getUserImageSrc(post.user?.avatar)} />
+                  <AvatarImage
+                    src={getUserImageSrc(postDetail?.user?.avatar)}
+                  />
                 </Avatar>
                 <span className="font-semibold text-sm">
-                  {post.user?.nick_name}
+                  {postDetail?.user?.nick_name}
                 </span>
               </div>
             </DialogHeader>
@@ -184,18 +240,20 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
             <div className="p-4 border-b">
               <div className="flex items-start space-x-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={getUserImageSrc(post.user?.avatar)} />
+                  <AvatarImage
+                    src={getUserImageSrc(postDetail?.user?.avatar)}
+                  />
                 </Avatar>
                 <div className="flex-1">
                   <p className="text-sm">
                     <span className="font-semibold">
-                      {post.user?.nick_name}
+                      {postDetail?.user?.nick_name}
                     </span>{" "}
-                    {post.content}
+                    {postDetail?.content}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {convertToDate(post.created_at)}{" "}
-                    {formatTime(post.created_at)}
+                    {convertToDate(postDetail?.created_at)}{" "}
+                    {formatTime(postDetail?.created_at)}
                   </p>
                 </div>
               </div>
@@ -206,27 +264,26 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
               {comments.map((comment) => (
                 <div key={comment.id} className="flex items-start space-x-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={comment.avatar || "/placeholder.svg"} />
+                    <AvatarImage src={getUserImageSrc(comment.user?.avatar)} />
                   </Avatar>
                   <div className="flex-1">
                     <p className="text-sm">
-                      <span className="font-semibold">{comment.username}</span>{" "}
-                      {comment.text}
+                      <span className="font-semibold">
+                        {comment.user?.nick_name}
+                      </span>{" "}
+                      <span className="text-xs text-gray-500 ml-2">
+                        {convertToDate(comment.created_at)}{" "}
+                        {formatTime(comment.created_at)}
+                      </span>
                     </p>
-                    <div className="flex items-center space-x-4 mt-1">
-                      <p className="text-xs text-gray-500">{comment.timeAgo}</p>
-                      <p className="text-xs text-gray-500">
-                        {comment.likes} likes
-                      </p>
-                      <button className="text-xs text-gray-500 font-semibold">
-                        Reply
-                      </button>
+                    <div className="mt-1 break-all whitespace-pre-wrap text-sm">
+                      {comment.content}
                     </div>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6"
+                    className="h-6 w-6 mt-2 cursor-pointer"
                     onClick={() => handleLikeComment(comment.id)}
                   >
                     <Heart
@@ -237,6 +294,18 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
                       }`}
                     />
                   </Button>
+                  {/* Nút xóa bình luận */}
+                  {(postDetail?.user?.id === user?.id ||
+                    comment.user?.id === user?.id) && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 text-red-500 mt-2 cursor-pointer"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      <span className="text-sm">Xóa</span>
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
@@ -249,7 +318,7 @@ export function PostModal({ isOpen, onClose, post }: PostModalProps) {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 border-0 focus-visible:ring-0 text-sm"
+                  className="flex-1 border-1 focus-visible:ring-0 text-sm"
                 />
                 <Button
                   variant="ghost"

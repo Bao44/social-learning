@@ -9,7 +9,7 @@ import { JSX } from "react/jsx-runtime";
 
 export default function SpeechPage() {
   const router = useRouter();
-  const sampleSentence = "I am learning to speak English";
+  const sampleSentence = "I am studying ";
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const [result, setResult] = useState<JSX.Element | null>(null);
   const [isClient, setIsClient] = useState(false);
