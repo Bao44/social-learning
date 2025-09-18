@@ -122,6 +122,7 @@ export default function PhotoGrid() {
           postId={selectedPost.id}
           post={selectedPost}
           userId={user?.id}
+          highlightCommentId={null}
         />
       )}
     </>
