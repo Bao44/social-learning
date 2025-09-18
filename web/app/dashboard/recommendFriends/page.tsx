@@ -188,10 +188,10 @@ export default function RecommendFriends() {
           friends.map((friend, index) => (
             <div
               key={friend.id}
-              className="flex items-center gap-4 bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow border-l-4 border-pink-300 hover:bg-gray-50"
+              className="flex items-center gap-3 sm:gap-4 bg-white shadow-md rounded-lg p-3 sm:p-4 hover:shadow-lg transition-shadow border-l-4 border-pink-300 hover:bg-gray-50"
             >
               <div
-                className="cursor-pointer"
+                className="cursor-pointer flex-shrink-0"
                 onClick={() =>
                   router.push(`/dashboard/profile/${friend.nick_name}`)
                 }
@@ -199,7 +199,7 @@ export default function RecommendFriends() {
                 <img
                   src={getUserImageSrc(friend.avatar)}
                   alt={friend.name}
-                  className="w-16 h-16 rounded-full object-cover border"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/default-avatar.png";
@@ -207,26 +207,28 @@ export default function RecommendFriends() {
                 />
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1">
                   <h3
                     onClick={() =>
                       router.push(`/dashboard/profile/${friend.nick_name}`)
                     }
-                    className="font-semibold text-lg cursor-pointer"
+                    className="font-semibold text-base sm:text-lg cursor-pointer truncate"
                   >
                     {friend.name}
                   </h3>
                   {friend.isFoF && friend.mutualCount > 0 && (
-                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                    <span className="text-[10px] sm:text-xs bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                       {friend.mutualCount} bạn chung
                     </span>
                   )}
                 </div>
 
-                <p className="text-sm text-gray-600 mb-1">{friend.nick_name}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">
+                  {friend.nick_name}
+                </p>
 
-                <div className="flex items-center gap-3 text-sm">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                   <span className="text-orange-600 font-medium">
                     Level: {friend.level}
                   </span>
@@ -236,11 +238,10 @@ export default function RecommendFriends() {
                 </div>
               </div>
 
-              {/* Action button có thể thêm sau */}
-              <div className="text-right">
+              <div className="text-right flex-shrink-0">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 cursor-pointer"
+                  className="px-2 sm:px-3 text-xs sm:text-sm bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white"
                 >
                   Kết bạn
                 </Button>
