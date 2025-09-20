@@ -1,192 +1,120 @@
 "use client";
 
+import { useState } from "react";
+import { Level } from "../components/Level";
+import { Topic } from "../components/Topic";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
-import { JSX } from "react/jsx-runtime";
+import { listeningService } from "@/app/api/learning/listening/route";
+import { parse } from "path";
 
-export default function SpeechPage() {
+export default function ListeningPage() {
   const router = useRouter();
-  const sampleSentence = "I am studying ";
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
-  const [result, setResult] = useState<JSX.Element | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const [browserSupports, setBrowserSupports] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<{
+    id: number;
+    slug: string;
+    name: string;
+  } | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<{
+    id: number;
+    slug: string;
+    name: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Ensure this only runs on client side
-  useEffect(() => {
-    setIsClient(true);
-    setBrowserSupports(SpeechRecognition.browserSupportsSpeechRecognition());
-  }, []);
+  const isReady = selectedLevel && selectedTopic;
+  const selectedInfo =
+    selectedLevel && selectedTopic
+      ? `${selectedLevel.name} - ${selectedTopic.name}`
+      : "";
 
-  // Don't render anything until client-side hydration is complete
-  if (!isClient) {
-    return (
-      <div className="max-w-xl mx-auto p-6 space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded mb-6"></div>
-          <div className="flex gap-3 mb-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-10 w-20 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-          <div className="h-20 bg-gray-200 rounded mb-4"></div>
-          <div className="h-20 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
+  const handleStart = () => {
+    if (selectedLevel && selectedTopic) {
+      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
+      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
+      router.push(
+        `/dashboard/speaking/lesson?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+      );
+    }
+  };
 
-  // Check browser support after client-side hydration
-  if (!browserSupports) {
-    return (
-      <div className="max-w-xl mx-auto p-6">
-        <p className="text-red-500 font-semibold">
-          ❌ Trình duyệt không hỗ trợ Speech Recognition.
-        </p>
-      </div>
-    );
-  }
-
-  const checkPronunciation = () => {
-    const sampleWords = sampleSentence.toLowerCase().split(" ");
-    const spokenWords = transcript.toLowerCase().split(" ");
-
-    const compared = sampleWords.map((word, i) => {
-      if (spokenWords[i] === word) {
-        return (
-          <span key={i} className="text-green-600 font-semibold mr-2">
-            {word}
-          </span>
-        );
+  const handleGenerateAI = async () => {
+    setLoading(true);
+    // Call API to generate AI content here
+    if (selectedLevel && selectedTopic) {
+      const response = await listeningService.generateListeningExerciseByAI(
+        selectedLevel.slug,
+        selectedTopic.slug
+      );
+      if (response && response.data && response.data.id) {
+        const listeningExerciseId = response.data.id;
+        router.push(`/dashboard/listening/detail/${listeningExerciseId}`);
       } else {
-        return (
-          <span key={i} className="text-red-600 font-semibold mr-2">
-            {word}
-          </span>
-        );
-      }
-    });
-
-    setResult(<div className="mt-2">{compared}</div>);
-  };
-
-  const getVoices = () => {
-    const voices = speechSynthesis.getVoices();
-    console.log(voices);
-  };
-
-  window.speechSynthesis.onvoiceschanged = getVoices;
-
-  const speak = (text: string, voiceName?: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-
-    if (voiceName) {
-      const selectedVoice = voices.find((v) => v.name === voiceName);
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
+        console.error("Invalid response from AI generation:", response);
       }
     }
-
-    utterance.lang = "en-US";
-    utterance.rate = 1;
-    speechSynthesis.speak(utterance);
   };
 
-  // Ví dụ: đọc bằng giọng nữ
-  // speak("Hello, how are you?", "Google UK English Female");
-
-  // Ví dụ: đọc bằng giọng nam
-  // speak("I am fine, thank you.", "Microsoft David - English (United States)");
-
   return (
-    <div className="max-w-xl mx-auto p-6 space-y-6">
-      <h2 className="text-xl font-bold text-gray-800">
-        🎯 Nói theo câu mẫu:{" "}
-        <span className="text-blue-600">"{sampleSentence}"</span>
-      </h2>
+    <>
+      <div className="flex-1 px-6 py-6 pb-36">
+        <div className="flex flex-col items-center justify-center text-center gap-2 mt-6">
+          <h2 className="text-3xl font-semibold">Luyện nói</h2>
+          <p className="text-lg tracking-widest text-gray-600">
+            Không ngừng cải thiện kỹ năng nói của bạn để giao tiếp hiệu quả hơn
+          </p>
+        </div>
 
-      <p className="text-sm text-gray-600">
-        Trạng thái:{" "}
-        <span
-          className={`font-semibold ${
-            listening ? "text-green-600" : "text-gray-500"
-          }`}
-        >
-          {listening ? "🎙️ Đang nghe..." : "⏹️ Dừng"}
-        </span>
-      </p>
-
-      <button
-        onClick={() => {
-          const utterance = new SpeechSynthesisUtterance(sampleSentence);
-          utterance.lang = "en-US";
-          utterance.rate = 1;
-          utterance.pitch = 1;
-          speechSynthesis.speak(utterance);
-        }}
-        className="px-4 py-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600"
-      >
-        🔊 Nghe mẫu
-      </button>
-
-      <div className="flex gap-3">
-        <button
-          onClick={() => {
-            resetTranscript();
-            SpeechRecognition.startListening({
-              continuous: true,
-              language: "en-US",
-            });
-          }}
-          className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600"
-        >
-          Start
-        </button>
-        <button
-          onClick={SpeechRecognition.stopListening}
-          className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
-        >
-          Stop
-        </button>
-        <button
-          onClick={resetTranscript}
-          className="px-4 py-2 rounded-lg bg-gray-400 text-white hover:bg-gray-500"
-        >
-          Reset
-        </button>
-        <button
-          onClick={checkPronunciation}
-          className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:blue-600"
-        >
-          Check
-        </button>
+        <div className="flex flex-col max-w-5xl mx-auto mt-10 gap-6">
+          <Level
+            selectedLevel={selectedLevel}
+            setSelectedLevel={setSelectedLevel}
+          />
+          <Topic
+            selectedTopic={selectedTopic}
+            setSelectedTopic={setSelectedTopic}
+          />
+        </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold text-gray-800">Bạn đã nói:</h3>
-        <p className="mt-1 p-2 border rounded bg-gray-50 text-gray-700">
-          {transcript || "Chưa có dữ liệu"}
-        </p>
-      </div>
+      {isReady && (
+        <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50">
+          <div className="flex flex-col items-center gap-3 bg-white shadow-xl px-6 py-4 rounded-2xl max-w-5xl">
+            <span className="text-lg font-semibold underline text-center">
+              {selectedInfo}
+            </span>
+            <div className="flex items-center gap-4">
+              <Button variant={"destructive"} onClick={handleGenerateAI}>
+                Generate AI
+              </Button>
+              or
+              <Button variant={"default"} onClick={handleStart}>
+                Next step
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div>
-        <h3 className="text-lg font-semibold text-gray-800">
-          Kết quả kiểm tra:
-        </h3>
-        <div className="mt-1 p-2 border rounded bg-gray-50">{result}</div>
-      </div>
+      {/* Overlay loading */}
+      {loading && (
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-[9999]">
+          <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-2xl shadow-lg">
+            <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
+            <span className="text-gray-700 font-medium">
+              Đang tạo đoạn văn bằng AI...
+            </span>
+          </div>
+        </div>
+      )}
 
-      <button
-          onClick={() => router.push("/dashboard/speaking/ipa")}
-          className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600"
-        >
-          Bảng phiên âm IPA
-        </button>
-    </div>
+      <div className="w-90 p-6 hidden xl:block">
+        <div className="sticky top-24">
+          <RightSidebar />
+        </div>
+      </div>
+    </>
   );
 }

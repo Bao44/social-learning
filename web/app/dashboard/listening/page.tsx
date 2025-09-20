@@ -11,8 +11,8 @@ import { listeningService } from "@/app/api/learning/listening/route";
 
 export default function ListeningPage() {
     const router = useRouter();
-    const [selectedLevel, setSelectedLevel] = useState<{ slug: string; name: string } | null>(null);
-    const [selectedTopic, setSelectedTopic] = useState<{ slug: string; name: string } | null>(null);
+    const [selectedLevel, setSelectedLevel] = useState<{ id: number; slug: string; name: string } | null>(null);
+    const [selectedTopic, setSelectedTopic] = useState<{ id: number; slug: string; name: string } | null>(null);
     const [loading, setLoading] = useState(false);
 
     const isReady = selectedLevel && selectedTopic;
