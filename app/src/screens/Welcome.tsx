@@ -1,10 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -20,11 +14,14 @@ const Welcome = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#FFF7ED', '#FDF2F8']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
       <View style={styles.header}>
-        <Text style={styles.title}>
-          Social <Text style={{ color: '#EC4899' }}>Learning</Text>
-        </Text>
+        <Text style={styles.title}>Social Learning</Text>
       </View>
 
       <View style={styles.content}>
@@ -39,18 +36,20 @@ const Welcome = () => {
       <View style={styles.footer}>
         <LinearGradient
           colors={['#F97316', '#EC4899']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           style={styles.linearGradient}
         >
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Đăng Nhập</Text>
+            <Text style={styles.buttonTextLogin}>Đăng Nhập</Text>
           </TouchableOpacity>
         </LinearGradient>
 
         <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Tạo tài khoản mới</Text>
+          <Text style={styles.buttonTextSignup}>Tạo tài khoản mới</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -59,7 +58,6 @@ export default Welcome;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 120,
@@ -69,7 +67,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    color: '#F97316',
     fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -102,17 +99,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 80,
   },
   signupButton: {
+    backgroundColor: '#FFF',
     paddingVertical: 12,
     paddingHorizontal: 70,
     borderRadius: 25,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderWidth: 0.5,
   },
-  buttonText: {
+  buttonTextLogin: {
     color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  buttonTextSignup: {
+    color: '#000',
     fontSize: 16,
     textAlign: 'center',
     fontWeight: '500',
