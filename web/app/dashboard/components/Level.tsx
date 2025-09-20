@@ -20,10 +20,11 @@ type Level = {
 
 interface LevelProps {
     selectedLevel: {
+        id: number;
         slug: string;
         name: string;
     } | null;
-    setSelectedLevel: (level: { slug: string; name: string } | null) => void;
+    setSelectedLevel: (level: { id: number; slug: string; name: string } | null) => void;
 }
 
 export function Level({ selectedLevel, setSelectedLevel }: LevelProps) {
@@ -61,7 +62,7 @@ export function Level({ selectedLevel, setSelectedLevel }: LevelProps) {
                             viewport={{ amount: 0.3 }}
                         >
                             <Card
-                                onClick={() => setSelectedLevel({ slug: level.slug, name: level.name })}
+                                onClick={() => setSelectedLevel({ id: level.id, slug: level.slug, name: level.name })}
                                 key={level.id}
                                 className={`
                                 flex flex-row justify-between gap-4 px-4 
