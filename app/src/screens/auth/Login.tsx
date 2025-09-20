@@ -8,82 +8,103 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { PenTool } from 'lucide-react-native';
+import { BookOpen } from 'lucide-react-native';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Toast from 'react-native-toast-message';
 
 const Login = () => {
   const navigation = useNavigation<any>();
 
-  return (
-    <LinearGradient
-      colors={['#FFF7ED', '#FDF2F8']} // orange-50 to pink-50
-      style={styles.container}
-    >
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <LinearGradient
-          colors={['#F97316', '#EC4899']} // orange-500 to pink-500
-          style={styles.logo}
-        >
-          <PenTool size={20} color="#fff" />
-        </LinearGradient>
-        <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
-          <Text style={styles.logoText}>SocialLearning</Text>
-        </TouchableOpacity>
-      </View>
+  const handleLogin = () => {
+    // Xử lý đăng nhập ở đây
+    navigation.navigate('Main');
+    
+    Toast.show({
+      type: 'success',
+      text1: 'Đăng nhập thành công!',
+      visibilityTime: 1000,
+    });
+  };
 
-      {/* Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
+  return (
+    <ScreenWrapper bg="#FFF7ED">
+      <LinearGradient colors={['#FFF7ED', '#FDF2F8']} style={styles.container}>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
           <LinearGradient
             colors={['#F97316', '#EC4899']}
-            style={styles.cardIcon}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.logo}
           >
-            <PenTool size={24} color="#fff" />
+            <BookOpen size={20} color="#fff" />
           </LinearGradient>
-          <Text style={styles.cardTitle}>Chào mừng trở lại</Text>
-          <Text style={styles.cardDescription}>
-            Đăng nhập để tiếp tục hành trình nào
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+            <Text style={styles.logoText}>SocialLearning</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.cardContent}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email hoặc số điện thoại</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nhập email hoặc số điện thoại"
-              placeholderTextColor="#A1A1AA"
-              keyboardType="email-address"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Mật khẩu</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nhập mật khẩu của bạn"
-              placeholderTextColor="#A1A1AA"
-              secureTextEntry
-            />
-          </View>
-          <View style={styles.forgotPassword}>
-            <Text style={styles.link}>Quên mật khẩu?</Text>
-          </View>
-          <LinearGradient colors={['#F97316', '#EC4899']} style={styles.button}>
-            <TouchableOpacity onPress={() => navigation.navigate('Main')}>
-              <Text style={styles.buttonText}>Đăng Nhập</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-          <Text style={styles.footerText}>
-            Bạn chưa có tài khoản?{' '}
-            <Text
-              style={styles.link}
-              onPress={() => navigation.navigate('Register')}
+
+        {/* Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <LinearGradient
+              colors={['#F97316', '#EC4899']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.cardIcon}
             >
-              Đăng ký
+              <BookOpen size={24} color="#fff" />
+            </LinearGradient>
+            <Text style={styles.cardTitle}>Chào mừng trở lại</Text>
+            <Text style={styles.cardDescription}>
+              Đăng nhập để tiếp tục hành trình nào
             </Text>
-          </Text>
+          </View>
+          <View style={styles.cardContent}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập email"
+                placeholderTextColor="#A1A1AA"
+                keyboardType="email-address"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Mật khẩu</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập mật khẩu của bạn"
+                placeholderTextColor="#A1A1AA"
+                secureTextEntry
+              />
+            </View>
+            <View style={styles.forgotPassword}>
+              <Text style={styles.link}>Quên mật khẩu?</Text>
+            </View>
+            <LinearGradient
+              colors={['#F97316', '#EC4899']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.button}
+            >
+              <TouchableOpacity onPress={handleLogin}>
+                <Text style={styles.buttonText}>Đăng Nhập</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+            <Text style={styles.footerText}>
+              Bạn chưa có tài khoản?{' '}
+              <Text
+                style={styles.link}
+                onPress={() => navigation.navigate('Register')}
+              >
+                Đăng ký
+              </Text>
+            </Text>
+          </View>
         </View>
-      </View>
-    </LinearGradient>
+      </LinearGradient>
+    </ScreenWrapper>
   );
 };
 
@@ -132,7 +153,7 @@ const styles = StyleSheet.create({
   cardIcon: {
     width: 48,
     height: 48,
-    borderRadius: 8,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -177,7 +198,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   button: {
-    borderRadius: 8,
+    borderRadius: 50,
     paddingVertical: 12,
     alignItems: 'center',
   },

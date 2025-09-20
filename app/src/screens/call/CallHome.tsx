@@ -29,12 +29,7 @@ const CallHome = () => {
   }, []);
 
   return (
-    <LinearGradient
-      colors={['#FEF3C7', '#FECACA']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      className="flex-1 items-center justify-center"
-    >
+    <View className="flex-1 items-center justify-center">
       <View>
         <Text className="font-bold text-xl">User Id: {userId}</Text>
         <Text className="font-bold text-xl">Room Id: {roomId}</Text>
@@ -66,7 +61,7 @@ const CallHome = () => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 

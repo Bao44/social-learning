@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
   },
   linearChatToggle: {
     position: 'absolute',
-    bottom: 30, // Tương tự bottom-4
-    right: 20, // Tương tự right-4
+    bottom: 95, // Tương tự bottom-4
+    right: 10, // Tương tự right-4
     width: 56, // Tương tự size-14 (14 * 4 = 56px)
     height: 56, // Tương tự size-14
     borderRadius: 28, // Tương tự rounded-full
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   },
   chatModal: {
     position: 'absolute',
-    bottom: 100, // Tương tự bottom-20
+    bottom: 160, // Tương tự bottom-20
     right: 20, // Tương tự right-4
     left: 20, // Tương tự left-4
     height: Platform.OS === 'ios' ? 500 : 450, // Giữ nguyên

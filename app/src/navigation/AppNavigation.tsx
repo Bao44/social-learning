@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, User } from 'lucide-react-native';
-import ConferenceCall from '../call/ConferenceCall';
-import CallHome from '../call/CallHome';
+import { Home, PenBox, PlusSquare, Search, User } from 'lucide-react-native';
+import ConferenceCall from '../screens/call/ConferenceCall';
+import CallHome from '../screens/call/CallHome';
+import ScreenWrapper from '../components/ScreenWrapper';
+import MainTab from '../(tabs)/Main';
+import SearchTab from '../(tabs)/Search';
+import CreateTab from '../(tabs)/Create';
+import LearningTab from '../(tabs)/Learning';
+import ProfileTab from '../(tabs)/Profile';
 const Tab = createBottomTabNavigator();
 
 function BottomTabs() {
@@ -13,38 +19,83 @@ function BottomTabs() {
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {
-            backgroundColor: 'gray',
-            height: 120,
+            backgroundColor: 'white',
+            height: 80,
           },
         }}
       >
         <Tab.Screen
-          name="CallHome"
-          component={CallHome}
+          name="Main"
+          component={MainTab}
           options={{
-            tabBarLabel: '',
+            tabBarLabel: 'Trang chủ',
             headerShown: false,
-            tabBarLabelStyle: { color: 'white', fontSize: 14 },
+            tabBarLabelStyle: { color: 'black', fontSize: 14 },
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Home size={24} color="white" />
+                <Home size={24} color="black" />
               ) : (
-                <Home size={24} color="#000" />
+                <Home size={24} color="gray" />
               ),
           }}
         />
         <Tab.Screen
-          name="OUT"
-          component={CallHome}
+          name="Search"
+          component={SearchTab}
           options={{
-            tabBarLabel: '',
+            tabBarLabel: 'Tìm kiếm',
             headerShown: false,
-            tabBarLabelStyle: { color: 'white', fontSize: 14 },
+            tabBarLabelStyle: { color: 'black', fontSize: 14 },
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <User size={24} color="white" />
+                <Search size={24} color="black" />
               ) : (
-                <User size={24} color="#000" />
+                <Search size={24} color="gray" />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Create"
+          component={CreateTab}
+          options={{
+            tabBarLabel: 'Tạo',
+            headerShown: false,
+            tabBarLabelStyle: { color: 'black', fontSize: 14 },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <PlusSquare size={24} color="black" />
+              ) : (
+                <PlusSquare size={24} color="gray" />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Learning"
+          component={LearningTab}
+          options={{
+            tabBarLabel: 'Học tập',
+            headerShown: false,
+            tabBarLabelStyle: { color: 'black', fontSize: 14 },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <PenBox size={24} color="black" />
+              ) : (
+                <PenBox size={24} color="gray" />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileTab}
+          options={{
+            tabBarLabel: 'Cá nhân',
+            headerShown: false,
+            tabBarLabelStyle: { color: 'black', fontSize: 14 },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <User size={24} color="black" />
+              ) : (
+                <User size={24} color="gray" />
               ),
           }}
         />
@@ -57,14 +108,17 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Main"
-        component={BottomTabs}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="ConferenceCall" component={ConferenceCall} />
-    </Stack.Navigator>
+    <ScreenWrapper bg="white">
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Main"
+          component={BottomTabs}
+          options={{ headerShown: false }}
+        />
+
+        {/* <Stack.Screen name="ConferenceCall" component={ConferenceCall} /> */}
+      </Stack.Navigator>
+    </ScreenWrapper>
   );
 };
 
