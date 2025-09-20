@@ -98,9 +98,9 @@ const Register = () => {
               colors={['#F97316', '#EC4899']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.button}
+              style={{ borderRadius: 50 }}
             >
-              <TouchableOpacity onPress={handleSignUp}>
+              <TouchableOpacity onPress={handleSignUp} style={styles.button}>
                 <Text style={styles.buttonText}>Tạo tài khoản</Text>
               </TouchableOpacity>
             </LinearGradient>
@@ -231,7 +231,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   button: {
-    borderRadius: 50,
     paddingVertical: 12,
     alignItems: 'center',
   },
@@ -241,7 +240,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   footerText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#4B5563',
     textAlign: 'center',
     marginTop: 12,
