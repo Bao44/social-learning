@@ -56,7 +56,6 @@ const authService = {
       token: otp,
       type: "recovery",
     });
-    console.log("data", data, error);
     if (error) throw error;
 
     // data.session chứa access_token + refresh_token
