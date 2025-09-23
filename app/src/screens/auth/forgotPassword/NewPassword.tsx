@@ -29,8 +29,13 @@ export default function NewPassword() {
     setLoading(true);
     try {
       const resetSession = await AsyncStorage.getItem('resetSession');
-      const session = resetSession ? JSON.parse(resetSession) : null;
-      if (!session) throw new Error('Thiếu session. Vui lòng nhập OTP lại.');
+      let session;
+      try {
+        session = resetSession ? JSON.parse(resetSession) : null;
+      } catch (parseError) {
+        console.error('Parse error:', parseError);
+        throw new Error('Dữ liệu session không hợp lệ.');
+      }
 
       const res = await forgotPassword({ session, password });
       console.log('Response from forgotPassword:', res);

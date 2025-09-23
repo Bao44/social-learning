@@ -1,6 +1,6 @@
+import { supabaseUrl } from '../../../constants';
+import { PermissionsAndroid, Platform } from 'react-native';
 import api from '../../../lib/api';
-
-const supabaseUrl = process.env.SUPABASE_URL;
 
 export const getUserImageSrc = (imagePath: any) => {
   if (imagePath) {
@@ -61,4 +61,23 @@ export const uploadFile = async (
       msg: error.message,
     };
   }
+};
+
+export const requestGalleryPermission = async () => {
+  if (Platform.OS === 'android') {
+    if (Platform.Version >= 33) {
+      // Android 13+
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } else {
+      // Android 12 trở xuống
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+  }
+  return true;
 };

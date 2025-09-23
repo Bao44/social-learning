@@ -3,20 +3,17 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   Alert,
   Share,
+  Image,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import Avatar from './Avatar';
+import Avatar from '../../components/Avatar';
 import moment from 'moment';
 import RenderHTML from 'react-native-render-html';
 import Video from 'react-native-video';
-// import Loading from './Loading';
-// import { createPostLike, removePostLike } from '../api/post';
-// import { downloadFileShare, getSupabaseFileUrl } from '../api/image';
-import { theme } from '../../constants/theme';
-import { hp, wp } from '../../helpers/common';
+import { theme } from '../../../constants/theme';
+import { hp, stripHtmlTags, wp } from '../../../helpers/common';
 import {
   Delete,
   Edit,
@@ -25,6 +22,9 @@ import {
   MessageCircle,
   MoreHorizontal,
 } from 'lucide-react-native';
+import { getSupabaseFileUrl, getUserImageSrc } from '../../api/image/route';
+import Loading from '../../components/Loading';
+import { likePost, unlikePost } from '../../api/post/route';
 
 const textStyle = {
   color: theme.colors.dark,
@@ -44,7 +44,7 @@ const tagsStyles = {
 const PostCard = ({
   item,
   currentUser,
-  router,
+  navigation,
   hasShadow = true,
   showMoreIcon = true,
   showDelete = false,
@@ -61,7 +61,8 @@ const PostCard = ({
     elevation: 1,
   };
 
-  const [likes, setLikes] = useState([]);
+  const [likes, setLikes] = useState<{ userId: string; postId: number }[]>([]);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -70,45 +71,45 @@ const PostCard = ({
 
   const openPostDetails = () => {
     if (!showMoreIcon) return null;
-    router.push({ pathname: 'postDetails', params: { postId: item?.id } });
+    navigation.navigate('PostDetails', { postId: item?.id });
   };
 
-  // const onLike = async () => {
-  //   if (liked) {
-  //     //remove
-  //     let updatedLikes = likes.filter((like) => like.userId != currentUser?.id);
-  //     setLikes([...updatedLikes]);
-  //     let res = await removePostLike(item?.id, currentUser?.id);
-  //     console.log("removed like", res);
-  //     if (!res.success) {
-  //       Alert.alert("Post", "Something went wrong!");
-  //     }
-  //   } else {
-  //     // create
-  //     let data = {
-  //       userId: currentUser?.id,
-  //       postId: item?.id,
-  //     };
-  //     setLikes([...likes, data]);
-  //     let res = await createPostLike(data);
-  //     console.log("added like", res);
-  //     if (!res.success) {
-  //       Alert.alert("Post", "Something went wrong!");
-  //     }
-  //   }
-  // };
+  const onLike = async () => {
+    if (liked) {
+      //remove
+      let updatedLikes = likes.filter(like => like.userId != currentUser?.id);
+      setLikes([...updatedLikes]);
+      let res = await unlikePost(item?.id, currentUser?.id);
+      console.log('removed like', res);
+      if (!res.success) {
+        Alert.alert('Post', 'Something went wrong!');
+      }
+    } else {
+      // create
+      let data = {
+        userId: currentUser?.id,
+        postId: item?.id,
+      };
+      setLikes([...likes, data]);
+      let res = await likePost(data);
+      console.log('added like', res);
+      if (!res.success) {
+        Alert.alert('Post', 'Something went wrong!');
+      }
+    }
+  };
 
-  // const onShare = async () => {
-  //   let content = { message: stripHtmlTags(item?.body) };
-  //   if (item?.file) {
-  //     // downdload file
-  //     setLoading(true);
-  //     let url = await downloadFileShare(getSupabaseFileUrl(item?.file).uri);
-  //     setLoading(false);
-  //     content.url = url;
-  //   }
-  //   Share.share(content);
-  // };
+  const onShare = async () => {
+    let content = { message: stripHtmlTags(item?.body) };
+    if (item?.file) {
+      // downdload file
+      setLoading(true);
+      // let url = await downloadFileShare(getSupabaseFileUrl(item?.file).uri);
+      setLoading(false);
+      // content.url = url;
+    }
+    Share.share(content);
+  };
 
   const handlePostDelete = () => {
     Alert.alert('Confirm', 'Are you sure you want to do this?', [
@@ -125,10 +126,15 @@ const PostCard = ({
     ]);
   };
 
+  console.log('post item', item);
+
   const createAt = moment(item?.created_at).format('MMM D');
-  // const liked = likes.filter((like) => like.userId == currentUser?.id)[0]
-  //   ? true
-  //   : false;
+  const liked = likes.some(
+    like => String(like.userId) === String(currentUser?.id),
+  );
+
+  const fileUrl = item.file ? getSupabaseFileUrl(item.file) : null;
+  const ext = item.file?.split('.').pop()?.toLowerCase();
 
   return (
     <View style={[styles.container, hasShadow && style]}>
@@ -137,8 +143,8 @@ const PostCard = ({
         <View style={styles.userInfo}>
           <Avatar
             size={hp(4.5)}
-            uri={item?.user?.avatar}
-            rounded={theme.radius.md}
+            uri={getUserImageSrc(item?.user?.avatar)}
+            rounded={theme.radius.xxl * 100}
           />
           <View style={{ gap: 2 }}>
             <Text style={styles.username}>{item?.user?.name}</Text>
@@ -169,9 +175,8 @@ const PostCard = ({
       </View>
 
       {/* post body & media */}
-
       <View style={styles.content}>
-        {/* <View style={styles.postBody}>
+        <View style={styles.postBody}>
           {item?.body && (
             <RenderHTML
               contentWidth={wp(100)}
@@ -179,32 +184,48 @@ const PostCard = ({
               tagsStyles={tagsStyles}
             />
           )}
-        </View> */}
+        </View>
 
-        {/* post image */}
-        {/* {item?.file && item?.file?.includes('postImages') && (
-          <Image
-            source={getSupabaseFileUrl(item?.file)}
-            transition={100}
-            style={styles.postMedia}
-            contentFit="cover"
-          />
-        )} */}
+        {/* post image, video, text */}
+        {fileUrl && ['png', 'jpg', 'jpeg', 'gif'].includes(ext) ? (
+          <Image source={{ uri: fileUrl }} style={styles.postMedia} />
+        ) : fileUrl && ['mp4', 'webm', 'ogg'].includes(ext) ? (
+          <View
+            style={[
+              styles.postMedia,
+              { alignItems: 'center', justifyContent: 'center' },
+            ]}
+          >
+            <Video
+              source={{ uri: fileUrl }}
+              style={[styles.postMedia, { height: hp(35) }]}
+              resizeMode="contain"
+              controls
+            />
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.postMedia,
+              {
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f3f3f3',
+              },
+            ]}
+          >
+            <Text style={{ color: '#666' }}>{item.content}</Text>
+          </View>
+        )}
+      </View>
 
-        {/* post video */}
-        {/* {item?.file && item?.file?.includes('postVideos') && (
-          <Video
-            source={getSupabaseFileUrl(item?.file)}
-            style={[styles.postMedia, { height: hp(30) }]}
-            controls={true} // Hiển thị các điều khiển phát
-            resizeMode="cover"
-            repeat={true} // Lặp lại video
-          />
-        )} */}
+      {/* Content */}
+      <View>
+        <Text style={{ paddingVertical: 5 }}>{item.content}</Text>
       </View>
 
       {/* like, comment & share */}
-      {/* <View style={styles.footer}>
+      <View style={styles.footer}>
         <View style={styles.footerButton}>
           <TouchableOpacity onPress={onLike}>
             <Heart
@@ -212,7 +233,7 @@ const PostCard = ({
               fill={liked ? theme.colors.rose : theme.colors.textLight}
             />
           </TouchableOpacity>
-          <Text style={styles.count}>{likes?.length}</Text>
+          <Text style={styles.count}>{item?.comments?.[0]?.count ?? 0}</Text>
         </View>
         <View style={styles.footerButton}>
           <TouchableOpacity onPress={openPostDetails}>
@@ -229,7 +250,7 @@ const PostCard = ({
             </TouchableOpacity>
           )}
         </View>
-      </View> */}
+      </View>
     </View>
   );
 };

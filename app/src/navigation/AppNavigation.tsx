@@ -16,6 +16,8 @@ import Message from '../screens/message/Message';
 import Options from '../screens/user/Options';
 import Rankings from '../screens/learning/Rankings';
 import Progress from '../screens/user/Progress';
+import EditProfile from '../screens/user/EditProfile';
+import Follow from '../screens/user/components/Follow';
 const Tab = createBottomTabNavigator();
 
 function BottomTabs() {
@@ -133,7 +135,7 @@ const AppNavigation = () => {
         />
 
         {/* Search */}
-        
+
         {/* Learning */}
         <Stack.Screen
           name="Rankings"
@@ -147,6 +149,16 @@ const AppNavigation = () => {
         />
 
         {/* Profile */}
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Follow"
+          component={Follow}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Options"
           component={Options}
