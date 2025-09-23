@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import Avatar from './Avatar';
+import Avatar from '../../../components/Avatar';
 import moment from 'moment';
-import { theme } from '../../constants/theme';
-import { hp } from '../../helpers/common';
+import { theme } from '../../../../constants/theme';
+import { hp } from '../../../../helpers/common';
 
 const NotificationItem = ({ item, router }: any) => {
   const handleClick = () => {

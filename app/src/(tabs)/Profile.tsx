@@ -1,12 +1,18 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+// screens/ProfileScreen.tsx
 import React, { useState } from 'react';
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import ProfileHeader from '../screens/user/components/ProfileHeader';
 import { useNavigation } from '@react-navigation/native';
-import { LogOut, Menu, PlusSquare } from 'lucide-react-native';
 import useAuth from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabase';
 import Toast from 'react-native-toast-message';
+import { LogOut, Menu, PlusSquare } from 'lucide-react-native';
+import StoryHighlights from '../screens/user/components/StoryHighlights';
+import ProfileTabs from '../screens/user/components/ProfileTabs';
+import PhotoGrid from '../screens/user/components/PhotoGrid';
 
-const ProfileTab = () => {
+export default function ProfileScreen() {
+  const [active, setActive] = useState<'posts' | 'saved' | 'tagged'>('posts');
   const navigation = useNavigation<any>();
   const { user } = useAuth();
 
@@ -21,31 +27,37 @@ const ProfileTab = () => {
     });
     navigation.navigate('Welcome');
   };
+
   return (
-    <View className="bg-white px-4">
-      {/* Header */}
-      <View className="flex justify-between items-center flex-row py-4">
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <View className="flex justify-between items-center flex-row p-4">
         <Text className="text-3xl font-semibold">{user?.name}</Text>
         <View className="flex flex-row space-x-4">
-          <TouchableOpacity className="mx-4" onPress={handleLogout}>
+          <TouchableOpacity className="" onPress={handleLogout}>
             <LogOut size={34} />
           </TouchableOpacity>
           <TouchableOpacity
-            className="mx-4"
+            className="mx-6"
             onPress={() => navigation.navigate('Create')}
           >
             <PlusSquare size={34} />
           </TouchableOpacity>
           <TouchableOpacity
-            className="mx-4"
+            className=""
             onPress={() => navigation.navigate('Options')}
           >
             <Menu size={34} />
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+      <ProfileHeader />
+      <StoryHighlights />
+      <ProfileTabs active={active} setActive={setActive} />
+      <View style={{ flex: 1 }}>
+        {active === 'posts' && <PhotoGrid />}
+        {active === 'saved' && <View style={{ flex: 1 }}></View>}
+        {active === 'tagged' && <View style={{ flex: 1 }}></View>}
+      </View>
+    </SafeAreaView>
   );
-};
-
-export default ProfileTab;
+}

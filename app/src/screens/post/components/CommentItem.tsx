@@ -1,10 +1,10 @@
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import Avatar from './Avatar';
+import Avatar from '../../../components/Avatar';
 import moment from 'moment';
 import { TouchableOpacity } from 'react-native';
-import { theme } from '../../constants/theme';
-import { hp } from '../../helpers/common';
+import { theme } from '../../../../constants/theme';
+import { hp } from '../../../../helpers/common';
 import { Delete } from 'lucide-react-native';
 
 const CommentItem = ({
