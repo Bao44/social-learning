@@ -4,23 +4,151 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
+  Image,
+  Pressable,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { hp, wp } from '../../helpers/common';
 import { theme } from '../../constants/theme';
 import Avatar from '../components/Avatar';
-import { FileImage, Video } from 'lucide-react-native';
+import { Delete, FileImage, VideoIcon } from 'lucide-react-native';
 import Button from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import RichTextEditor from '../components/RichTextEditor';
+import useAuth from '../../hooks/useAuth';
+import {
+  getSupabaseFileUrl,
+  getUserImageSrc,
+  requestGalleryPermission,
+  uploadFile,
+} from '../api/image/route';
+import Toast from 'react-native-toast-message';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { createPost, CreatePostData } from '../api/post/route';
+import Video from 'react-native-video';
 
 const CreateTab = () => {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const navigation = useNavigation();
   const bodyRef = useRef('');
   const editorRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<any>(null);
+
+  //  useEffect(() => {
+  //   if (post && post.id) {
+  //     bodyRef.current = post.body;
+  //     setFile(post.file || null);
+  //     setTimeout(() => {
+  //       editorRef?.current?.setContentHTML(post.body);
+  //     }, 300);
+  //   }
+  // }, []);
+
+  const onPick = async () => {
+    const hasPermission = await requestGalleryPermission();
+    if (!hasPermission) {
+      Toast.show({ type: 'error', text1: 'Quyền bị từ chối' });
+      return;
+    }
+
+    try {
+      const response = await launchImageLibrary({
+        mediaType: 'photo',
+        quality: 0.8,
+        selectionLimit: 1,
+      });
+
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi khi chọn ảnh',
+          text2: response.errorMessage,
+        });
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (!asset?.uri) return;
+
+      setLoading(true);
+      const res = await uploadFile('profiles', asset.uri, 'image');
+      if (!res?.success) {
+        Toast.show({
+          type: 'error',
+          text1: 'Upload thất bại',
+          text2: res?.message,
+        });
+        return;
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể upload ảnh',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isLocalFile = (file: any) => {
+    if (!file) return null;
+    if (typeof file == 'object') return true;
+    return false;
+  };
+
+  const getFileType = (file: any) => {
+    if (!file) return null;
+    if (isLocalFile(file)) {
+      return file.type;
+    }
+
+    if (file.includes('postImages')) {
+      return 'image';
+    }
+    return 'video';
+  };
+  const getFileUri = (file: any) => {
+    if (!file) return null;
+    if (isLocalFile(file)) {
+      return file.uri;
+    }
+    return getSupabaseFileUrl(file?.uri);
+  };
+
+  const onSubmit = async () => {
+    if (!bodyRef.current && !file) {
+      Alert.alert('Post', 'Please add some content or media to post');
+      return;
+    }
+
+    let data: CreatePostData = {
+      content: bodyRef.current,
+      userId: user?.id,
+      file,
+    };
+
+    // if (post && post.id) data.id = post.id;
+
+    // create post
+    setLoading(true);
+    let res = await createPost(data);
+    setLoading(false);
+
+    console.log('Post response:', res);
+
+    if (res.success) {
+      setFile(null);
+      bodyRef.current = '';
+      Toast.show({ type: 'success', text1: 'Đăng bài thành công' });
+      navigation.goBack();
+    } else {
+      Alert.alert('Post', res.msg);
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -29,9 +157,13 @@ const CreateTab = () => {
         <ScrollView contentContainerStyle={{ gap: 20 }}>
           {/* avatar */}
           <View style={styles.header}>
-            <Avatar uri={null} size={hp(6.5)} rounded={theme.radius.xl} />
+            <Avatar
+              uri={getUserImageSrc(user?.avatar)}
+              size={hp(6.5)}
+              rounded={theme.radius.xl}
+            />
             <View style={{ gap: 2 }}>
-              <Text style={styles.username}>User Name</Text>
+              <Text style={styles.username}>{user?.nick_name}</Text>
               <Text style={styles.publicText}>Công khai</Text>
             </View>
           </View>
@@ -40,15 +172,13 @@ const CreateTab = () => {
             <RichTextEditor onChange={val => (bodyRef.current = val)} />
           </View>
 
-          {/* {file && (
+          {file && (
             <View style={styles.file}>
-              {getFileType(file) == "video" ? (
+              {getFileType(file) == 'video' ? (
                 <Video
                   style={{ flex: 1 }}
                   source={{ uri: getFileUri(file) }}
-                  useNativeControls
                   resizeMode="cover"
-                  isLooping
                 />
               ) : (
                 <Image
@@ -59,10 +189,10 @@ const CreateTab = () => {
               )}
 
               <Pressable style={styles.closeIcon} onPress={() => setFile(null)}>
-                <Icon name="delete" size={20} color="white" />
+                <Delete size={20} color="white" />
               </Pressable>
             </View>
-          )} */}
+          )}
 
           <View style={styles.media}>
             <Text style={styles.addImageText}>Thêm vào bài viết của bạn</Text>
@@ -71,7 +201,7 @@ const CreateTab = () => {
                 <FileImage size={30} color={theme.colors.dark} />
               </TouchableOpacity>
               <TouchableOpacity>
-                <Video size={33} color={theme.colors.dark} />
+                <VideoIcon size={33} color={theme.colors.dark} />
               </TouchableOpacity>
             </View>
           </View>
@@ -79,12 +209,11 @@ const CreateTab = () => {
 
         <Button
           buttonStyle={{ height: hp(6.2) }}
-          // title={post && post.id ? "Update Post" : "Post"}
-          // loading={loading}
-          title="Post"
+          // title={post && post.id ? 'Update Post' : 'Post'}
+          title={'Post'}
           loading={loading}
           hasShadow={false}
-          onPress={() => {}}
+          onPress={onSubmit}
         />
       </View>
     </View>

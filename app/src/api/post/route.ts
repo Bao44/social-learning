@@ -1,5 +1,6 @@
 import api from "../../../lib/api";
 
+
 export interface CreatePostData {
   id?: number;
   content: string;

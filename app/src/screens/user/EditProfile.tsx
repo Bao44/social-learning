@@ -55,56 +55,50 @@ export default function EditProfileScreen() {
   const pickImage = async () => {
     const hasPermission = await requestGalleryPermission();
     if (!hasPermission) {
-      Toast.show({
-        type: 'error',
-        text1: 'Quyền truy cập thư viện bị từ chối',
-      });
+      Toast.show({ type: 'error', text1: 'Quyền bị từ chối' });
       return;
     }
 
-    launchImageLibrary(
-      {
+    try {
+      const response = await launchImageLibrary({
         mediaType: 'photo',
         quality: 0.8,
         selectionLimit: 1,
-      },
-      async response => {
-        if (response.didCancel) return;
-        if (response.errorCode) {
-          Toast.show({
-            type: 'error',
-            text1: 'Lỗi khi chọn ảnh',
-            text2: response.errorMessage || 'Vui lòng thử lại',
-          });
-          return;
-        }
+      });
 
-        const asset = response.assets?.[0];
-        if (!asset?.uri) return;
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi khi chọn ảnh',
+          text2: response.errorMessage,
+        });
+        return;
+      }
 
-        try {
-          setIsLoading(true);
-          const res = await uploadFile('profiles', asset.uri, 'image');
-          if (!res?.success) {
-            Toast.show({
-              type: 'error',
-              text1: 'Lỗi khi tải ảnh lên',
-              text2: res?.message || 'Vui lòng thử lại',
-            });
-            return;
-          }
-          handleChange('avatar', res.data.path);
-        } catch (err) {
-          Toast.show({
-            type: 'error',
-            text1: 'Lỗi',
-            text2: 'Không thể upload ảnh',
-          });
-        } finally {
-          setIsLoading(false);
-        }
-      },
-    );
+      const asset = response.assets?.[0];
+      if (!asset?.uri) return;
+
+      setIsLoading(true);
+      const res = await uploadFile('profiles', asset.uri, 'image');
+      if (!res?.success) {
+        Toast.show({
+          type: 'error',
+          text1: 'Upload thất bại',
+          text2: res?.message,
+        });
+        return;
+      }
+      handleChange('avatar', res.data.path);
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể upload ảnh',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -183,7 +177,7 @@ export default function EditProfileScreen() {
             source={{
               uri: formData.avatar
                 ? getUserImageSrc(formData.avatar)
-                : '/default-avatar-profile-icon.jpg',
+                : null,
             }}
             style={{ width: 100, height: 100, borderRadius: 50 }}
           />
