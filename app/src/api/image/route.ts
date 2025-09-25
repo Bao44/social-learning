@@ -1,4 +1,5 @@
 import { supabaseUrl } from '../../../constants';
+import RNFS from 'react-native-fs';
 import { PermissionsAndroid, Platform } from 'react-native';
 import api from '../../../lib/api';
 
@@ -20,27 +21,30 @@ export const getSupabaseFileUrl = (filePath: any) => {
 };
 
 export const uploadFile = async (
-  folderName: any,
-  file: any,
+  folderName: string,
+  file: any, // trên web là File, trên app là uri string
   isImage = 'image',
 ) => {
   try {
-    // Đọc file thành base64
-    const fileBase64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result;
-        if (typeof result === 'string') {
-          // Bỏ phần "data:image/..."
-          const base64 = result.split(',')[1];
-          resolve(base64);
-        } else {
-          reject(new Error('FileReader result is not a string'));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+    let fileBase64: string;
+
+    if (typeof file === 'string' && file.startsWith('file://')) {
+      fileBase64 = await RNFS.readFile(file, 'base64');
+    } else {
+      fileBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result;
+          if (typeof result === 'string') {
+            resolve(result.split(',')[1]);
+          } else {
+            reject(new Error('FileReader result is not a string'));
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
 
     const response = await api.post('/api/images/uploads', {
       folderName,
@@ -66,13 +70,15 @@ export const uploadFile = async (
 export const requestGalleryPermission = async () => {
   if (Platform.OS === 'android') {
     if (Platform.Version >= 33) {
-      // Android 13+
-      const granted = await PermissionsAndroid.request(
+      const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+      ]);
+      return (
+        granted['android.permission.READ_MEDIA_IMAGES'] ===
+        PermissionsAndroid.RESULTS.GRANTED
       );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
     } else {
-      // Android 12 trở xuống
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
       );

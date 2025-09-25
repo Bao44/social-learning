@@ -184,7 +184,7 @@ const MainTab = () => {
                   <Loading />
                 </View>
               ) : (
-                <View style={{ marginVertical: 30 }}>
+                <View style={{ marginBottom: 60 }}>
                   <Text style={styles.noPosts}>Không còn bài viết nào nữa</Text>
                 </View>
               )
