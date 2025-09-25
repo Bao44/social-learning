@@ -126,7 +126,7 @@ const PostCard = ({
     ]);
   };
 
-  console.log('post item', item);
+
 
   const createAt = moment(item?.created_at).format('MMM D');
   const liked = likes.some(

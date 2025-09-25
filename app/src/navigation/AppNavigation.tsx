@@ -18,6 +18,7 @@ import Rankings from '../screens/learning/Rankings';
 import Progress from '../screens/user/Progress';
 import EditProfile from '../screens/user/EditProfile';
 import Follow from '../screens/user/components/Follow';
+import ChatDetail from '../screens/message/chat/ChatDetail';
 const Tab = createBottomTabNavigator();
 
 function BottomTabs() {
@@ -128,9 +129,15 @@ const AppNavigation = () => {
           component={Notification}
           options={{ headerShown: false }}
         />
+        {/* Chat */}
         <Stack.Screen
           name="Message"
           component={Message}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChatDetail"
+          component={ChatDetail}
           options={{ headerShown: false }}
         />
 
