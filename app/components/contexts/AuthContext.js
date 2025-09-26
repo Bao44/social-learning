@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../../lib/supabase';
 import { getUserData } from '../../src/api/user/route';
+import { getSocket } from '../../socket/socketClient';
 
 const AuthContext = createContext();
 
@@ -82,12 +83,13 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const socket = getSocket();
-  //   if (user?.id) {
-  //     socket.emit('user-online', { userId: user.id });
-  //   }
-  // }, [user]);
+  // Gửi event user-online qua socket
+  useEffect(() => {
+    const socket = getSocket();
+    if (user?.id) {
+      socket.emit("user-online", { userId: user.id });
+    }
+  }, [user]);
 
   const contextValue = {
     user,
