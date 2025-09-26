@@ -114,7 +114,7 @@ const Register = () => {
   };
 
   return (
-    <ScreenWrapper bg="#FFF7ED">
+    <>
       <LinearGradient colors={['#FFF7ED', '#FDF2F8']} style={styles.container}>
         {/* Logo */}
         <View style={styles.logoContainer}>
@@ -259,7 +259,7 @@ const Register = () => {
           </View>
         </View>
       </LinearGradient>
-    </ScreenWrapper>
+    </>
   );
 };
 
