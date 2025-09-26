@@ -68,7 +68,7 @@ const Login = () => {
         text1: 'Đăng nhập thành công.',
         visibilityTime: 2000,
       });
-      navigation.navigate('MainStack');
+      navigation.navigate('BottomTabs');
     } catch (error) {
       Toast.show({
         type: 'error',

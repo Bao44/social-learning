@@ -28,7 +28,7 @@ import PostCard from '../screens/post/PostCard';
 import Loading from '../components/Loading';
 
 var limit = 0;
-const MainTab = () => {
+const Main = () => {
   const navigation = useNavigation<any>();
 
   const { user, setUser } = useAuth();
@@ -196,7 +196,7 @@ const MainTab = () => {
   );
 };
 
-export default MainTab;
+export default Main;
 
 const styles = StyleSheet.create({
   container: {
