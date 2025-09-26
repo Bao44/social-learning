@@ -68,7 +68,7 @@ const Login = () => {
         text1: 'Đăng nhập thành công.',
         visibilityTime: 2000,
       });
-      navigation.navigate('Main');
+      navigation.navigate('MainStack');
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -79,7 +79,7 @@ const Login = () => {
   };
 
   return (
-    <ScreenWrapper bg="#FFF7ED">
+    <>
       <LinearGradient colors={['#FFF7ED', '#FDF2F8']} style={styles.container}>
         {/* Logo */}
         <View style={styles.logoContainer}>
@@ -167,7 +167,7 @@ const Login = () => {
           </View>
         </View>
       </LinearGradient>
-    </ScreenWrapper>
+    </>
   );
 };
 
