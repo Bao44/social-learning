@@ -6,7 +6,6 @@ import { Home, PenBox, PlusSquare, Search, User } from 'lucide-react-native';
 import ConferenceCall from '../screens/call/ConferenceCall';
 import CallHome from '../screens/call/CallHome';
 import ScreenWrapper from '../components/ScreenWrapper';
-import MainTab from '../(tabs)/Main';
 import SearchTab from '../(tabs)/Search';
 import CreateTab from '../(tabs)/Create';
 import LearningTab from '../(tabs)/Learning';
@@ -27,6 +26,7 @@ import Register from '../screens/auth/Register';
 import ForgotPassword from '../screens/auth/forgotPassword/ForgotPassword';
 import VerifyOTP from '../screens/auth/forgotPassword/VerifyOtp';
 import NewPassword from '../screens/auth/forgotPassword/NewPassword';
+import Main from '../(tabs)/Main';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +43,7 @@ function BottomTabs() {
       >
         <Tab.Screen
           name="Main"
-          component={MainTab}
+          component={Main}
           options={{
             tabBarLabel: 'Trang chủ',
             headerShown: false,
@@ -135,7 +135,7 @@ const AppNavigation = () => {
       <Stack.Navigator>
         {/* Main */}
         <Stack.Screen
-          name="MainStack"
+          name="BottomTabs"
           component={BottomTabs}
           options={{ headerShown: false }}
         />
