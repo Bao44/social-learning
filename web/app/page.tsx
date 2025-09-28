@@ -19,7 +19,6 @@ import {
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
-import { toast } from "react-toastify";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,8 +27,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getUserImageSrc } from "./api/image/route";
+import { useEffect, useRef } from "react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/components/contexts/LanguageContext";
+import { toast } from "react-toastify";
 
 export default function Page() {
+  const { t } = useLanguage();
+
   const testimonials = [
     {
       name: "Sarah Johnson",
@@ -59,11 +64,47 @@ export default function Page() {
 
   const { user, setUser } = useAuth();
 
+  const heroRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const howItWorksRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate-in");
+        }
+      });
+    }, observerOptions);
+
+    const elements = [
+      heroRef,
+      featuresRef,
+      howItWorksRef,
+      ctaRef,
+      testimonialsRef,
+    ];
+    elements.forEach((ref) => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
       setUser(null);
-      toast.success("Đăng xuất thành công", { autoClose: 1000 });
+      toast.success(t("logoutSuccess"), { autoClose: 1000 });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -72,23 +113,25 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6">
+      <header className="container mx-auto px-4 py-6 animate-fade-in-down">
         <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center">
+          <div className="flex items-center space-x-2 group">
+            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
               <PenTool className="w-5 h-5 text-white" />
             </div>
-            <span className="mt-1 text-3xl font-bold text-gray-900">
+            <span className="mt-1 text-3xl font-bold text-gray-900 transition-all duration-300 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-pink-500 group-hover:bg-clip-text">
               <Link href="/">SocialLearning</Link>
             </span>
           </div>
 
           <div className="flex items-center space-x-3">
+            <LanguageSwitcher />
+
             {user ? (
               // Hiển thị khi đã đăng nhập
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className="w-10 h-10 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all">
+                  <Avatar className="w-10 h-10 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all duration-300 hover:scale-110">
                     <AvatarImage
                       src={
                         user.avatar
@@ -103,7 +146,10 @@ export default function Page() {
                   </Avatar>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 animate-in slide-in-from-top-2 duration-200"
+                >
                   <div className="flex items-center space-x-2 p-2">
                     <Avatar className="w-8 h-8">
                       <AvatarImage
@@ -133,7 +179,7 @@ export default function Page() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Trang chủ</span>
+                      <span>{t("layout.dashboard")}</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -142,7 +188,7 @@ export default function Page() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/profile" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      <span>Trang cá nhân</span>
+                      <span>{t("layout.profile")}</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -153,7 +199,7 @@ export default function Page() {
                     className="cursor-pointer text-red-600 focus:text-red-600"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Đăng xuất</span>
+                    <span>{t("layout.logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -163,16 +209,16 @@ export default function Page() {
                 <div className="hidden md:flex items-center space-x-3">
                   <Button
                     variant="outline"
-                    className="bg-white text-gray-800 border-gray-300 hover:bg-gray-100 rounded-full p-6 text-[16px]"
+                    className="bg-white text-gray-800 border-gray-300 hover:bg-gray-100 rounded-full p-6 text-[16px] transition-all duration-300 hover:scale-105 hover:shadow-lg"
                     asChild
                   >
-                    <Link href="/auth/login">Đăng Nhập</Link>
+                    <Link href="/auth/login">{t("layout.login")}</Link>
                   </Button>
                   <Button
-                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px]"
+                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/25"
                     asChild
                   >
-                    <Link href="/auth/register">Đăng Ký</Link>
+                    <Link href="/auth/register">{t("layout.register")}</Link>
                   </Button>
                 </div>
 
@@ -180,7 +226,10 @@ export default function Page() {
                 <div className="md:hidden">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="p-2 rounded-full">
+                      <Button
+                        variant="outline"
+                        className="p-2 rounded-full transition-all duration-300 hover:scale-110 hover:rotate-180 bg-transparent"
+                      >
                         <svg
                           className="w-6 h-6 text-gray-700"
                           fill="none"
@@ -197,12 +246,15 @@ export default function Page() {
                         </svg>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-48 animate-in slide-in-from-top-2 duration-200"
+                    >
                       <DropdownMenuItem asChild>
-                        <Link href="/auth/login">Đăng Nhập</Link>
+                        <Link href="/auth/login">{t("layout.login")}</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/auth/register">Đăng Ký</Link>
+                        <Link href="/auth/register">{t("layout.register")}</Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -215,170 +267,174 @@ export default function Page() {
 
       {/* Hero */}
       <main className="container mx-auto px-4 py-12">
-        <div className="text-center max-w-3xl mx-auto">
-          <Badge className="mb-6 text-sm bg-orange-100 text-orange-800 hover:bg-orange-100">
-            Nền tảng Học tập Xã hội
+        <div
+          ref={heroRef}
+          className="text-center max-w-3xl mx-auto opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+        >
+          <Badge className="mb-6 text-sm bg-orange-100 text-orange-800 hover:bg-orange-100 animate-bounce">
+            {t("layout.socialLearningPlatform")}
           </Badge>
 
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Cộng đồng mạng xã hội
-            <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+            {t("layout.socialNetworkCommunity")}
+            <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent animate-pulse">
               {" "}
-              Học tiếng Anh
+              {t("layout.englishLearning")}
             </span>
           </h1>
 
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Tham gia cộng đồng nơi việc học tiếng Anh trở nên thú vị và tương
-            tác. Viết lại câu, nhận phản hồi tức thì, kiếm điểm và leo lên bảng
-            xếp hạng, đồng thời kết nối với những người học từ khắp nơi trên thế
-            giới.
+            {t("layout.heroDescription")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-12 py-6 text-lg cursor-pointer rounded-full"
+              className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-12 py-6 text-lg cursor-pointer rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:-translate-y-1"
             >
-              <Link href="auth/login">Tham gia ngay</Link>
+              <Link href="auth/login">{t("layout.joinNow")}</Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50 px-12 py-6 text-lg cursor-pointer rounded-full"
+              className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50 px-12 py-6 text-lg cursor-pointer rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1"
             >
-              Học thử
+              {t("layout.tryLearning")}
             </Button>
           </div>
         </div>
 
-        {/* Nội dung chính */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
+        {/* Features */}
+        <div
+          ref={featuresRef}
+          className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+        >
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 group cursor-pointer">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
                 <Target className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Luyện viết câu thông minh
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.smartSentenceRewriting")}
               </h3>
-              <p className="text-gray-600">
-                Viết lại câu với phản hồi được hỗ trợ bởi AI. Nhận sửa lỗi tức
-                thì và cải thiện kỹ năng viết tiếng Anh của bạn qua mỗi lần thử.
+              <p className="text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.smartSentenceDescription")}
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 group cursor-pointer">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Học tập qua tương tác xã hội
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.socialInteractiveLearning")}
               </h3>
-              <p className="text-gray-600">
-                Kết nối với những người học khác, chia sẻ tiến độ của bạn và học
-                hỏi lẫn nhau trong một môi trường xã hội lấy cảm hứng từ
-                Instagram.
+              <p className="text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.socialInteractiveDescription")}
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 group cursor-pointer">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
                 <Trophy className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Tính điểm & Xếp hạng
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.scoringRanking")}
               </h3>
-              <p className="text-gray-600">
-                Kiếm điểm cho các bài viết lại chính xác, thi đấu với bạn bè và
-                leo lên bảng xếp hạng toàn cầu để thể hiện kỹ năng tiếng Anh của
-                bạn.
+              <p className="text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.scoringRankingDescription")}
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-transform hover:scale-105">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 group cursor-pointer">
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
                 <Bot className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                AI Hỗ trợ
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.aiSupport")}
               </h3>
-              <p className="text-gray-600">
-                Chatbot AI hỗ trợ mọi thắc mắc của bạn, cung cấp giải thích và
-                hướng dẫn để giúp bạn hiểu rõ hơn về ngữ pháp và cấu trúc câu
+              <p className="text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.aiSupportDescription")}
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Cách hoạt động */}
-        <div className="max-w-4xl mx-auto text-center mb-16 ">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">
-            Cách hoạt động
+        {/* How it works */}
+        <div
+          ref={howItWorksRef}
+          className="max-w-4xl mx-auto text-center mb-16 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+        >
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 animate-fade-in">
+            {t("layout.howItWorks")}
           </h2>
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 gap-6">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center group transition-all duration-500 hover:scale-105">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-orange-200 group-hover:scale-110 group-hover:rotate-12">
                 <BookOpen className="w-8 h-8 text-orange-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">1. Nhận câu</h3>
-              <p className="text-sm text-gray-600">
-                Nhận một câu để viết lại và cải thiện
+              <h3 className="font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.step1")}
+              </h3>
+              <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.step1Description")}
               </p>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center group transition-all duration-500 hover:scale-105">
+              <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-pink-200 group-hover:scale-110 group-hover:rotate-12">
                 <PenTool className="w-8 h-8 text-pink-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">2. Viết lại</h3>
-              <p className="text-sm text-gray-600">
-                Sử dụng kỹ năng tiếng Anh của bạn để cải thiện câu
+              <h3 className="font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-pink-600">
+                {t("layout.step2")}
+              </h3>
+              <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.step2Description")}
               </p>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center group transition-all duration-500 hover:scale-105">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-orange-200 group-hover:scale-110 group-hover:rotate-12">
                 <Target className="w-8 h-8 text-orange-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
-                3. Nhận phản hồi
+              <h3 className="font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-orange-600">
+                {t("layout.step3")}
               </h3>
-              <p className="text-sm text-gray-600">
-                Nhận sửa lỗi và giải thích tức thì
+              <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.step3Description")}
               </p>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center group transition-all duration-500 hover:scale-105">
+              <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-pink-200 group-hover:scale-110 group-hover:rotate-12">
                 <Star className="w-8 h-8 text-pink-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">4. Kiếm điểm</h3>
-              <p className="text-sm text-gray-600">
-                Kiếm điểm và leo lên bảng xếp hạng
+              <h3 className="font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-pink-600">
+                {t("layout.step4")}
+              </h3>
+              <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                {t("layout.step4Description")}
               </p>
             </div>
           </div>
         </div>
 
         {/* Bắt đầu */}
-        <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-8 text-center text-white max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">
-            Bắt đầu hành trình tiếng Anh của bạn?
-          </h2>
-          <p className="text-xl mb-6 opacity-90">
-            Tham gia cùng hàng ngàn người học đang cải thiện kỹ năng viết tiếng
-            Anh mỗi ngày
-          </p>
+        <div
+          ref={ctaRef}
+          className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-8 text-center text-white max-w-4xl mx-auto opacity-0 translate-y-8 transition-all duration-1000 ease-out hover:shadow-2xl hover:shadow-orange-500/30 hover:scale-105 transform hover:-translate-y-2 cursor-pointer"
+        >
+          <h2 className="text-3xl font-bold mb-4">{t("layout.startYourJourney")}</h2>
+          <p className="text-xl mb-6 opacity-90">{t("layout.ctaDescription")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+              className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1"
             >
-              <Link href="auth/register">Tạo tài khoản miễn phí</Link>
+              <Link href="auth/register">{t("layout.createFreeAccount")}</Link>
             </Button>
           </div>
         </div>
@@ -387,33 +443,38 @@ export default function Page() {
       {/* Rank */}
       <section id="testimonials">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
+          <div
+            ref={testimonialsRef}
+            className="text-center space-y-4 mb-16 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+          >
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Bảng xếp hạng
+              {t("layout.leaderboard")}
             </h2>
-            <p className="text-xl text-gray-600">
-              Những thành viên có thành tích cao nhất
-            </p>
+            <p className="text-xl text-gray-600">{t("layout.topMembers")}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <Card
                 key={index}
-                className="border-0 shadow-lg transition-transform hover:scale-105"
+                className="border-0 shadow-lg transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 group cursor-pointer animate-fade-in-up"
+                style={{ animationDelay: `${index * 200}ms` }}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                        className="w-4 h-4 fill-yellow-400 text-yellow-400 transition-all duration-300 group-hover:scale-125"
+                        style={{ animationDelay: `${i * 100}ms` }}
                       />
                     ))}
                   </div>
-                  <p className="text-gray-600 mb-6">"{testimonial.content}"</p>
+                  <p className="text-gray-600 mb-6 transition-colors duration-300 group-hover:text-gray-700">
+                    "{testimonial.content}"
+                  </p>
                   <div className="flex items-center space-x-3">
-                    <Avatar>
+                    <Avatar className="transition-all duration-300 group-hover:scale-110">
                       <AvatarImage
                         src={testimonial.avatar || "/placeholder.svg"}
                       />
@@ -425,10 +486,10 @@ export default function Page() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-gray-900 transition-colors duration-300 group-hover:text-orange-600">
                         {testimonial.name}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
                         {testimonial.role}
                       </p>
                     </div>
@@ -441,9 +502,9 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer className="container mx-auto px-4 py-8 mt-16 border-t border-gray-200">
+      <footer className="container mx-auto px-4 py-8 mt-16 border-t border-gray-200 animate-fade-in">
         <div className="text-center text-gray-600">
-          <p>&copy; 2025 SocialLearning. Bảo lưu mọi quyền.</p>
+          <p>&copy; 2025 SocialLearning. {t("layout.allRightsReserved")}</p>
         </div>
       </footer>
     </div>
