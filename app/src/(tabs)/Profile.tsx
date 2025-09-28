@@ -1,6 +1,12 @@
 // screens/ProfileScreen.tsx
 import React, { useState } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import ProfileHeader from '../screens/user/components/ProfileHeader';
 import { useNavigation } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
@@ -17,6 +23,25 @@ export default function ProfileScreen() {
   const { user } = useAuth();
 
   const handleLogout = async () => {
+    Alert.alert(
+      'Xác nhận',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Đăng xuất',
+          style: 'destructive',
+          onPress: logout,
+        },
+      ],
+      { cancelable: true },
+    );
+  };
+
+  const logout = async () => {
     await supabase.auth.signOut();
     // Xử lý sau khi đăng xuất
 
@@ -34,7 +59,7 @@ export default function ProfileScreen() {
         <Text className="text-3xl font-semibold">{user?.name}</Text>
         <View className="flex flex-row space-x-4">
           <TouchableOpacity className="" onPress={handleLogout}>
-            <LogOut size={34} />
+            <LogOut size={34} color={'red'} />
           </TouchableOpacity>
           <TouchableOpacity
             className="mx-6"
