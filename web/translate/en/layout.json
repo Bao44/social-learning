@@ -1,0 +1,44 @@
+{
+  "login": "Login",
+  "register": "Sign Up",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "profile": "Profile",
+
+  "socialLearningPlatform": "Social Learning Platform",
+  "socialNetworkCommunity": "Social Network Community",
+  "englishLearning": "English Learning",
+  "heroDescription": "Join a community where learning English becomes fun and interactive. Rewrite sentences, get instant feedback, earn points and climb the leaderboard while connecting with learners from around the world.",
+  "joinNow": "Join Now",
+  "tryLearning": "Try Learning",
+
+  "smartSentenceRewriting": "Smart Sentence Rewriting",
+  "smartSentenceDescription": "Rewrite sentences with AI-powered feedback. Get instant corrections and improve your English writing skills with every attempt.",
+  "socialInteractiveLearning": "Social Interactive Learning",
+  "socialInteractiveDescription": "Connect with other learners, share your progress, and learn from each other in an Instagram-inspired social environment.",
+  "scoringRanking": "Scoring & Ranking",
+  "scoringRankingDescription": "Earn points for accurate rewrites, compete with friends, and climb the global leaderboard to showcase your English skills.",
+  "aiSupport": "AI Support",
+  "aiSupportDescription": "AI chatbot supports all your questions, providing explanations and guidance to help you better understand grammar and sentence structure",
+
+  "howItWorks": "How It Works",
+  "step1": "1. Get Sentence",
+  "step1Description": "Receive a sentence to rewrite and improve",
+  "step2": "2. Rewrite",
+  "step2Description": "Use your English skills to improve the sentence",
+  "step3": "3. Get Feedback",
+  "step3Description": "Receive instant corrections and explanations",
+  "step4": "4. Earn Points",
+  "step4Description": "Earn points and climb the leaderboard",
+
+  "startYourJourney": "Ready to start your English journey?",
+  "ctaDescription": "Join thousands of learners improving their English writing skills every day",
+  "createFreeAccount": "Create Free Account",
+
+  "leaderboard": "Leaderboard",
+  "topMembers": "Top performing members",
+
+  "allRightsReserved": "All rights reserved.",
+
+  "logoutSuccess": "Logged out successfully"
+}
