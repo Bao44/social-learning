@@ -33,6 +33,7 @@ import { SearchPanel } from "./Search";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { NotificationsPanel } from "./Notifications";
 import useAuth from "@/hooks/useAuth";
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 const mainNavItems = [
   { icon: Home, path: "/dashboard", label: "Trang chủ", active: true },
@@ -71,6 +72,7 @@ const learningNavItems = [
 ];
 
 export function LeftSideBarHiddenLabel() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -146,7 +148,7 @@ export function LeftSideBarHiddenLabel() {
     // Xử lý sau khi đăng xuất
     localStorage.removeItem("selectedConversation");
     setSelectedConversation(null);
-    toast.success("Đăng xuất thành công!", { autoClose: 1500 });
+    toast.success(t("dashboard.logoutSuccess"), { autoClose: 1000 });
     router.push("/");
   };
 
@@ -234,26 +236,26 @@ export function LeftSideBarHiddenLabel() {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("dashboard.myAccount")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => handleMenuClick("/dashboard/profile")}
               >
-                Hồ sơ
+                {t("dashboard.profile")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => handleMenuClick("/dashboard/settings")}
               >
-                Cài đặt
+                {t("dashboard.settings")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={handleLogout}
               >
-                Đăng xuất
+                {t("dashboard.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

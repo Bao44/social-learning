@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { followUser, getFollowers, getFollowing } from "@/app/api/follow/route";
 import FollowModal from "../profile/components/FollowModal";
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 interface FriendSuggestion {
   id: string;
@@ -33,6 +34,7 @@ interface Follower {
 
 export function RightSidebar() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [suggestions, setSuggestions] = useState<FriendSuggestion[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,12 @@ export function RightSidebar() {
   const [following, setFollowing] = useState<Follower[]>([]);
   const [openFollower, setOpenFollower] = useState(false);
   const [follower, setFollower] = useState<Follower[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -112,12 +120,12 @@ export function RightSidebar() {
   };
 
   const getLevelName = (level: number) => {
-    if (level >= 10) return "Master";
-    if (level >= 8) return "Expert";
-    if (level >= 6) return "Advanced";
-    if (level >= 4) return "Intermediate";
-    if (level >= 2) return "Beginner";
-    return "Newbie";
+    if (level >= 10) return t("dashboard.master");
+    if (level >= 8) return t("dashboard.expert");
+    if (level >= 6) return t("dashboard.advanced");
+    if (level >= 4) return t("dashboard.intermediate");
+    if (level >= 2) return t("dashboard.beginner");
+    return t("dashboard.newbie");
   };
 
   useEffect(() => {
@@ -132,7 +140,7 @@ export function RightSidebar() {
       return;
     }
     setLoading(true);
-    let res = await getFollowing(user?.id);
+    const res = await getFollowing(user?.id);
     if (res.success) {
       setFollowing(res.data);
     }
@@ -144,7 +152,7 @@ export function RightSidebar() {
       return;
     }
     setLoading(true);
-    let res = await getFollowers(user?.id);
+    const res = await getFollowers(user?.id);
     if (res.success) {
       setFollower(res.data);
     }
@@ -152,104 +160,131 @@ export function RightSidebar() {
   };
 
   return (
-    <div className="space-y-6 fixed mt-20">
+    <div
+      className={`space-y-6 fixed mt-20 transform transition-all duration-700 ease-out ${
+        isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+      }`}
+    >
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full opacity-20 animate-float"></div>
+        <div className="absolute top-1/2 -left-12 w-24 h-24 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full opacity-25 animate-float-delayed"></div>
+        <div className="absolute bottom-1/4 -right-6 w-20 h-20 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full opacity-30 animate-float-slow"></div>
+      </div>
+
       {/* Thông tin cá nhân */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-slide-in-right relative z-10">
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
-            <Avatar className="h-14 w-14">
-              <AvatarImage src={getUserImageSrc(user?.avatar)} alt="Profile" />
+            <Avatar className="h-14 w-14 ring-2 ring-orange-200 hover:ring-orange-400 transition-all duration-300 transform hover:scale-110">
+              <AvatarImage
+                src={getUserImageSrc(user?.avatar) || "/placeholder.svg"}
+                alt="Profile"
+              />
             </Avatar>
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">{user?.name}</p>
+              <p className="font-semibold text-gray-900 hover:text-orange-600 transition-colors duration-300">
+                {user?.name}
+              </p>
               <p className="text-sm text-gray-500">{user?.nick_name}</p>
               <Badge
                 variant="secondary"
-                className={`text-xs mt-1 ${getLevelBadgeColor(user?.level)}`}
+                className={`text-xs mt-1 transform transition-all duration-300 hover:scale-105 ${getLevelBadgeColor(
+                  user?.level
+                )}`}
               >
                 Level {user?.level || 1} {getLevelName(user?.level || 1)}
               </Badge>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4 text-center">
-            <div>
+            <div className="transform transition-all duration-300 hover:scale-110 cursor-pointer">
               <p className="font-semibold text-gray-900">0</p>
-              <p className="text-xs text-gray-500">Bài viết</p>
+              <p className="text-xs text-gray-500">{t("dashboard.posts")}</p>
             </div>
             <div
-              className="cursor-pointer"
+              className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-600"
               onClick={() => setOpenFollower(true)}
             >
               <p className="font-semibold text-gray-900">{follower.length}</p>
-              <p className="text-xs text-gray-500">Người theo dõi</p>
+              <p className="text-xs text-gray-500">
+                {t("dashboard.followers")}
+              </p>
             </div>
             <div
-              className="cursor-pointer"
+              className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-600"
               onClick={() => setOpenFollowing(true)}
             >
               <p className="font-semibold text-gray-900">{following.length}</p>
-              <p className="text-xs text-gray-500">Đang theo dõi</p>
+              <p className="text-xs text-gray-500">
+                {t("dashboard.following")}
+              </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Gợi ý */}
-      <Card className="border-0 shadow-sm">
+      <Card
+        className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in-right relative z-10"
+        style={{ animationDelay: "200ms" }}
+      >
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-semibold text-gray-500">
-              Gợi ý cho bạn
+              {t("dashboard.suggestions")}
             </CardTitle>
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs text-gray-500 hover:text-gray-700 cursor-pointer"
+              className="text-xs text-gray-500 hover:text-orange-600 cursor-pointer transform transition-all duration-300 hover:scale-105"
               onClick={() => router.push("/dashboard/recommendFriends")}
             >
-              Xem tất cả
+              {t("dashboard.seeAll")}
             </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {loading ? (
-            // Loading skeleton
             [...Array(4)].map((_, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between animate-pulse"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
+                  <div className="h-10 w-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full animate-shimmer"></div>
                   <div>
-                    <div className="h-4 bg-gray-300 rounded w-20 mb-1"></div>
-                    <div className="h-3 bg-gray-300 rounded w-16"></div>
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20 mb-1 animate-shimmer"></div>
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
                   </div>
                 </div>
-                <div className="h-8 bg-gray-300 rounded w-16"></div>
+                <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
               </div>
             ))
           ) : suggestions.length > 0 ? (
-            suggestions.map((suggestion) => (
+            suggestions.map((suggestion, index) => (
               <div
                 key={suggestion.id}
-                className="flex items-center justify-between"
+                className="flex items-center justify-between transform transition-all duration-300 hover:scale-105 animate-slide-in-up"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center space-x-3">
                   <Avatar
-                    className="h-10 w-10 cursor-pointer"
+                    className="h-10 w-10 cursor-pointer ring-2 ring-transparent hover:ring-orange-200 transition-all duration-300 transform hover:scale-110"
                     onClick={() =>
                       router.push(`/dashboard/profile/${suggestion.nick_name}`)
                     }
                   >
                     <AvatarImage
-                      src={getUserImageSrc(suggestion.avatar)}
+                      src={
+                        getUserImageSrc(suggestion.avatar) || "/placeholder.svg"
+                      }
                       alt={suggestion.name}
                     />
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
-                      <p className="text-sm font-semibold text-gray-900 truncate">
+                      <p className="text-sm font-semibold text-gray-900 truncate hover:text-orange-600 transition-colors duration-300">
                         {suggestion.name}
                       </p>
                       {suggestion.isSameOrHigherLevel && (
@@ -257,7 +292,7 @@ export function RightSidebar() {
                           variant="secondary"
                           className={`text-xs bg-green-100 ${getLevelBadgeColor(
                             suggestion.level
-                          )} px-1`}
+                          )} px-1 transform transition-all duration-300 hover:scale-110`}
                         >
                           L{suggestion.level}
                         </Badge>
@@ -265,7 +300,9 @@ export function RightSidebar() {
                     </div>
                     <p className="text-xs text-gray-500">
                       {suggestion.mutualCount > 0
-                        ? `${suggestion.mutualCount} bạn chung`
+                        ? `${suggestion.mutualCount} ${t(
+                            "dashboard.mutualFriends"
+                          )}`
                         : `@${suggestion.nick_name}`}
                     </p>
                   </div>
@@ -274,28 +311,30 @@ export function RightSidebar() {
                   size="sm"
                   disabled={followingUser === suggestion.id}
                   onClick={() => handleFollowUser(suggestion.id)}
-                  className="text-xs bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 cursor-pointer"
+                  className="text-xs bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   {followingUser === suggestion.id ? (
                     <div className="flex items-center gap-1">
                       <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   ) : (
-                    "Theo dõi"
+                    t("dashboard.follow")
                   )}
                 </Button>
               </div>
             ))
           ) : (
-            <div className="text-center py-4">
-              <p className="text-xs text-gray-500 mb-2">🔍 Không có gợi ý</p>
+            <div className="text-center py-4 animate-fade-in">
+              <p className="text-xs text-gray-500 mb-2">
+                🔍 {t("dashboard.noSuggestions")}
+              </p>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.push("/dashboard/recommendFriends")}
-                className="text-xs cursor-pointer"
+                className="text-xs cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md"
               >
-                Khám phá thêm
+                {t("dashboard.exploreMore")}
               </Button>
             </div>
           )}
@@ -306,7 +345,7 @@ export function RightSidebar() {
       <FollowModal
         isOpen={openFollowing}
         onClose={() => setOpenFollowing(false)}
-        title="Đang theo dõi"
+        title={t("dashboard.following")}
         currentUserId={user?.id}
         data={following}
       />
@@ -314,7 +353,7 @@ export function RightSidebar() {
       <FollowModal
         isOpen={openFollower}
         onClose={() => setOpenFollower(false)}
-        title="Người theo dõi"
+        title={t("dashboard.followers")}
         currentUserId={user?.id}
         data={follower}
       />
