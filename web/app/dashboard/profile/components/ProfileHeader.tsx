@@ -159,7 +159,7 @@ export default function ProfileHeader() {
             <DialogContent className="sm:max-w-md rounded-2xl p-0">
               <DialogHeader className="p-4 pb-2">
                 <DialogTitle className="text-center text-lg">
-                  {t("dashboard.changeAvatar")}
+                  {t("dashboard.changePhoto")}
                 </DialogTitle>
               </DialogHeader>
 
@@ -167,7 +167,7 @@ export default function ProfileHeader() {
                 <label className="py-3 text-blue-600 border-t font-medium hover:bg-gray-50 text-center cursor-pointer transition-colors">
                   {isLoading
                     ? t("dashboard.uploading")
-                    : t("dashboard.uploadPhoto")}
+                    : t("dashboard.selectPhoto")}
                   <input
                     type="file"
                     accept="image/*"
@@ -187,7 +187,7 @@ export default function ProfileHeader() {
                 </button>
                 <DialogClose asChild>
                   <button
-                    className="py-3 font-medium cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="py-3 font-medium cursor-pointer"
                     disabled={isLoading}
                   >
                     {t("dashboard.cancel")}
