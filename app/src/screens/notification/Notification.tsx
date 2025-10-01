@@ -1,4 +1,11 @@
-import { ScrollView, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +15,7 @@ import { theme } from '../../../constants/theme';
 import Header from '../../components/Header';
 import NotificationItem from './components/NotificationItem';
 import { supabase } from '../../../lib/supabase';
-import { Bell, BellOff } from 'lucide-react-native';
+import { ArrowLeft, Bell, BellOff } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Notification = () => {
@@ -52,18 +59,20 @@ const Notification = () => {
         style={styles.headerGradient}
       >
         <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <View style={styles.bellIconContainer}>
-              <Bell size={24} color="#fff" />
-            </View>
-            <View>
-              <Text style={styles.headerTitle}>Thông báo</Text>
-              {unreadCount > 0 && (
-                <Text style={styles.headerSubtitle}>
-                  {unreadCount} thông báo mới
-                </Text>
-              )}
-            </View>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+            activeOpacity={0.8}
+          >
+            <ArrowLeft size={24} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Thông báo</Text>
+            {unreadCount > 0 && (
+              <Text style={styles.headerSubtitle}>
+                {unreadCount} thông báo mới
+              </Text>
+            )}
           </View>
         </View>
       </LinearGradient>
@@ -133,19 +142,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  bellIconContainer: {
+  backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+  },
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginRight: wp(10),
   },
   headerTitle: {
     fontSize: 24,
