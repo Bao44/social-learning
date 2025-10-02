@@ -62,5 +62,6 @@
   "errorGetSuggestions": "You don't have enough snowflakes to redeem a hint!",
   "snowflake": "Snowflake",
   "points": "Points",
-  "inputPlaceholder": "Enter the exercise content here..."
+  "inputPlaceholder": "Enter the exercise content here...",
+  "noHistorySubmit": "No submission table yet!"
 }

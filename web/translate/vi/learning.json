@@ -62,5 +62,6 @@
   "errorGetSuggestions": "Bạn không đủ bông tuyết để đổi gợi ý!",
   "snowflake": "Bông tuyết",
   "points": "Điểm",
-  "inputPlaceholder": "Nhập nội dung bài tập ở đây..."
+  "inputPlaceholder": "Nhập nội dung bài tập ở đây...",
+  "noHistorySubmit": "Chưa có bảng submit!"
 }
