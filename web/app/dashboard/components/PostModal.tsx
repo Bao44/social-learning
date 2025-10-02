@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { toast } from "react-toastify";
-import { addComment, deleteComment, fetchComments } from "@/app/api/post/route";
+import { addComment, deleteComment, fetchComments } from "@/app/apiClient/post/post";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Heart, Send } from "lucide-react";
-import { getSupabaseFileUrl, getUserImageSrc } from "@/app/api/image/route";
+import { getSupabaseFileUrl, getUserImageSrc } from "@/app/apiClient/image/image";
 import { convertToDate, formatTime } from "@/utils/formatTime";
 import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
-import { createNotification } from "@/app/api/notification/route";
+import { createNotification } from "@/app/apiClient/notification/notification";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 interface PostModalProps {

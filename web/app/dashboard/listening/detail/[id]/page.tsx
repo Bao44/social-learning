@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { listeningService } from "@/app/api/learning/listening/route"
+import { listeningService } from "@/app/apiClient/learning/listening/listening"
 
 export default function ListeningDetailPage() {
     const { id } = useParams()

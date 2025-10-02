@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserData } from "@/app/api/user/route";
+import { getUserData } from "@/app/apiClient/user/user";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, use, useEffect, useState } from "react";

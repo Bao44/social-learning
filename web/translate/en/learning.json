@@ -1,10 +1,15 @@
 {
   "practiceTitle": "English Speaking Practice",
+  "practiceSpeaking": "Practice Speaking",
+  "contentPracticeSpeaking": "Continuously improve your speaking skills to communicate more effectively",
   "selectLevelTopic": "Select level and topic to start practicing",
   "selectLevel": "Select Level",
   "selectTopic": "Select Topic",
+  "or": "or",
   "level": "Level",
   "startPractice": "Start Practice",
+  "creatingLesson": "Creating lesson with AI...",
+  "pleaseWait": "Please wait a moment",
   "titleLesson": "Practice Speaking with Sample Sentences",
   "sentence": "Sentence",
   "loadingSentence": "Loading sample sentence...",
@@ -48,5 +53,6 @@
   "titlePracticeTypeParagraph": "Practice writing paragraphs",
   "titlePracticeTypeSentence": "Practice writing sentences",
   "descriptionPracticeType": "Continuously improve your writing skills to communicate more effectively",
-  "selectTypeParagraphTitle": "Select type of paragraph"
+  "selectTypeParagraphTitle": "Select type of paragraph",
+  "exerciseList": "Exercise List"
 }

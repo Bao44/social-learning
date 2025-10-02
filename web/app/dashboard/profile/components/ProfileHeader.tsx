@@ -16,10 +16,10 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getUserImageSrc, uploadFile } from "@/app/api/image/route";
-import { updateUserData } from "@/app/api/user/route";
+import { getUserImageSrc, uploadFile } from "@/app/apiClient/image/image";
+import { updateUserData } from "@/app/apiClient/user/user";
 import { toast } from "react-toastify";
-import { getFollowers, getFollowing } from "@/app/api/follow/route";
+import { getFollowers, getFollowing } from "@/app/apiClient/follow/follow";
 import FollowModal from "./FollowModal";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";

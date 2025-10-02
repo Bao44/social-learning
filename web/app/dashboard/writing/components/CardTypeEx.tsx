@@ -1,6 +1,6 @@
 "use client"
 
-import { getTypeExercisesBySlug } from "@/app/api/learning/route"
+import { getTypeExercisesBySlug } from "@/app/apiClient/learning/learning"
 import { Icon } from "@/components/icons/Icon"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"

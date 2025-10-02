@@ -1,6 +1,6 @@
 "use client";
 
-import { sendResetOtp } from "@/app/api/auth/route";
+import { sendResetOtp } from "@/app/apiClient/auth/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,

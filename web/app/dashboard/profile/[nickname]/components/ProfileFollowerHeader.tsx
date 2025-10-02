@@ -4,14 +4,14 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Ellipsis, LoaderIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import {
   checkIsFollowing,
   followUser,
   getFollowers,
   getFollowing,
   unfollowUser,
-} from "@/app/api/follow/route";
+} from "@/app/apiClient/follow/follow";
 import UserFollowModal from "./UserFollowModal";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";

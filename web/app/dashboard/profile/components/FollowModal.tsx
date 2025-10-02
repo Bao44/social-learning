@@ -10,13 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { Button } from "@/components/ui/button";
 import {
   checkIsFollowing,
   followUser,
   unfollowUser,
-} from "@/app/api/follow/route";
+} from "@/app/apiClient/follow/follow";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
