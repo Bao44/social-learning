@@ -1,6 +1,6 @@
 "use client";
 
-import { feedbackWritingParagraphExercise, getWritingParagraphById, submitWritingParagraphExercise } from '@/app/api/learning/writing/route';
+import { feedbackWritingParagraphExercise, getWritingParagraphById, submitWritingParagraphExercise } from '@/app/apiClient/learning/writing/writing';
 import { Button } from '@/components/ui/button';
 import useAuth from '@/hooks/useAuth';
 import { CircleEqual, Lightbulb, Snowflake } from 'lucide-react';

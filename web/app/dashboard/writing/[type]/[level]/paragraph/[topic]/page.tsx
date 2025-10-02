@@ -4,9 +4,9 @@ import Link from 'next/link';
 import CardWritingExercise from '@/app/dashboard/writing/components/CardExercise';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getAllTopics } from '@/app/api/learning/route';
+import { getAllTopics } from '@/app/apiClient/learning/learning';
 import { useRouter } from 'next/navigation';
-import { getListWritingParagraphsByTypeLevelTypeParagraph } from '@/app/api/learning/writing/route';
+import { getListWritingParagraphsByTypeLevelTypeParagraph } from '@/app/apiClient/learning/writing/writing';
 
 interface WritingExercise {
     id: string;

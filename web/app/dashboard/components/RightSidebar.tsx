@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import useAuth from "@/hooks/useAuth";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { followUser, getFollowers, getFollowing } from "@/app/api/follow/route";
+import { followUser, getFollowers, getFollowing } from "@/app/apiClient/follow/follow";
 import FollowModal from "../profile/components/FollowModal";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

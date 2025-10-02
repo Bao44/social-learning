@@ -6,7 +6,7 @@ import CardUser from "./CardUser";
 import CardGroup from "./CardGroup";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
-import { fetchConversations } from "@/app/api/chat/conversation/route";
+import { fetchConversations } from "@/app/apiClient/chat/conversation/conversation";
 import { ConversationSkeleton } from "./ConversationSkeleton";
 import { getSocket } from "@/socket/socketClient";
 import { useConversation } from "@/components/contexts/ConversationContext";

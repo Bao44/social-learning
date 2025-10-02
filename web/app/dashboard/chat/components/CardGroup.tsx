@@ -5,7 +5,7 @@ import AvatarGroup from "./AvatarGroup";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { getSocket } from "@/socket/socketClient";
-import { fetchUnreadCount } from "@/app/api/chat/conversation/route";
+import { fetchUnreadCount } from "@/app/apiClient/chat/conversation/conversation";
 import { convertToTime } from "@/utils/formatTime";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

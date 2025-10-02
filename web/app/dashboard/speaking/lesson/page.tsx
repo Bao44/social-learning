@@ -27,7 +27,7 @@ import {
 import Confetti from "react-confetti";
 import type { JSX } from "react/jsx-runtime";
 import { useLanguage } from "@/components/contexts/LanguageContext";
-import { getSpeakingByTopicAndLevel } from "@/app/api/learning/speaking/route";
+import { getSpeakingByTopicAndLevel } from "@/app/apiClient/learning/speaking/speaking";
 
 interface Lesson {
   id: number;

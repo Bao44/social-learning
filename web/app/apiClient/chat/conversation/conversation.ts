@@ -1,7 +1,7 @@
 import api from "@/lib/api";
 
 // Hàm để lấy danh sách cuộc trò chuyện của người dùng
-export async function fetchConversations(userId) {
+export async function fetchConversations(userId:any) {
     try {
         const response = await api.get(`/api/conversations/user/${userId}`);
         return response.data;
@@ -12,7 +12,7 @@ export async function fetchConversations(userId) {
 }
 
 // Hàm để đếm số tin nhắn chưa đọc trong một cuộc trò chuyện
-export async function fetchUnreadCount(conversationId, userId) {
+export async function fetchUnreadCount(conversationId:any, userId:any) {
     try {
         const response = await api.get(`/api/conversations/${conversationId}/unread/${userId}`);
         return response.data.count;
