@@ -54,7 +54,6 @@ export default function PageExerciseDetail() {
 
                 // Lấy lịch sử nộp bài
                 if (userData) {
-                    console.log("Fetching history for user ID:", userData.id, "and paragraph ID:", id);
                     const historyResponse = await getHistorySubmitWritingParagraphByUserAndParagraph(String(userData.id), String(id));
                     setHistory(historyResponse);
                 }
@@ -78,10 +77,16 @@ export default function PageExerciseDetail() {
             );
             setFeedback(response.data.feedback);
             setInputValue(response.data.submit.content_submit);
+
+            // gọi lại history
+            const historyResponse = await getHistorySubmitWritingParagraphByUserAndParagraph(
+                String(userData.id),
+                String(exerciseDetail!.id)
+            );
+            setHistory(historyResponse);
         } catch (error) {
             console.error("Error submitting exercise:", error);
         }
-        setInputValue('');
     }
 
     // Handle xem gợi ý
@@ -240,11 +245,19 @@ export default function PageExerciseDetail() {
                             </div>
                             <div className="pt-1 border-b">
                                 <span>{t('learning.highestScore')}</span>
-                                <span className="font-bold float-right">{history ? Math.max(...history.map(item => item.feedback.score)) : 0}</span>
+                                <span className="font-bold float-right">
+                                    {history && history.length > 0
+                                        ? Math.max(...history.map(item => item.feedback?.score ?? 0))
+                                        : 0}
+                                </span>
                             </div>
                             <div className="pt-1 border-b">
                                 <span>{t('learning.highestAccuracy')}</span>
-                                <span className="font-bold float-right">{history ? Math.max(...history.map(item => item.feedback.accuracy)) : 0}%</span>
+                                <span className="font-bold float-right">
+                                    {history && history.length > 0
+                                        ? Math.max(...history.map(item => item.feedback?.accuracy ?? 0))
+                                        : 0}%
+                                </span>
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -270,7 +283,7 @@ export default function PageExerciseDetail() {
                                         ))
                                     ) : (
                                         <DropdownMenuItem disabled>
-                                            {t("learning.noHistory")}
+                                            {t("learning.noHistorySubmit")}
                                         </DropdownMenuItem>
                                     )}
                                 </DropdownMenuContent>
