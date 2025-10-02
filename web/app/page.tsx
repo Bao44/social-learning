@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getUserImageSrc } from "./api/image/route";
+import { getUserImageSrc } from "./apiClient/image/image";
 import { useEffect, useRef } from "react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/contexts/LanguageContext";

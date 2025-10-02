@@ -1,6 +1,6 @@
 "use client";
 
-import { getScoreUserByUserId } from "@/app/api/learning/score/route";
+import { getScoreUserByUserId } from "@/app/apiClient/learning/score/score";
 import useAuth from "@/hooks/useAuth";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 

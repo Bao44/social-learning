@@ -13,9 +13,9 @@ import {
   checkIsFollowing,
   followUser,
   unfollowUser,
-} from "@/app/api/follow/route";
+} from "@/app/apiClient/follow/follow";
 import useAuth from "@/hooks/useAuth";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";

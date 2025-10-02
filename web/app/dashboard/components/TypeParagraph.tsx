@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllTypeParagraphs } from "@/app/api/learning/route";
+import { getAllTypeParagraphs } from "@/app/apiClient/learning/learning";
 import { Icon } from "@/components/icons/Icon";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";

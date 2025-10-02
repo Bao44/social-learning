@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import useAuth from "@/hooks/useAuth"
-import { getUserByNickName } from "@/app/api/user/route"
+import { getUserByNickName } from "@/app/apiClient/user/user"
 import { Grid3X3 } from "lucide-react"
 import { motion } from "framer-motion"
 import ProfileFollowerHeader from "./components/ProfileFollowerHeader"

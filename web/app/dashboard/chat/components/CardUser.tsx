@@ -1,7 +1,7 @@
 "use client";
 
-import { fetchUnreadCount } from "@/app/api/chat/conversation/route";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { fetchUnreadCount } from "@/app/apiClient/chat/conversation/conversation";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

@@ -17,11 +17,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useEffect, useMemo, useState } from "react";
-import { getSupabaseFileUrl, getUserImageSrc } from "@/app/api/image/route";
+import { getSupabaseFileUrl, getUserImageSrc } from "@/app/apiClient/image/image";
 import { convertToDate, formatTime } from "@/utils/formatTime";
 import { PostModal } from "./PostModal";
 import useAuth from "@/hooks/useAuth";
-import { deletePost, likePost, unlikePost } from "@/app/api/post/route";
+import { deletePost, likePost, unlikePost } from "@/app/apiClient/post/post";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";

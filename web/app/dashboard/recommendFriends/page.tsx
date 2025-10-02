@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";

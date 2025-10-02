@@ -486,7 +486,7 @@ import { Label } from "@/components/ui/label";
 import { BookOpen, Eye, EyeOff, PenTool } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { register, resendOtp, verifyOtp } from "@/app/api/auth/route";
+import { register, resendOtp, verifyOtp } from "@/app/apiClient/auth/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
