@@ -10,9 +10,9 @@ import {
   fetchMessages,
   markMessagesAsRead,
   sendMessage,
-} from "@/app/api/chat/message/route";
+} from "@/app/apiClient/chat/message/message";
 import { getSocket } from "@/socket/socketClient";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { BookOpen, PenTool } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { verifyResetOtp } from "@/app/api/auth/route";
+import { verifyResetOtp } from "@/app/apiClient/auth/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";

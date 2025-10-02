@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { searchUsers } from "@/app/api/user/route";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { searchUsers } from "@/app/apiClient/user/user";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 interface SearchPanelProps {

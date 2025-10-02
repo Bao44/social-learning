@@ -3,7 +3,7 @@
 import {
   fetchNotifications,
   markNotificationAsRead,
-} from "@/app/api/notification/route";
+} from "@/app/apiClient/notification/notification";
 import useAuth from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -11,10 +11,10 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { convertToDate, formatTime } from "@/utils/formatTime";
 import { supabase } from "@/lib/supabase";
-import { getPostById } from "@/app/api/post/route";
+import { getPostById } from "@/app/apiClient/post/post";
 import { PostModal } from "./PostModal";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

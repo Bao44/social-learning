@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { login } from "@/app/api/auth/route";
+import { login } from "@/app/apiClient/auth/auth";
 import { supabase } from "@/lib/supabase";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/contexts/LanguageContext";

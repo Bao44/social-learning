@@ -1,11 +1,16 @@
 {
   "practiceTitle": "Luyện Nói Tiếng Anh",
+  "practiceSpeaking": "Luyện nói",
+  "contentPracticeSpeaking": "Không ngừng cải thiện kỹ năng nói của bạn để giao tiếp hiệu quả hơn",
   "selectLevelTopic": "Chọn mức độ và chủ đề để bắt đầu luyện tập",
   "selectLevel": "Chọn cấp độ",
   "selectTopic": "Chọn chủ đề",
+  "or": "hoặc",
   "level": "Cấp độ",
   "startPractice": "Bắt đầu luyện tập",
   "titleLesson": "Luyện nói theo câu mẫu",
+  "creatingLesson": "Đang tạo bài học bằng AI...",
+  "pleaseWait": "Vui lòng đợi trong giây lát",
   "sentence": "Câu",
   "loadingSentence": "Đang tải câu mẫu...",
   "status": "Trạng thái",
@@ -48,5 +53,6 @@
   "titlePracticeTypeParagraph": "Luyện viết đoạn văn",
   "titlePracticeTypeSentence": "Luyện viết câu",
   "descriptionPracticeType": "Không ngừng cải thiện kỹ năng viết của bạn để giao tiếp hiệu quả hơn",
-  "selectTypeParagraphTitle": "Chọn loại văn bản"
+  "selectTypeParagraphTitle": "Chọn loại văn bản",
+  "exerciseList": "Danh sách bài tập"
 }

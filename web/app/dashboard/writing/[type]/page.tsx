@@ -7,7 +7,7 @@ import { Topic } from "../../components/Topic";
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { TypeParagraph } from "../../components/TypeParagraph";
-import { generateWritingParagraphByAI } from "@/app/api/learning/writing/route";
+import { generateWritingParagraphByAI } from "@/app/apiClient/learning/writing/writing";
 import { Loader2 } from "lucide-react"; // icon loading
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
