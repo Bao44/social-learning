@@ -15,6 +15,19 @@ const authService = {
     });
 
     if (error) throw error;
+
+    const userId = data.user?.id;
+
+    if (userId) {
+      const { data: scoreData, error: scoreError } = await supabase
+        .from("score")
+        .insert({ userId: userId })
+        .select()
+        .single();
+
+      if (scoreError) throw scoreError;
+    }
+
     return { data, error };
   },
 
