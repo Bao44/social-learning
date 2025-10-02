@@ -1,137 +1,18 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Level } from "../components/Level";
-// import { Topic } from "../components/Topic";
-// import { Button } from "@/components/ui/button";
-// import { Loader2 } from "lucide-react";
-// import { RightSidebar } from "../components/RightSidebar";
-// import { useRouter } from "next/navigation";
-// import { listeningService } from "@/app/apiClient/learning/listening/listening";
-// import { parse } from "path";
-
-// export default function ListeningPage() {
-//   const router = useRouter();
-//   const [selectedLevel, setSelectedLevel] = useState<{
-//     id: number;
-//     slug: string;
-//     name: string;
-//   } | null>(null);
-//   const [selectedTopic, setSelectedTopic] = useState<{
-//     id: number;
-//     slug: string;
-//     name: string;
-//   } | null>(null);
-//   const [loading, setLoading] = useState(false);
-
-//   const isReady = selectedLevel && selectedTopic;
-//   const selectedInfo =
-//     selectedLevel && selectedTopic
-//       ? `${selectedLevel.name} - ${selectedTopic.name}`
-//       : "";
-
-//   const handleStart = () => {
-//     if (selectedLevel && selectedTopic) {
-//       localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
-//       localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
-//       router.push(
-//         `/dashboard/speaking/lesson?level=${selectedLevel.id}&topic=${selectedTopic.id}`
-//       );
-//     }
-//   };
-
-//   const handleGenerateAI = async () => {
-//     setLoading(true);
-//     // Call API to generate AI content here
-//     if (selectedLevel && selectedTopic) {
-//       const response = await listeningService.generateListeningExerciseByAI(
-//         selectedLevel.slug,
-//         selectedTopic.slug
-//       );
-//       if (response && response.data && response.data.id) {
-//         const listeningExerciseId = response.data.id;
-//         router.push(`/dashboard/listening/detail/${listeningExerciseId}`);
-//       } else {
-//         console.error("Invalid response from AI generation:", response);
-//       }
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="flex-1 px-6 py-6 pb-36">
-//         <div className="flex flex-col items-center justify-center text-center gap-2 mt-6">
-//           <h2 className="text-3xl font-semibold">Luyện nói</h2>
-//           <p className="text-lg tracking-widest text-gray-600">
-//             Không ngừng cải thiện kỹ năng nói của bạn để giao tiếp hiệu quả hơn
-//           </p>
-//         </div>
-
-//         <div className="flex flex-col max-w-5xl mx-auto mt-10 gap-6">
-//           <Level
-//             selectedLevel={selectedLevel}
-//             setSelectedLevel={setSelectedLevel}
-//           />
-//           <Topic
-//             selectedTopic={selectedTopic}
-//             setSelectedTopic={setSelectedTopic}
-//           />
-//         </div>
-//       </div>
-
-//       {isReady && (
-//         <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50">
-//           <div className="flex flex-col items-center gap-3 bg-white shadow-xl px-6 py-4 rounded-2xl max-w-5xl">
-//             <span className="text-lg font-semibold underline text-center">
-//               {selectedInfo}
-//             </span>
-//             <div className="flex items-center gap-4">
-//               <Button variant={"destructive"} onClick={handleGenerateAI}>
-//                 Generate AI
-//               </Button>
-//               or
-//               <Button variant={"default"} onClick={handleStart}>
-//                 Next step
-//               </Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Overlay loading */}
-//       {loading && (
-//         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-[9999]">
-//           <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-2xl shadow-lg">
-//             <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
-//             <span className="text-gray-700 font-medium">
-//               Đang tạo đoạn văn bằng AI...
-//             </span>
-//           </div>
-//         </div>
-//       )}
-
-//       <div className="w-90 p-6 hidden xl:block">
-//         <div className="sticky top-24">
-//           <RightSidebar />
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
 import { Level } from "../components/Level";
 import { Topic } from "../components/Topic";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, ArrowRight, Volume2 } from "lucide-react";
+import { Loader2, Sparkles, ArrowRight, Volume2, X } from "lucide-react";
 import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
 import { listeningService } from "@/app/apiClient/learning/listening/listening";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function SpeakingPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [selectedLevel, setSelectedLevel] = useState<{
     id: number;
@@ -178,6 +59,11 @@ export default function SpeakingPage() {
     setLoading(false);
   };
 
+  const handleClearSelection = () => {
+    setSelectedLevel(null);
+    setSelectedTopic(null);
+  };
+
   return (
     <>
       <div className="flex-1 px-4 md:px-6 lg:px-8 py-6 pb-36 relative overflow-hidden">
@@ -209,7 +95,7 @@ export default function SpeakingPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Luyện Nói
+            {t("learning.practiceSpeaking")}
           </motion.h1>
 
           <motion.p
@@ -218,7 +104,7 @@ export default function SpeakingPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Không ngừng cải thiện kỹ năng nói của bạn để giao tiếp hiệu quả hơn
+            {t("learning.contentPracticeSpeaking")}
           </motion.p>
         </motion.div>
 
@@ -230,46 +116,42 @@ export default function SpeakingPage() {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           {/* Level Selection */}
-          <motion.div
-            className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100"
-            whileHover={{ scale: 1.01 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100">
             <Level
               selectedLevel={selectedLevel}
               setSelectedLevel={setSelectedLevel}
             />
-          </motion.div>
+          </div>
 
           {/* Topic Selection */}
-          <motion.div
-            className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100"
-            whileHover={{ scale: 1.01 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100">
             <Topic
               selectedTopic={selectedTopic}
               setSelectedTopic={setSelectedTopic}
             />
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Fixed Bottom Action Bar */}
       <AnimatePresence>
         {isReady && (
           <motion.div
-            className="fixed bottom-0 left-0 right-0 flex justify-center z-50 px-4 pb-4 md:pb-6"
+            className="fixed bottom-6 left-1/2 right-0 -translate-x-1/2 z-50 px-4 pb-4 md:pb-6"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
           >
-            <motion.div
-              className="flex flex-col items-center gap-3 md:gap-4 bg-white shadow-2xl px-4 md:px-8 py-4 md:py-6 rounded-2xl md:rounded-3xl max-w-4xl w-full border-2 border-orange-200"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
+            <div className="relative flex flex-col items-center gap-3 md:gap-4 bg-white/95 backdrop-blur-xl shadow-2xl px-4 md:px-8 py-4 md:py-6 rounded-2xl md:rounded-3xl max-w-4xl w-full border-2 border-orange-200">
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleClearSelection}
+                className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-br from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 rounded-full flex items-center justify-center shadow-lg transition-all"
+              >
+                <X className="w-4 h-4 text-white" />
+              </motion.button>
+
               {/* Selected Info */}
               <motion.div
                 className="flex items-center gap-2 bg-gradient-to-r from-orange-50 to-pink-50 px-4 md:px-6 py-2 md:py-3 rounded-full border border-orange-200"
@@ -295,7 +177,7 @@ export default function SpeakingPage() {
                 </Button>
 
                 <span className="text-xs md:text-sm text-gray-500 font-medium hidden sm:block">
-                  hoặc
+                  {t("learning.or")}
                 </span>
 
                 <Button
@@ -303,11 +185,11 @@ export default function SpeakingPage() {
                   disabled={loading}
                   className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold rounded-xl md:rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Bắt đầu học
+                  {t("learning.start")}
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
                 </Button>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -341,10 +223,10 @@ export default function SpeakingPage() {
               </motion.div>
               <div className="flex flex-col items-center gap-2">
                 <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
-                  Đang tạo bài học bằng AI...
+                  {t("learning.creatingLesson")}
                 </span>
                 <span className="text-gray-500 text-xs md:text-sm text-center">
-                  Vui lòng đợi trong giây lát
+                  {t("learning.pleaseWait")}
                 </span>
               </div>
             </motion.div>
