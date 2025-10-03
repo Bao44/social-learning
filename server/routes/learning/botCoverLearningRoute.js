@@ -11,4 +11,7 @@ router.post('/generate-listening-exercise', botCoverLearningController.createGen
 // Route to feedback writing paragraph exercise
 router.post('/feedback-writing-paragraph-exercise', botCoverLearningController.feedbackWritingParagraphExercise);
 
+// Route to create a generated speaking exercise
+router.post('/generate-speaking-exercise', botCoverLearningController.createGenerateSpeakingExercise);
+
 module.exports = router;
