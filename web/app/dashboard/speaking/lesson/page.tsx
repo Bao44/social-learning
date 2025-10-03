@@ -62,6 +62,29 @@ function LessonContent() {
   const finishDebounceRef = useRef<number | null>(null);
   const lastCheckedTranscriptRef = useRef<string>("");
 
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [voiceForSentence, setVoiceForSentence] =
+    useState<SpeechSynthesisVoice | null>(null);
+
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    const updateVoices = () => {
+      const availableVoices = synth
+        .getVoices()
+        .filter((v) => v.lang.startsWith("en-"));
+      setVoices(availableVoices);
+    };
+    synth.onvoiceschanged = updateVoices;
+    updateVoices();
+  }, []);
+
+  useEffect(() => {
+    if (voices.length > 0) {
+      const randomVoice = voices[Math.floor(Math.random() * voices.length)];
+      setVoiceForSentence(randomVoice);
+    }
+  }, [currentSentence, voices]);
+
   useEffect(() => {
     setIsClient(true);
     setBrowserSupports(SpeechRecognition.browserSupportsSpeechRecognition());
@@ -214,22 +237,10 @@ function LessonContent() {
   ]);
 
   const speak = (text: string) => {
+    if (!voiceForSentence) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-
-    // Lọc chỉ những giọng tiếng Anh
-    const englishVoices = voices.filter((v) => v.lang.startsWith("en"));
-
-    if (englishVoices.length > 0) {
-      // Random 1 voice
-      const randomVoice =
-        englishVoices[Math.floor(Math.random() * englishVoices.length)];
-      utterance.voice = randomVoice;
-    }
-
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    speechSynthesis.speak(utterance);
+    utterance.voice = voiceForSentence;
+    window.speechSynthesis.speak(utterance);
   };
 
   const progress =
