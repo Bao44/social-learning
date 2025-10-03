@@ -193,6 +193,7 @@ function LessonContent() {
       } else {
         SpeechRecognition.stopListening();
         setTimeout(() => {
+          checkPronunciation();
           resetTranscript();
         }, 700);
       }
@@ -276,6 +277,49 @@ function LessonContent() {
       </div>
     );
   }
+
+  const checkPronunciation = () => {
+    if (!currentSentence) return;
+
+    const cleanSampleSentence = currentSentence
+      .toLowerCase()
+      .replace(/[.,!?]/g, "")
+      .trim();
+    const cleanTranscript = transcript
+      .toLowerCase()
+      .replace(/[.,!?]/g, "")
+      .trim();
+
+    const sampleWords = cleanSampleSentence.split(" ");
+    const spokenWords = cleanTranscript.split(" ");
+
+    let allCorrect = true;
+    let wrongPairs: Array<{ correct: string; spoken: string }> = [];
+
+    const compared = sampleWords.map((word, i) => {
+      if (spokenWords[i] === word) {
+        return (
+          <span key={i} className="text-green-600 mr-2">
+            {word}
+          </span>
+        );
+      } else {
+        allCorrect = false;
+        // Lưu cả từ đúng và từ sai
+        wrongPairs.push({
+          correct: word,
+          spoken: spokenWords[i] || "(bỏ qua)",
+        });
+        console.log("test:", wrongPairs);
+        console.log("Wrong word:", word, "Spoken as:", spokenWords[i]);
+        return (
+          <span key={i} className="text-red-600 mr-2">
+            {spokenWords[i] || "___"}
+          </span>
+        );
+      }
+    });
+  };
 
   return (
     <div className="flex-1 py-2 px-12">
