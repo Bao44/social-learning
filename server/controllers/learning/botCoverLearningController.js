@@ -203,31 +203,17 @@ const botCoverLearningController = {
   // Generate speaking exercise
   createGenerateSpeakingExercise: async (req, res) => {
     const { level_slug, topic_slug } = req.body;
-    console.log("Request body:", req.body);
 
     if (!level_slug || !topic_slug) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Lấy thông tin level từ Supabase
-    const level = await learningService.getLevelBySlug(level_slug);
-    if (!level) {
-      return res.status(400).json({ error: "Invalid level_slug" });
-    }
-    // Lấy thông tin topic từ Supabase
-    const topic = await learningService.getTopicBySlug(topic_slug);
-    if (!topic) {
-      return res.status(400).json({ error: "Invalid topic_slug" });
-    }
-
     // Prompt để gọi Gemini
-    const prompt = promptGenerateSpeaking(level.name, topic.name);
+    const prompt = promptGenerateSpeaking(level_slug, topic_slug);
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
       const result = await model.generateContent(prompt);
-
-      console.log("Gemini raw response:", result.response.text());
 
       const text = result.response.text();
       // Lọc JSON thuần từ Gemini
@@ -247,24 +233,18 @@ const botCoverLearningController = {
           .status(500)
           .json({ error: "Lỗi phân tích JSON", raw: jsonMatch[1] });
       }
-      console.log("Generated speaking exercise JSON:", json);
 
-      // Lưu bài tập nghe vào Supabase
-      const data = {
-        id: json.id,
-        content: json.content,
-        vocabulary_suggestions: json.vocabulary_suggestions // Mảng các từ bị ẩn
-          ? json.vocabulary_suggestions
-              .map((word) => word.trim())
-              .filter((word) => word.length > 0)
-          : [],
-      };
+      // Lưu bài nói vào data
+      const data = json.map((item) => ({
+        id: item.id,
+        content: item.content,
+      }));
 
       console.log("Data to be saved:", data);
 
-      // const resultSave = await botCoverLearningService.createListeningExercise(data);
+      // const resultSave = await botCoverLearningService.createSpeakingExercise(data);
 
-      res.json({ message: "Tạo bài tập nghe thành công", data });
+      res.json({ message: "Tạo bài tập nói thành công", data });
     } catch (error) {
       console.error("Error generating content:", error);
       return res.status(500).json({ error: "Error generating content" });

@@ -9,3 +9,18 @@ export const getSpeakingByTopicAndLevel = async (
   );
   return response.data;
 };
+
+// Generate speaking exercise by AI
+export const generateSpeakingExerciseByAI = async (
+  level_slug: string,
+  topic_slug: string
+) => {
+  const response = await api.post(
+    `/api/bot-cover-learning/generate-speaking-exercise`,
+    {
+      level_slug,
+      topic_slug,
+    }
+  );
+  return response.data;
+};
