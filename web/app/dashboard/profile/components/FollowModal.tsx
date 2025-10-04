@@ -215,7 +215,7 @@ export default function FollowModal({
         <DialogContent className="sm:max-w-md rounded-2xl p-0">
           <DialogHeader className="p-4 pb-2">
             <DialogTitle className="text-center text-lg">
-              {t("dashboard.confirmUnfollow")}
+              {t("dashboard.unfollowConfirmation")}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col divide-y">
@@ -229,7 +229,7 @@ export default function FollowModal({
               {t("dashboard.unfollow")}
             </button>
             <button
-              className="py-3 font-medium cursor-pointer hover:bg-gray-50 transition-colors"
+              className="py-3 font-medium cursor-pointer transition-colors"
               onClick={() => setSelectedUserId(null)}
             >
               {t("dashboard.close")}
