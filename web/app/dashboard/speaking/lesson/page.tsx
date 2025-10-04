@@ -32,6 +32,11 @@ import Confetti from "react-confetti";
 import type { JSX } from "react/jsx-runtime";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { getSpeakingByTopicAndLevel } from "@/app/apiClient/learning/speaking/speaking";
+import {
+  addPracticeScore,
+  getScoreUserByUserId,
+} from "@/app/apiClient/learning/score/score";
+import useAuth from "@/hooks/useAuth";
 
 interface Lesson {
   id: number;
@@ -40,6 +45,7 @@ interface Lesson {
 
 function LessonContent() {
   const router = useRouter();
+  const { user } = useAuth();
   const { t } = useLanguage();
 
   const [currentSentence, setCurrentSentence] = useState<string>("");
@@ -200,16 +206,33 @@ function LessonContent() {
             setCurrentLessonIndex((idx) => idx + 1);
           } else {
             setShowCelebration(true);
-            setResult(
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="mt-2 text-green-600 font-bold text-xl flex items-center gap-2"
-              >
-                <Trophy className="w-6 h-6" />
-                {t("learning.allComplete")}
-              </motion.div>
-            );
+            // Gọi API cộng điểm
+            if (user) {
+              addPracticeScore(user.id, 10).then(async () => {
+                // gọi API lấy điểm mới nhất
+                const res = await getScoreUserByUserId(user.id);
+                const totalScore = res?.data?.practice_score ?? 0;
+
+                setResult(
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="mt-2 text-green-600 font-bold text-xl flex flex-col items-center gap-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-6 h-6" />
+                      {t("learning.allComplete")}
+                    </div>
+                    <div className="text-blue-600">
+                      🎉 Bạn được cộng <b>10 điểm thực hành</b>
+                    </div>
+                    <div className="text-purple-600">
+                      🏆 Tổng số điểm bạn có hiện tại là: <b>{totalScore}</b>
+                    </div>
+                  </motion.div>
+                );
+              });
+            }
             resetTranscript();
           }
         }, 1500);
