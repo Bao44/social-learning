@@ -33,6 +33,12 @@
   "loadMore": "Tải thêm",
   "noMorePosts": "Không còn bài viết nào",
 
+  "yourAchievements": "Thành tích của bạn",
+  "practiceScore": "Điểm luyện tập",
+  "testScore": "Điểm kiểm tra",
+  "snowFlakes": "Bông tuyết",
+  "score": "điểm",
+
   "master": "Master",
   "expert": "Expert",
   "advanced": "Advanced",
@@ -176,6 +182,7 @@
   "unfollowSuccess": "Đã bỏ theo dõi",
   "followFailed": "Theo dõi thất bại",
   "unfollowFailed": "Bỏ theo dõi thất bại",
+  "unfollowConfirmation": "Xác nhận bỏ theo dõi",
   "noUsers": "Không có người dùng nào",
 
   "title": "Gợi ý bạn bè",

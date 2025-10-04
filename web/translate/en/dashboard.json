@@ -33,6 +33,12 @@
   "loadMore": "Load more",
   "noMorePosts": "No more posts",
 
+  "yourAchievements": "Your Achievements",
+  "practiceScore": "Practice Score",
+  "testScore": "Test Score",
+  "snowFlakes": "Snowflakes",
+  "score": "score",
+
   "master": "Master",
   "expert": "Expert",
   "advanced": "Advanced",
@@ -175,6 +181,7 @@
   "unfollowSuccess": "Unfollowed",
   "followFailed": "Failed to follow",
   "unfollowFailed": "Failed to unfollow",
+  "unfollowConfirmation": "Confirm unfollow",
   "noUsers": "No users",
 
   "title": "Friend Recommendations",
