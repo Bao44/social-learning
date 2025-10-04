@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, ArrowRight, Volume2, X } from "lucide-react";
 import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
-import { listeningService } from "@/app/apiClient/learning/listening/listening";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
@@ -33,6 +32,7 @@ export default function SpeakingPage() {
       : "";
 
   const handleStart = () => {
+    setLoading(true);
     if (selectedLevel && selectedTopic) {
       localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
       localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
@@ -40,21 +40,17 @@ export default function SpeakingPage() {
         `/dashboard/speaking/lesson?level=${selectedLevel.id}&topic=${selectedTopic.id}`
       );
     }
+    setLoading(false);
   };
 
   const handleGenerateAI = async () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
-      const response = await listeningService.generateListeningExerciseByAI(
-        selectedLevel.slug,
-        selectedTopic.slug
+      localStorage.setItem("levelSlug", JSON.stringify(selectedLevel.slug));
+      localStorage.setItem("topicSlug", JSON.stringify(selectedTopic.slug));
+      router.push(
+        `/dashboard/speaking/lessonAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
       );
-      if (response && response.data && response.data.id) {
-        const listeningExerciseId = response.data.id;
-        router.push(`/dashboard/listening/detail/${listeningExerciseId}`);
-      } else {
-        console.error("Invalid response from AI generation:", response);
-      }
     }
     setLoading(false);
   };

@@ -1,29 +1,49 @@
 module.exports = (level, topic) => `
-Bạn là một chuyên gia ngôn ngữ Anh. Hãy giúp tôi tạo một bài tập nói (một tình huống hoặc một chủ đề để thực hành nói) bằng tiếng Anh.
-Yêu cầu:
+Bạn là một chuyên gia ngôn ngữ tiếng Anh. Hãy giúp tôi tạo một danh sách 10 câu nói bằng tiếng Anh để luyện nói, phù hợp với trình độ ${level} và chủ đề "${topic}".
 
-1. Bài tập nói phải phù hợp với trình độ ${level}.
-2. Bài tập nói phải liên quan đến chủ đề ${topic}.
-3. Bài tập nói nên theo dạng của TOEIC Speaking, IELTS Speaking, hoặc Cambridge Speaking.
-4. Bài tập cần bao gồm một câu hỏi hoặc tình huống mở để khuyến khích người học phát triển ý tưởng và nói chi tiết.
-5. Đưa ra gợi ý về từ vựng hoặc cấu trúc câu có thể sử dụng (ít nhất 3 gợi ý).
-6. Tránh sử dụng các cụm từ quá phức tạp hoặc không phù hợp với trình độ người học.
-7. Tránh sử dụng các từ ngữ mang tính chuyên ngành hoặc quá học thuật.
-8. Tránh sử dụng các từ ngữ mang tính xúc phạm hoặc không phù hợp.
-9. Tránh sử dụng các từ ngữ mang tính chính trị hoặc tôn giáo.
-10. Tránh sử dụng các từ ngữ mang tính quảng cáo hoặc tiếp thị.
-11. Tạo 2 bài tập nói khác nhau.
-Trả lời bằng định dạng JSON thuần với cấu trúc sau:
-{
-    [
-        "id": "1",
-        "content": "Tình huống hoặc câu hỏi cho bài tập nói bằng tiếng Anh",
-        "vocabulary_suggestions": ["Đưa ra 3 đến 5 từ vựng và nghĩa cần học"]
-    ],
-    [
-        "id": "2",
-        "content": "Tình huống hoặc câu hỏi cho bài tập nói bằng tiếng Anh",
-        "vocabulary_suggestions": ["Đưa ra 3 đến 5 từ vựng và nghĩa cần học"]
-    ]
-}
+Yêu cầu bắt buộc:
+1. Chủ đề của các câu nói phải liên quan đến: ${topic}.
+2. Câu nói phải phù hợp với trình độ: ${level}.
+3. Câu nói phải tuân theo đúng giới hạn từ như sau:
+   - Beginner: mỗi câu chỉ từ 5 đến 7 từ.
+   - Intermediate: mỗi câu từ 8 đến 15 từ.
+   - Advanced: mỗi câu từ 10 đến 20 từ.
+4. Không được viết quá số từ quy định. Phải tuân thủ chính xác.
+5. Trả lời dưới dạng JSON thuần, dạng danh sách như sau:
+
+[
+    { "id": "1", "content": "Câu nói bằng tiếng Anh" },
+    { "id": "2", "content": "Câu nói bằng tiếng Anh" },
+    ...
+    { "id": "10", "content": "Câu nói bằng tiếng Anh" }
+]
+
+Ví dụ:
+Nếu level là "Beginner" và topic là "Travel":
+[
+    { "id": "1", "content": "I like to travel alone." },
+    { "id": "2", "content": "We go by train every week." }
+]
+
+Nếu level là "Intermediate":
+[
+    { "id": "1", "content": "I usually travel with my family during summer vacations." },
+    { "id": "2", "content": "My favorite destination is the mountains because it's peaceful." }
+]
+
+Nếu level là "Advanced":
+[
+    { "id": "1", "content": "Traveling to unfamiliar countries helps broaden my perspective and cultural understanding." },
+    { "id": "2", "content": "I always research local customs and etiquette before visiting a foreign country." }
+]
+
+6. Mỗi câu bắt buộc phải có số từ nằm trong khoảng quy định theo từng trình độ. Không được ít hơn hoặc vượt quá giới hạn này.
+7. Câu ở trình độ Beginner chỉ dùng từ vựng và ngữ pháp đơn giản (hiện tại đơn, danh từ, động từ cơ bản).
+8. Câu ở trình độ Intermediate có thể dùng thì tiếp diễn, quá khứ đơn, hiện tại hoàn thành, hoặc câu phức đơn giản.
+9. Câu ở trình độ Advanced được phép dùng câu ghép, câu phức, mệnh đề quan hệ, hoặc từ vựng học thuật.
+10. Các câu nói phải mang ý tưởng khác nhau, tránh lặp lại cấu trúc hoặc nội dung quá giống nhau.
+11. Không sử dụng [your name], [your country], [your favorite place] hoặc các cụm từ tương tự mà hãy hãy tạo tên bất kì.
+12. Không sử dụng kí tự đặc biệt như @, #, $, %, ^, &, *, (, ), -, +, =, v.v.
+
+Chỉ trả về một danh sách JSON thuần, không giải thích, không chèn text, không xuống dòng thừa.
 `;
