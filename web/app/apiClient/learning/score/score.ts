@@ -2,11 +2,23 @@ import api from "@/lib/api";
 
 // Get score user by user_id
 export const getScoreUserByUserId = async (user_id: string) => {
-    try {
-        const response = await api.get(`/api/learning/score-user/score/${user_id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching score user by user_id:", error);
-        throw error;
-    }
+  try {
+    const response = await api.get(`/api/learning/score-user/score/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching score user by user_id:", error);
+    throw error;
+  }
+};
+
+// Add practice score to user
+export const addPracticeScore = async (
+  userId: string,
+  practiceScore: number
+) => {
+  const response = await api.post(`/api/learning/score-user/practiceScore`, {
+    userId,
+    practiceScore,
+  });
+  return response.data;
 };
