@@ -66,7 +66,7 @@ export default function SpeakingPage() {
 
   return (
     <>
-      <div className="flex-1 px-4 md:px-6 lg:px-8 py-6 pb-36 relative overflow-hidden">
+      <div className="flex-1 px-6 py-6 pb-36 sm:ml-10">
         {/* Decorative background elements */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
           <div className="absolute w-32 h-32 md:w-40 md:h-40 bg-orange-200/20 rounded-full blur-3xl top-[5%] left-[10%] animate-pulse" />
