@@ -3,12 +3,15 @@ const learningService = require("../../services/learning/learningService");
 const promptGenerateParagraph = require("../../utils/prompt/generateParagraph");
 const promptGenerateListening = require("../../utils/prompt/generateListening");
 const promptGenerateSpeaking = require("../../utils/prompt/generateSpeaking");
+const promptGeneratePersonalWord = require("../../utils/prompt/generateVocabulary");
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const writingService = require("../../services/learning/writingService");
 const promptGiveFeedbackWritingParagraph = require("../../utils/prompt/feedbackAIExParagraph");
-const userService = require("../../services/userService");
 const scoreUserService = require("../../services/learning/scoreUserService");
+const {
+  updatePersonalVocab,
+} = require("../../services/learning/vocabularyService");
 
 // Khởi tạo Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -240,11 +243,68 @@ const botCoverLearningController = {
         content: item.content,
       }));
 
-      console.log("Data to be saved:", data);
-
-      // const resultSave = await botCoverLearningService.createSpeakingExercise(data);
-
       res.json({ message: "Tạo bài tập nói thành công", data });
+    } catch (error) {
+      console.error("Error generating content:", error);
+      return res.status(500).json({ error: "Error generating content" });
+    }
+  },
+
+  // Test Gemini: Generate personal word
+  createGeneratePersonalWordByAI: async (req, res) => {
+    const { userId, word } = req.body;
+
+    if (!userId || !word) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Prompt để gọi Gemini
+    const prompt = promptGeneratePersonalWord(word);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const result = await model.generateContent(prompt);
+
+      const text = result.response.text();
+      // Lọc JSON thuần từ Gemini
+      const jsonMatch = text.match(/```json\s*([\s\S]*?)```/i);
+      if (!jsonMatch) {
+        return res
+          .status(500)
+          .json({ error: "Gemini không trả JSON hợp lệ", raw: text });
+      }
+
+      let json;
+      try {
+        json = JSON.parse(jsonMatch[1]);
+      } catch (e) {
+        console.error("Lỗi parse JSON:", e);
+        return res
+          .status(500)
+          .json({ error: "Lỗi phân tích JSON", raw: jsonMatch[1] });
+      }
+
+      // Lưu từ vựng cá nhân vào data
+      const data = json.map((item) => ({
+        id: item.id,
+        word: item.word,
+        word_vi: item.word_vi,
+        meaning: item.meaning,
+        meaning_vi: item.meaning_vi,
+        example: item.example,
+        example_vi: item.example_vi,
+      }));
+
+      // Lưu vào mảng jsonb của bảng personalVocab
+      const resultSaveVocab = await updatePersonalVocab(userId, word, data);
+
+      if (resultSaveVocab.error) {
+        return res.status(500).json({ error: "Lỗi khi lưu từ vựng cá nhân" });
+      }
+      console.log("Tạo từ vựng cá nhân thành công cho từ :", word);
+      res
+        .status(200)
+        .json({ success: true, message: "Tạo từ vựng cá nhân thành công", data });
     } catch (error) {
       console.error("Error generating content:", error);
       return res.status(500).json({ error: "Error generating content" });

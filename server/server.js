@@ -25,6 +25,7 @@ const writtingRoute = require("./routes/learning/writingRoute");
 const listeningRoute = require("./routes/learning/listeningRoute");
 const speakingRoute = require("./routes/learning/speakingRoute");
 const scoreUserRoute = require("./routes/learning/scoreUserRoute");
+const vocabularyRoute = require("./routes/learning/vocabularyRoute");
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -40,7 +41,7 @@ app.use("/api/learning/writing", writtingRoute);
 app.use("/api/learning/listening", listeningRoute);
 app.use("/api/learning/speaking", speakingRoute);
 app.use("/api/learning/score-user", scoreUserRoute);
-
+app.use("/api/learning/vocabulary", vocabularyRoute);
 
 connectDB().then(() => {
   server.listen(PORT, () => {

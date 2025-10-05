@@ -14,4 +14,7 @@ router.post('/feedback-writing-paragraph-exercise', botCoverLearningController.f
 // Route to create a generated speaking exercise
 router.post('/generate-speaking-exercise', botCoverLearningController.createGenerateSpeakingExercise);
 
+// Route to create a generated personal word exercise
+router.post('/generate-personal-word-by-AI', botCoverLearningController.createGeneratePersonalWordByAI);
+
 module.exports = router;
