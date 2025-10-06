@@ -68,7 +68,7 @@ export function SearchPanel({ isOpen, onClose }: SearchPanelProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="font-semibold text-lg">{t("dashboard.search")}</h2>
+              <h2 className="font-semibold text-lg bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">{t("dashboard.search")}</h2>
               <button onClick={onClose}>
                 <X className="h-5 w-5" />
               </button>

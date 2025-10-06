@@ -46,11 +46,11 @@ export function useOnlineStatus() {
     pingLastSeen();
     checkPersonalVocab();
 
-    // Lặp lại mỗi 2 phút
+    // Lặp lại mỗi 30 giây
     interval = setInterval(() => {
       pingLastSeen();
       checkPersonalVocab();
-    }, 120 * 1000);
+    }, 30 * 1000);
 
     return () => clearInterval(interval);
   }, []);
