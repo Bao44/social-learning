@@ -106,8 +106,30 @@ export function LeftSideBarHiddenLabel() {
       )
       .subscribe();
 
+    const notificationLearningChannel = supabase
+      .channel("notificationsLearning")
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // cả INSERT và UPDATE
+          schema: "public",
+          table: "notificationsLearning",
+          filter: `userId=eq.${user.id}`,
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            setNotificationCount((prev) => prev + 1);
+          }
+          if (payload.eventType === "UPDATE" && payload.new.is_read === true) {
+            setNotificationCount((prev) => Math.max(prev - 1, 0));
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(notificationChannel);
+      supabase.removeChannel(notificationLearningChannel);
     };
   }, [user]);
 

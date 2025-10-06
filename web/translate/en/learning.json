@@ -63,5 +63,19 @@
   "snowflake": "Snowflake",
   "points": "Points",
   "inputPlaceholder": "Enter the exercise content here...",
-  "noHistorySubmit": "No submission table yet!"
+  "noHistorySubmit": "No submission table yet!",
+
+  "myVocabulary": "My Vocabulary",
+  "myVocabularyDescription": "Master your words, expand your knowledge",
+  "totalWords": "Total Words",
+  "averageMastery": "Average Mastery",
+  "needReview": "Need Review",
+  "searchPlaceholder": "Search vocabulary...",
+  "masteryLevel": "Mastery Level",
+  "error": "error",
+  "noVocabularyFound": "No vocabulary found",
+  "suggestion": "Try adjusting your search query",
+  "clearSearch": "Clear Search",
+  "noVocabulary": "No vocabulary yet",
+  "startLearning": "Start learning and add new words to your personal vocabulary collection"
 }

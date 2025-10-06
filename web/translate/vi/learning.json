@@ -63,5 +63,19 @@
   "snowflake": "Bông tuyết",
   "points": "Điểm",
   "inputPlaceholder": "Nhập nội dung bài tập ở đây...",
-  "noHistorySubmit": "Chưa có bảng submit!"
+  "noHistorySubmit": "Chưa có bảng submit!",
+
+  "myVocabulary": "Từ vựng của tôi",
+  "myVocabularyDescription": "Làm chủ lời nói, mở rộng kiến ​​thức",
+  "totalWords": "Tổng số từ",
+  "averageMastery": "Khả năng thông thạo trung bình",
+  "needReview": "Cần xem lại",
+  "searchPlaceholder": "Tìm kiếm từ vựng...",
+  "masteryLevel": "Trình độ thành thạo",
+  "error": "lỗi",
+  "noVocabularyFound": "Không tìm thấy từ vựng",
+  "suggestion": "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn",
+  "clearSearch": "Xóa tìm kiếm",
+  "noVocabulary": "Chưa có từ vựng",
+  "startLearning": "Bắt đầu học và thêm từ mới vào bộ sưu tập từ vựng cá nhân của bạn"
 }
