@@ -144,20 +144,34 @@ export default function VocabularyDetailPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl space-y-6">
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/dashboard/vocabulary")}
-            className="group hover:bg-gray-200 cursor-pointer"
+        {/* Back Button and IPA */}
+        <div className="flex items-center gap-4 justify-between">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            Quay lại
-          </Button>
-        </motion.div>
+            <Button
+              variant="ghost"
+              onClick={() => router.push("/dashboard/vocabulary")}
+              className="group hover:bg-gray-200 cursor-pointer"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              Quay lại
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <Button
+              variant="ghost"
+              onClick={() => router.push("/dashboard/vocabulary/ipa")}
+              className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer text-white hover:text-white"
+            >
+              Xem bảng IPA
+            </Button>
+          </motion.div>
+        </div>
 
         {/* Header Card */}
         <motion.div
