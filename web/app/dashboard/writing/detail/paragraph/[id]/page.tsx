@@ -46,6 +46,16 @@ export default function PageExerciseDetail() {
     const scoreRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+    const [showPlus, setShowPlus] = useState(false);
+    const [plusPos, setPlusPos] = useState<{ x: number; y: number } | null>(null);
+    const [plusValue, setPlusValue] = useState<number | null>(null);
+    const [showPlusSnow, setShowPlusSnow] = useState(false);
+    const [plusSnowPos, setPlusSnowPos] = useState<{ x: number; y: number } | null>(null);
+    const [plusSnowValue, setPlusSnowValue] = useState<number | null>(null);
+
+    const feedbackRef = useRef<HTMLDivElement | null>(null);
+
+
     // Lấy thông tin bài tập theo id
     useEffect(() => {
         const fetchExerciseDetail = async () => {
@@ -79,6 +89,23 @@ export default function PageExerciseDetail() {
             );
             setFeedback(response.data.feedback);
             setInputValue(response.data.submit.content_submit);
+
+            const feedbackRect = feedbackRef.current?.getBoundingClientRect();
+            if (feedbackRect) {
+                const centerX = feedbackRect.left + feedbackRect.width / 2;
+                const startY = feedbackRect.top + 40;
+
+                // + điểm
+                setPlusPos({ x: centerX - 100, y: startY });
+                setPlusValue(response.data.score);
+                setShowPlus(true);
+
+                // + snowflake
+                setPlusSnowPos({ x: centerX + 100, y: startY });
+                setPlusSnowValue(response.data.snowflake);
+                setShowPlusSnow(true);
+            }
+
 
             // Cập nhật điểm
             if (score) {
@@ -117,6 +144,7 @@ export default function PageExerciseDetail() {
         score && (score.number_snowflake = Math.max(0, score.number_snowflake - 2));
         try {
             setFeedbackLoading(true);
+            setFeedback(null);
             const response = await feedbackWritingParagraphExercise(
                 userData.id,
                 exerciseDetail!.id,
@@ -301,7 +329,7 @@ export default function PageExerciseDetail() {
                         </div>
                     </div>
                     {/* Feedback */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border min-h-1/3 max-h-[calc(100vh-150px)] overflow-y-auto">
+                    <div ref={feedbackRef} className="bg-white p-6 rounded-xl shadow-sm border min-h-1/3 max-h-[calc(100vh-150px)] overflow-y-auto">
                         {submitLoading ? (
                             <div className='flex flex-col items-center justify-center h-full'>
                                 <Lightbulb className="animate-pulse h-6 w-6 text-yellow-400 mb-2" />
@@ -427,6 +455,54 @@ export default function PageExerciseDetail() {
                             className="pointer-events-none text-red-500 font-bold text-3xl"
                         >
                             -2 <Snowflake className="inline h-8 w-8 ml-2" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {showPlus && plusPos && (
+                        <motion.div
+                            initial={{
+                                position: "fixed",
+                                left: plusPos.x,
+                                top: plusPos.y,
+                                opacity: 1,
+                                scale: 1,
+                            }}
+                            animate={{
+                                y: -120, // bay lên trên
+                                opacity: 0,
+                                scale: 1.6,
+                            }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 3, ease: "easeOut" }}
+                            onAnimationComplete={() => setShowPlus(false)}
+                            className="pointer-events-none text-yellow-400 font-bold text-4xl drop-shadow-lg"
+                        >
+                            +{plusValue} <CircleEqual className="inline h-8 w-8 ml-1 text-yellow-400" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {showPlusSnow && plusSnowPos && (
+                        <motion.div
+                            initial={{
+                                position: "fixed",
+                                left: plusSnowPos.x,
+                                top: plusSnowPos.y,
+                                opacity: 1,
+                                scale: 1,
+                            }}
+                            animate={{
+                                y: -120, // bay lên cao hơn 1 chút
+                                opacity: 0,
+                                scale: 1.6,
+                            }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 3, ease: "easeOut" }}
+                            onAnimationComplete={() => setShowPlusSnow(false)}
+                            className="pointer-events-none text-blue-500 font-bold text-4xl drop-shadow-lg"
+                        >
+                            +{plusSnowValue} <Snowflake className="inline h-8 w-8 ml-1 text-blue-400" />
                         </motion.div>
                     )}
                 </AnimatePresence>
