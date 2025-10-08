@@ -4,6 +4,7 @@ const promptGenerateParagraph = require("../../utils/prompt/generateParagraph");
 const promptGenerateListening = require("../../utils/prompt/generateListening");
 const promptGenerateSpeaking = require("../../utils/prompt/generateSpeaking");
 const promptGeneratePersonalWord = require("../../utils/prompt/generateVocabulary");
+const promptGenerateConversationPractice = require("../../utils/prompt/generateConversationPractice");
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const writingService = require("../../services/learning/writingService");
@@ -293,6 +294,8 @@ const botCoverLearningController = {
         meaning_vi: item.meaning_vi,
         example: item.example,
         example_vi: item.example_vi,
+        ipa: item.ipa,
+        word_type: item.word_type,
       }));
 
       // Lưu vào mảng jsonb của bảng personalVocab
@@ -301,10 +304,60 @@ const botCoverLearningController = {
       if (resultSaveVocab.error) {
         return res.status(500).json({ error: "Lỗi khi lưu từ vựng cá nhân" });
       }
-      console.log("Tạo từ vựng cá nhân thành công cho từ :", word);
-      res
-        .status(200)
-        .json({ success: true, message: "Tạo từ vựng cá nhân thành công", data });
+
+      res.status(200).json({
+        success: true,
+        message: "Tạo từ vựng cá nhân thành công",
+        data,
+      });
+    } catch (error) {
+      console.error("Error generating content:", error);
+      return res.status(500).json({ error: "Error generating content" });
+    }
+  },
+
+  createGenerateConversationPracticeByAI: async (req, res) => {
+    const { level_slug, topic_slug } = req.body;
+
+    if (!level_slug || !topic_slug) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Prompt để gọi Gemini
+    const prompt = promptGenerateConversationPractice(level_slug, topic_slug);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const result = await model.generateContent(prompt);
+
+      const text = result.response.text();
+      // Lọc JSON thuần từ Gemini
+      const jsonMatch = text.match(/```json\s*([\s\S]*?)```/i);
+      if (!jsonMatch) {
+        return res
+          .status(500)
+          .json({ error: "Gemini không trả JSON hợp lệ", raw: text });
+      }
+
+      let json;
+      try {
+        json = JSON.parse(jsonMatch[1]);
+      } catch (e) {
+        console.error("Lỗi parse JSON:", e);
+        return res
+          .status(500)
+          .json({ error: "Lỗi phân tích JSON", raw: jsonMatch[1] });
+      }
+      
+      // Lưu bài nói vào data
+      const data = {
+        description: json.description,
+        content: json.content,
+      };
+
+      console.log("Data to be sent:", data);
+
+      res.json({ message: "Tạo bài tập nói thành công", data });
     } catch (error) {
       console.error("Error generating content:", error);
       return res.status(500).json({ error: "Error generating content" });

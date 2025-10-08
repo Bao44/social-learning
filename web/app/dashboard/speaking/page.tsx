@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Level } from "../components/Level";
 import { Topic } from "../components/Topic";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, ArrowRight, Volume2, X } from "lucide-react";
+import { Loader2, Sparkles, ArrowRight, Volume2, X, Bot } from "lucide-react";
 import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,7 +31,7 @@ export default function SpeakingPage() {
       ? `${selectedLevel.name} - ${selectedTopic.name}`
       : "";
 
-  const handleStart = () => {
+  const handleSoloPractice = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
       localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
@@ -43,13 +43,37 @@ export default function SpeakingPage() {
     setLoading(false);
   };
 
-  const handleGenerateAI = async () => {
+  const handleSoloPracticeAI = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
-      localStorage.setItem("levelSlug", JSON.stringify(selectedLevel.slug));
-      localStorage.setItem("topicSlug", JSON.stringify(selectedTopic.slug));
+      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
+      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
       router.push(
-        `/dashboard/speaking/lessonAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+        `/dashboard/speaking/lessonAI?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+      );
+    }
+    setLoading(false);
+  };
+
+  const handleConversationPractice = () => {
+    setLoading(true);
+    if (selectedLevel && selectedTopic) {
+      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
+      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
+      router.push(
+        `/dashboard/speaking/conversationPractice?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+      );
+    }
+    setLoading(false);
+  };
+
+  const handleConversationPracticeAI = () => {
+    setLoading(true);
+    if (selectedLevel && selectedTopic) {
+      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
+      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
+      router.push(
+        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.id}&topic=${selectedTopic.id}`
       );
     }
     setLoading(false);
@@ -138,7 +162,7 @@ export default function SpeakingPage() {
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
           >
-            <div className="relative flex flex-col items-center gap-3 md:gap-4 bg-white/95 backdrop-blur-xl shadow-2xl px-4 md:px-8 py-4 md:py-6 rounded-2xl md:rounded-3xl max-w-4xl w-full border-2 border-orange-200">
+            <div className="relative flex flex-col items-center gap-4 md:gap-6 bg-white/95 backdrop-blur-xl shadow-2xl px-4 md:px-8 py-4 md:py-6 rounded-2xl md:rounded-3xl max-w-5xl w-full border-2 border-orange-200">
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
@@ -155,35 +179,99 @@ export default function SpeakingPage() {
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
+                <Sparkles className="w-4 h-4 text-orange-500" />
                 <span className="text-sm md:text-base lg:text-lg font-semibold text-gray-800 text-center">
                   {selectedInfo}
                 </span>
               </motion.div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 w-full sm:w-auto">
-                <Button
-                  variant="outline"
-                  onClick={handleGenerateAI}
-                  disabled={loading}
-                  className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white border-0 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold rounded-xl md:rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Sparkles className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                  Generate AI
-                </Button>
+              {/* Mode Selection Title */}
+              <div className="text-center">
+                <h3 className="text-base md:text-lg font-bold text-gray-800">
+                  {t("learning.selectPracticeMode")}
+                </h3>
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  {t("learning.selectSpeakingMode")}
+                </p>
+              </div>
 
-                <span className="text-xs md:text-sm text-gray-500 font-medium hidden sm:block">
-                  {t("learning.or")}
-                </span>
-
-                <Button
-                  onClick={handleStart}
-                  disabled={loading}
-                  className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold rounded-xl md:rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              {/* Mode Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full">
+                {/* Solo Practice Card */}
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 md:p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer"
                 >
-                  {t("learning.start")}
-                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
-                </Button>
+                  <div className="flex flex-col items-center text-center gap-3">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                      <Volume2 className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-base md:text-lg font-bold text-gray-800">
+                        {t("learning.personalSpeaking")}
+                      </h4>
+                      <p className="text-xs md:text-sm text-gray-600 mt-1">
+                        {t("learning.sentenceSpeaking")}
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full">
+                      <Button
+                        onClick={handleSoloPracticeAI}
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white cursor-pointer"
+                      >
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate AI
+                      </Button>
+                      <Button
+                        onClick={handleSoloPractice}
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white cursor-pointer"
+                      >
+                        {t("learning.start")}
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Conversation Practice Card */}
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="bg-gradient-to-br from-orange-50 to-pink-50 p-4 md:p-6 rounded-xl border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer"
+                >
+                  <div className="flex flex-col items-center text-center gap-3">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center">
+                      <Bot className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-base md:text-lg font-bold text-gray-800">
+                        {t("learning.aiSpeaking")}
+                      </h4>
+                      <p className="text-xs md:text-sm text-gray-600 mt-1">
+                        {t("learning.conversationAI")}
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full">
+                      <Button
+                        onClick={handleConversationPracticeAI}
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white cursor-pointer"
+                      >
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate AI
+                      </Button>
+                      <Button
+                        onClick={handleConversationPractice}
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
+                      >
+                        {t("learning.start")}
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
