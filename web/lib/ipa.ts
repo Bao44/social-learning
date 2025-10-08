@@ -24,7 +24,6 @@ const IPA_DATA: IPAEntry[] = [
     examples: [
       { word: "his", ipa: "/hɪz/" },
       { word: "kid", ipa: "/kɪd/" },
-      { word: "sit", ipa: "/sɪt/" },
     ],
     notes: null,
   },
