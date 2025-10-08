@@ -1,8 +1,12 @@
 const writingService = require('../../services/learning/writingService');
 const botCoverLearningService = require('../../services/learning/botCoverLearningService');
 const promptGiveFeedbackWritingParagraph = require('../../utils/prompt/feedbackAIExParagraph');
+const learningService = require('../../services/learning/learningService');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { calculateWritingScore } = require('../../utils/score/writingScore');
+const scoreUserService = require('../../services/learning/scoreUserService');
+const { calculateWritingSnowflake } = require('../../utils/score/writingSnowflake');
 
 // Khởi tạo Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -90,13 +94,45 @@ const writingController = {
                 return res.status(500).json({ error: "Internal Server Error" });
             }
 
+
             // Cập nhật hoặc tạo mới progress
             const progressData = await writingService.getProgressWritingParagraph(user_id, paragraph_id);
+
+            // Tính điểm cho bài viết
+            const level = await learningService.getLevelById(paragraph.level_id);
+            if (!level) {
+                console.error("Error fetching level for paragraph:", paragraph);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            const score = calculateWritingScore(
+                level.slug === "beginner" ? 10 : level.slug === "intermediate" ? 20 : 30, 
+                savedFeedback[0].accuracy === 100, 
+                progressData ? progressData.submit_times : 0,
+                progressData ? progressData.isCorrect : false
+            );
+            // Cộng điểm cho user
+            if (score > 0) {
+                await scoreUserService.addPracticeScore(user_id, score);
+            }
+
+            // Tính bông tuyết cho user
+            const snowflakeScore = calculateWritingSnowflake(
+                level.slug === "beginner" ? 1 : level.slug === "intermediate" ? 2 : 3,
+                savedFeedback[0].accuracy === 100,
+                progressData ? progressData.submit_times : 0,
+                progressData ? progressData.isCorrect : false
+            );
+
+            if (snowflakeScore > 0) {
+                await scoreUserService.deductSnowflakeFromUser(user_id, snowflakeScore);
+            }
+
             if (progressData) {
                 // Cập nhật progress
                 const dataNew = {
                     lastSubmit_id: savedSubmit[0].id,
-                    submit_times: progressData.submit_times + 1
+                    submit_times: progressData.submit_times + 1,
+                    isCorrect: progressData.isCorrect || (savedFeedback[0].accuracy === 100)
                 };
                 await writingService.updateProgressWritingParagraph(user_id, paragraph_id, dataNew);
             } else {
@@ -105,12 +141,13 @@ const writingController = {
                     user_id,
                     writingParagraph_id: paragraph_id,
                     lastSubmit_id: savedSubmit[0].id,
-                    submit_times: 1
+                    submit_times: 1,
+                    isCorrect: savedFeedback[0].accuracy === 100 ? true : false
                 };
                 await writingService.saveProgressWritingParagraph(dataNew);
             }
 
-            return res.json({ data: { feedback: json, submit: savedSubmit[0] } });
+            return res.json({ data: { feedback: json, submit: savedSubmit[0], score: score, snowflake: snowflakeScore } });
         } catch (error) {
             console.error("Error submitting writing paragraph exercise:", error);
             res.status(500).json({ error: "Internal Server Error" });

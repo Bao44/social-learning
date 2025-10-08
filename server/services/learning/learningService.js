@@ -200,8 +200,10 @@ const learningService = {
       .select(
         `
             id,
-            name,
-            description,
+            name_vi,
+            description_vi,
+            name_en,
+            description_en,
             slug,
             icon: icon_id (name, color)
         `

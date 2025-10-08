@@ -36,7 +36,7 @@ Thang accuracy:
 - 90–100 = bám sát ý nghĩa gốc, dịch đúng gần như toàn bộ.  
 - 70–89 = hiểu đúng ý chính, sai vài chi tiết.  
 - 50–69 = chỉ truyền tải được một phần ý nghĩa.  
-- 20–49 = sai nhiều, lệch nghĩa.  
+- 20–49 = sai nhiều, lệch nghĩa.
 - 0–19 = sai hoàn toàn hoặc không liên quan.  
 
 Lưu ý:
