@@ -34,6 +34,7 @@ export default function PageExerciseDetail() {
     const [inputValue, setInputValue] = useState<string>('');
     const [feedback, setFeedback] = useState<any>(null);
     const [feedbackLoading, setFeedbackLoading] = useState<boolean>(false);
+    const [submitLoading, setSubmitLoading] = useState<boolean>(false);
     const { score } = useScore();
     const [history, setHistory] = useState<any[]>([]);
 
@@ -69,6 +70,7 @@ export default function PageExerciseDetail() {
     const handleSubmit = async () => {
         // Logic xử lý submit bài tập
         if (!exerciseDetail && !userData) return;
+        setSubmitLoading(true);
         try {
             const response = await submitWritingParagraphExercise(
                 userData.id,
@@ -78,12 +80,19 @@ export default function PageExerciseDetail() {
             setFeedback(response.data.feedback);
             setInputValue(response.data.submit.content_submit);
 
+            // Cập nhật điểm
+            if (score) {
+                score.practice_score = score.practice_score + response.data.score;
+                score.number_snowflake = score.number_snowflake + response.data.snowflake;
+            }
+
             // gọi lại history
             const historyResponse = await getHistorySubmitWritingParagraphByUserAndParagraph(
                 String(userData.id),
                 String(exerciseDetail!.id)
             );
             setHistory(historyResponse);
+            setSubmitLoading(false);
         } catch (error) {
             console.error("Error submitting exercise:", error);
         }
@@ -155,7 +164,6 @@ export default function PageExerciseDetail() {
             textareaRef.current.setSelectionRange(index, index + word.length);
         }
     };
-
 
     return (
         <div className='w-full grid grid-cols-1 gap-6 mt-6'>
@@ -294,7 +302,12 @@ export default function PageExerciseDetail() {
                     </div>
                     {/* Feedback */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border min-h-1/3 max-h-[calc(100vh-150px)] overflow-y-auto">
-                        {feedback ? (
+                        {submitLoading ? (
+                            <div className='flex flex-col items-center justify-center h-full'>
+                                <Lightbulb className="animate-pulse h-6 w-6 text-yellow-400 mb-2" />
+                                <p className="text-gray-500">{t('learning.submitting')}</p>
+                            </div>
+                        ) : (feedback ? (
                             <div className="space-y-4">
                                 {/* Tổng quan */}
                                 <div className='flex flex-col items-center w-full'>
@@ -389,7 +402,7 @@ export default function PageExerciseDetail() {
                                     <p className="text-sm">{t("learning.feedbackAIDescription")}</p>
                                 </div>
                             )
-                        )}
+                        ))}
                     </div>
                 </div>
                 <AnimatePresence>
