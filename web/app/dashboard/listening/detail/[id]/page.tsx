@@ -9,6 +9,7 @@ import { useScore } from "@/components/contexts/ScoreContext"
 import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from "recharts"
 import { motion, AnimatePresence } from "framer-motion"
 import useAuth from "@/hooks/useAuth"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export default function ListeningDetailPage() {
     const { user } = useAuth()
@@ -21,6 +22,7 @@ export default function ListeningDetailPage() {
     const [loading, setLoading] = useState(true)
     const [progress, setProgress] = useState<any>(null)
     const [loadingSubmit, setLoadingSubmit] = useState(false)
+    const [history, setHistory] = useState<any[]>([]);
 
     const [showSnowflakeAnim, setShowSnowflakeAnim] = useState<{ type: "check" | "hint" | null }>({ type: null })
     const snowflakeRef = useRef<HTMLDivElement | null>(null)
@@ -33,7 +35,11 @@ export default function ListeningDetailPage() {
                 if (user) {
                     const prog = await listeningService.getUserProgress(user.id, id as string)
                     setProgress(prog)
+
+                    const hist = await listeningService.getSubmissionHistory(user.id, data.id);
+                    setHistory(hist);
                 }
+
             } catch (error) {
                 console.error(error)
             } finally {
@@ -93,13 +99,49 @@ export default function ListeningDetailPage() {
         }))
 
         try {
-            
             const res = await listeningService.submitListeningResults(user?.id, exercise?.id, wordAnswers)
             setLoadingSubmit(false)
+
+            const newCheckResult: Record<number, boolean> = {};
+            wordAnswers.forEach((ans: { position: number; is_correct: boolean }) => {
+                newCheckResult[ans.position] = ans.is_correct;
+            });
+            setCheckResult(newCheckResult);
+
         } catch (error) {
             console.error("Error submitting results:", error)
         }
     }
+
+    // Xử lý khi người dùng chọn một mục trong lịch sử
+    const handleHistory = (historyItem: any) => {
+        if (!historyItem || !historyItem.answers) {
+            console.error("Dữ liệu lịch sử không hợp lệ");
+            return;
+        }
+
+        // 1. Tạo một Map để tra cứu nhanh: { word_hidden_id => position }
+        // `exercise.wordHidden` là mảng chứa thông tin các từ bị ẩn, bao gồm cả id và position
+        const wordIdToPositionMap = new Map(
+            exercise.wordHidden.map((wh: any) => [wh.id, wh.position])
+        );
+
+        // 2. Tạo các object state mới từ dữ liệu lịch sử
+        const historicalAnswers: Record<number, string> = {};
+        const historicalCheckResult: Record<number, boolean> = {};
+
+        for (const ans of historyItem.answers) {
+            const position = wordIdToPositionMap.get(ans.word_hidden_id);
+            if (typeof position === "number") {
+                historicalAnswers[position] = ans.answer_input;
+                historicalCheckResult[position] = ans.is_correct;
+            }
+        }
+
+        // 3. Cập nhật lại state của component để UI thay đổi theo
+        setAnswers(historicalAnswers);
+        setCheckResult(historicalCheckResult);
+    };
 
     return (
         <div className="flex-1 px-6 py-6 pb-36 grid grid-cols-3 gap-10">
@@ -251,7 +293,7 @@ export default function ListeningDetailPage() {
                 </div>
 
                 {/* Tiến trình làm bài */}
-                <div className="mt-10">
+                <div className="mt-10 relative">
                     <h3 className="text-2xl text-center font-semibold mb-4">{t("learning.overview")}</h3>
                     <div className="mb-6 p-4 bg-white rounded-lg shadow-xl">
                         <div className="flex justify-between mb-2 text-gray-600 border-b pb-2 border-gray-400">
@@ -326,6 +368,38 @@ export default function ListeningDetailPage() {
                         ) : (
                             <p className="text-gray-500 text-center">Hãy làm bài và kiểm tra để xem tiến trình 🎯</p>
                         )}
+                    </div>
+
+                    <div className="absolute top-0 right-0">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-gradient-to-l hover:cursor-pointer">
+                                    {t('learning.buttonHistorySubmissions')}
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-64 max-h-60 overflow-y-auto">
+                                {history.length > 0 ? (
+                                    history.map((item) => (
+                                        <DropdownMenuItem
+                                            key={item.id}
+                                            className="flex flex-col items-start hover:bg-gray-100 cursor-pointer p-2"
+                                            onSelect={() => handleHistory(item)} // Dùng onSelect hoặc onClick
+                                        >
+                                            <span className="font-medium text-gray-800">
+                                                {new Date(item.created_at).toLocaleDateString()}
+                                            </span>
+                                            <span className="text-xs text-gray-500">
+                                                {new Date(item.created_at).toLocaleTimeString()}
+                                            </span>
+                                        </DropdownMenuItem>
+                                    ))
+                                ) : (
+                                    <DropdownMenuItem disabled>
+                                        {t("learning.noHistorySubmit")}
+                                    </DropdownMenuItem>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
 

@@ -1,14 +1,14 @@
 /**
- * Hàm tính điểm cho bài viết
- * @param {number} maxScore - Điểm tối đa của bài viết
- * @param {boolean} result - Kết quả đúng/sai của bài viết
+ * Hàm tính điểm cho bài tập
+ * @param {number} maxScore - Điểm tối đa của bài tập
+ * @param {boolean} result - Kết quả đúng/sai của bài tập
  * @param {number} submit_times - Số lần nộp bài
  * @returns {number} - Điểm số được tính toán
  * @param {boolean} alreadyCorrect - Bài đã đúng từ lần nộp trước
  */
 
 
-function calculateWritingScore(maxScore, result, submit_times, alreadyCorrect) {
+function calculateScore(maxScore, result, submit_times, alreadyCorrect) {
     const EFFORT_PER_WRONG = 2;
 
     if (alreadyCorrect) {
@@ -37,4 +37,4 @@ function calculateWritingScore(maxScore, result, submit_times, alreadyCorrect) {
     }
 }
 
-module.exports = { calculateWritingScore };
+module.exports = { calculateScore };

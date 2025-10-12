@@ -8,7 +8,7 @@
  */
 
 
-function calculateWritingSnowflake(unit, result, submit_times, alreadyCorrect) {
+function calculateSnowflake(unit, result, submit_times, alreadyCorrect) {
 
     if (alreadyCorrect) {
         return 0;
@@ -29,4 +29,4 @@ function calculateWritingSnowflake(unit, result, submit_times, alreadyCorrect) {
     }
 }
 
-module.exports = { calculateWritingSnowflake };
+module.exports = { calculateSnowflake };

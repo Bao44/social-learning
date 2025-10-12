@@ -38,4 +38,10 @@ export const listeningService = {
         const response = await api.get(`/api/learning/listening/listening-exercises/progress/${user_id}/${listen_para_id}`);
         return response.data;
     },
+
+    // Get history of submissions for a user and a specific listening exercise
+    getSubmissionHistory: async (user_id: string, ex_listen_id: string) => {
+        const response = await api.get(`/api/learning/listening/listening-exercises/history/${user_id}/${ex_listen_id}`);
+        return response.data;
+    }
 };
