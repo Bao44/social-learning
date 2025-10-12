@@ -4,9 +4,9 @@ const promptGiveFeedbackWritingParagraph = require('../../utils/prompt/feedbackA
 const learningService = require('../../services/learning/learningService');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { calculateWritingScore } = require('../../utils/score/writingScore');
 const scoreUserService = require('../../services/learning/scoreUserService');
-const { calculateWritingSnowflake } = require('../../utils/score/writingSnowflake');
+const { calculateScore } = require('../../utils/score/calculateScore');
+const { calculateSnowflake } = require('../../utils/score/calculateSnowflake');
 
 // Khởi tạo Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -104,7 +104,7 @@ const writingController = {
                 console.error("Error fetching level for paragraph:", paragraph);
                 return res.status(500).json({ error: "Internal Server Error" });
             }
-            const score = calculateWritingScore(
+            const score = calculateScore(
                 level.slug === "beginner" ? 10 : level.slug === "intermediate" ? 20 : 30, 
                 savedFeedback[0].accuracy === 100, 
                 progressData ? progressData.submit_times : 0,
@@ -112,11 +112,11 @@ const writingController = {
             );
             // Cộng điểm cho user
             if (score > 0) {
-                await scoreUserService.addPracticeScore(user_id, score);
+                await scoreUserService.addSkillScore(user_id, 'writing', score);
             }
 
             // Tính bông tuyết cho user
-            const snowflakeScore = calculateWritingSnowflake(
+            const snowflakeScore = calculateSnowflake(
                 level.slug === "beginner" ? 1 : level.slug === "intermediate" ? 2 : 3,
                 savedFeedback[0].accuracy === 100,
                 progressData ? progressData.submit_times : 0,

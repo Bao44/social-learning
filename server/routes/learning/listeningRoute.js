@@ -14,4 +14,7 @@ router.post('/listening-exercises/submit', listeningController.submitListeningRe
 // Get progress of a user for a specific listening exercise
 router.get('/listening-exercises/progress/:user_id/:listen_para_id', listeningController.getUserProgress);
 
+// Get history of submissions for a user and a specific listening exercise
+router.get('/listening-exercises/history/:user_id/:ex_listen_id', listeningController.getSubmissionHistory);
+
 module.exports = router;

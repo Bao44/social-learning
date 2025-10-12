@@ -1,13 +1,15 @@
-const learningService = require("../../services/learning/listeningService");
+const learningService = require("../../services/learning/learningService");
 const listeningService = require("../../services/learning/listeningService");
 const scoreUserService = require("../../services/learning/scoreUserService");
+const { calculateScore } = require("../../utils/score/calculateScore");
+const { calculateSnowflake } = require("../../utils/score/calculateSnowflake");
 
 const listeningController = {
     // Get listening exercise by id
     async getListeningExerciseById(req, res) {
         const { id } = req.params;
         try {
-            const data = await learningService.getListeningExerciseById(id);
+            const data = await listeningService.getListeningExerciseById(id);
             res.json(data);
         } catch (error) {
             console.error("Error fetching listening exercise by id:", error);
@@ -35,6 +37,12 @@ const listeningController = {
             return res.status(400).json({ error: "Invalid request body" });
         }
 
+        // Lấy thông tin bài tập nghe
+        const listeningExercise = await listeningService.getListeningExerciseById(ex_listen_id);
+        if (!listeningExercise) {
+            return res.status(400).json({ error: "Invalid ex_listen_id" });
+        }
+
         try {
             // Create submission record
             const resultSubmission = await listeningService.submitListeningResults(user_id, ex_listen_id);
@@ -55,15 +63,32 @@ const listeningController = {
 
             // Cập nhật lại progress
             const progress = await listeningService.getUserProgress(user_id, ex_listen_id);
+            const levelListening = await learningService.getLevelById(listeningExercise.level_id);
+
+            // Tính điểm
+            const scoreSubmit = calculateScore(
+                levelListening.slug === "beginner" ? 10 : levelListening.slug === "intermediate" ? 20 : 30,
+                wordAnswers.every(ans => ans.is_correct),
+                progress ? progress.submit_times : 0,
+                progress ? progress.isCorrect : false
+            );
 
             // Cộng điểm cho user
-            const score = ((wordAnswers.filter(ans => ans.is_correct).length / wordAnswers.length) * 10).toFixed(0);
-            if (score > 0) {
-                if (progress && progress.score <= score) {
-                    await scoreUserService.addPracticeScore(user_id, score - progress.score);
-                } else if (!progress) {
-                    await scoreUserService.addPracticeScore(user_id, score);
-                }
+            if (scoreSubmit > 0) {
+                await scoreUserService.addSkillScore(user_id, 'listening', scoreSubmit);
+            }
+
+            // Tính bông tuyết cho user
+            const snowflakeScore = calculateSnowflake(
+                levelListening.slug === "beginner" ? 1 : levelListening.slug === "intermediate" ? 2 : 3,
+                wordAnswers.every(ans => ans.is_correct),
+                progress ? progress.submit_times : 0,
+                progress ? progress.isCorrect : false
+            );
+
+            // Cộng bông tuyết cho user
+            if (snowflakeScore > 0) {
+                await scoreUserService.deductSnowflakeFromUser(user_id, snowflakeScore);
             }
 
             if (progress) {
@@ -72,11 +97,11 @@ const listeningController = {
                     user_id,
                     listen_para_id: ex_listen_id,
                     number_word_completed: wordAnswers.filter(ans => ans.is_correct).length > progress.number_word_completed ? wordAnswers.filter(ans => ans.is_correct).length : progress.number_word_completed,
-                    status: wordAnswers.every(ans => ans.is_correct) ? 'completed' : 'in_progress',
                     lastSubmit: resultSubmission.id,
                     completed_date: wordAnswers.every(ans => ans.is_correct) ? new Date() : null,
                     submit_times: progress.submit_times + 1,
-                    score: ((wordAnswers.filter(ans => ans.is_correct).length / wordAnswers.length) * 10).toFixed(0) > progress.score ? ((wordAnswers.filter(ans => ans.is_correct).length / wordAnswers.length) * 10).toFixed(0) : progress.score
+                    score: progress.score + scoreSubmit,
+                    isCorrect: progress.isCorrect || wordAnswers.every(ans => ans.is_correct)
                 };
                 await listeningService.updateUserProgress(updatedProgressData);
             } else {
@@ -85,16 +110,16 @@ const listeningController = {
                     user_id,
                     listen_para_id: ex_listen_id,
                     number_word_completed: wordAnswers.filter(ans => ans.is_correct).length,
-                    status: wordAnswers.every(ans => ans.is_correct) ? 'completed' : 'in_progress',
                     lastSubmit: resultSubmission.id,
                     completed_date: wordAnswers.every(ans => ans.is_correct) ? new Date() : null,
                     submit_times: 1,
-                    score: ((wordAnswers.filter(ans => ans.is_correct).length / wordAnswers.length) * 10).toFixed(0)
+                    score: scoreSubmit,
+                    isCorrect: wordAnswers.every(ans => ans.is_correct)
                 };
                 await listeningService.createUserProgress(newProgressData);
             }
 
-            res.json({ message: "Listening results submitted successfully", score: (progress && progress.score < score ? score - progress.score : score)});
+            res.json({ message: "Listening results submitted successfully", score: scoreSubmit });
 
         } catch (error) {
             console.error("Error submitting listening results:", error);
@@ -110,6 +135,18 @@ const listeningController = {
             res.json(data);
         } catch (error) {
             console.error("Error fetching user progress:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    },
+
+    // Get history of submissions for a user and a specific listening exercise
+    async getSubmissionHistory(req, res) {
+        const { user_id, ex_listen_id } = req.params;
+        try {
+            const data = await listeningService.getAllHistorySubmitListeningByUser(user_id, ex_listen_id);
+            res.json(data);
+        } catch (error) {
+            console.error("Error fetching submission history:", error);
             res.status(500).json({ error: "Internal Server Error" });
         }
     }

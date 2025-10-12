@@ -95,10 +95,10 @@ const listeningService = {
 
     // Tạo mới tiến độ học
     async createUserProgress(data) {
-        const { user_id, listen_para_id, number_word_completed, status, lastSubmit, completed_date, submit_times, score } = data;
+        const { user_id, listen_para_id, number_word_completed, lastSubmit, completed_date, submit_times, score, isCorrect } = data;
         const { data: result, error } = await supabase
             .from("progressListenParagraph")
-            .insert({ user_id, listen_para_id, number_word_completed, status, lastSubmit, completed_date, submit_times, score })
+            .insert({ user_id, listen_para_id, number_word_completed, lastSubmit, completed_date, submit_times, score, isCorrect })
             .select()
             .single();
         if (error) {
@@ -110,10 +110,10 @@ const listeningService = {
 
     // Cập nhật tiến độ học
     async updateUserProgress(data) {
-        const { user_id, listen_para_id, number_word_completed, status, lastSubmit, completed_date, submit_times, score } = data;
+        const { user_id, listen_para_id, number_word_completed, lastSubmit, completed_date, submit_times, score, isCorrect } = data;
         const { data: result, error } = await supabase
             .from("progressListenParagraph")
-            .update({ number_word_completed, status, lastSubmit, completed_date, submit_times, score })
+            .update({ number_word_completed, lastSubmit, completed_date, submit_times, score, isCorrect })
             .eq("user_id", user_id)
             .eq("listen_para_id", listen_para_id)
             .select()
@@ -123,6 +123,29 @@ const listeningService = {
             throw new Error("Error updating user progress");
         }
         return result;
+    },
+
+    // Lấy lịch sử nộp bài nghe của user
+    async getAllHistorySubmitListeningByUser(user_id, listen_para_id) {
+        const { data, error } = await supabase
+            .from("submitExListen")
+            .select(`
+                id,
+                created_at,
+                answers:wordAnswer(
+                    word_hidden_id,
+                    answer_input,
+                    is_correct
+                )
+            `)
+            .eq("user_id", user_id)
+            .eq("ex_listen_id", listen_para_id)
+            .order("created_at", { ascending: false });
+        if (error) {
+            console.error("Error fetching history submit listening:", error);
+            throw new Error("Error fetching history submit listening");
+        }
+        return data;
     }
 };
 
