@@ -178,11 +178,30 @@ const scoreUserService = {
     if (error) throw new Error(error.message);
 
     const totalScore = data.reduce((sum, item) => sum + item.score, 0);
-    
+
     return {
       skill,
       totalScore,
     };
+  },
+
+  // Lịch hoạt động
+  async getActivityHeatmap(userId) {
+    // Lấy dữ liệu trong 1 năm gần nhất
+    let oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    
+    const { data, error } = await supabase.rpc("get_activity_heatmap", {
+      p_user_id: userId,
+      p_start_date: oneYearAgo.toISOString(),
+    });
+
+    if (error) throw error;
+    
+    return data.map((item) => ({
+      date: item.activity_date,
+      count: parseInt(item.count, 10),
+    }));
   },
 };
 

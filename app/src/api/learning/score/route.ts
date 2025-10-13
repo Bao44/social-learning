@@ -10,3 +10,17 @@ export const getScoreUserByUserId = async (user_id: string) => {
         throw error;
     }
 };
+
+// Add skill score to user
+export const addSkillScore = async (
+  userId: string,
+  skill: string,
+  scoreToAdd: number
+) => {
+  const response = await api.post(`/api/learning/score-user/addSkillScore`, {
+    userId,
+    skill: skill,
+    scoreToAdd: scoreToAdd,
+  });
+  return response.data;
+};

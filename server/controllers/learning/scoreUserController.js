@@ -161,6 +161,20 @@ const scoreUserController = {
       return res.status(500).json({ error: err.message });
     }
   },
+
+  // Lịch hoạt động
+  getActivityHeatmap: async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId" });
+    }
+    try {
+      const data = await scoreUserService.getActivityHeatmap(userId);
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = scoreUserController;

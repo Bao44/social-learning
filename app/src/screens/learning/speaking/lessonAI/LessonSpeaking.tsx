@@ -37,7 +37,10 @@ import {
 import useAuth from '../../../../../hooks/useAuth';
 import { supabase } from '../../../../../lib/supabase';
 import { insertOrUpdateVocabularyErrors } from '../../../../api/learning/vocabulary/route';
-import { getSpeakingByTopicAndLevel } from '../../../../api/learning/speaking/route';
+import {
+  generateSpeakingExerciseByAI,
+  getSpeakingByTopicAndLevel,
+} from '../../../../api/learning/speaking/route';
 import {
   addSkillScore,
   getScoreUserByUserId,
@@ -52,7 +55,7 @@ interface Lesson {
 const { width, height } = Dimensions.get('window');
 const isSmallDevice = height < 700;
 
-export default function LessonSpeaking() {
+export default function LessonSpeakingAI() {
   const navigation = useNavigation();
   const { user } = useAuth();
 
@@ -136,14 +139,11 @@ export default function LessonSpeaking() {
 
   const loadLessonData = async () => {
     try {
-      const levelId = await AsyncStorage.getItem('levelId');
-      const topicId = await AsyncStorage.getItem('topicId');
+      const levelSlug = (await AsyncStorage.getItem('levelSlug')) || 'null';
+      const topicSlug = (await AsyncStorage.getItem('topicSlug')) || 'null';
 
-      if (levelId && topicId) {
-        const res = await getSpeakingByTopicAndLevel(
-          parseInt(levelId),
-          parseInt(topicId),
-        );
+      if (levelSlug && topicSlug) {
+        const res = await generateSpeakingExerciseByAI(levelSlug, topicSlug);
         setLessons(res.data || []);
       }
     } catch (error) {
@@ -340,7 +340,7 @@ export default function LessonSpeaking() {
     setResult(null);
   };
 
-  // TTS nghe mẫu
+  // TTS Nghe mẫu
   const speak = useCallback((text: string) => {
     speakText(text);
   }, []);

@@ -98,6 +98,15 @@ export const getScoreStatisticsBySkill = async (
   return response.data;
 };
 
+// Lấy lịch sử hoạt động
+export const getActivityHeatmap = async (userId: string) => {
+  const response = await api.get(
+    `/api/learning/score-user/getActivityHeatmap`,
+    { params: { userId } }
+  );
+  return response.data;
+};
+
 // Thống kê nhanh
 export async function getOverviewStats(userId: string): Promise<OverviewStats> {
   await new Promise((resolve) => setTimeout(resolve, 500));

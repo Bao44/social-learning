@@ -21,6 +21,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { Level } from '../../../components/Level';
 import { Topic } from '../../../components/Topic';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Speaking() {
   const navigation = useNavigation<any>();
@@ -30,22 +31,24 @@ export default function Speaking() {
 
   const isReady = selectedLevel && selectedTopic;
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (isReady) {
-      navigation.navigate("LessonSpeaking");
-      console.log('Navigate to LessonSpeaking');
+      // Trước khi navigate đến SpeakingLesson
+      await AsyncStorage.setItem('levelId', selectedLevel.id.toString());
+      await AsyncStorage.setItem('topicId', selectedTopic.id.toString());
+      navigation.navigate('LessonSpeaking');
     }
   };
 
   const handleGenerateAI = async () => {
-    setLoading(true);
     if (isReady) {
-      // Simulate API call
-      setTimeout(() => {
-        setLoading(false);
-        console.log('Generated AI speaking exercise');
-        // navigation.navigate('SpeakingDetail', { id: 'generated-id' });
-      }, 2000);
+      // Trước khi navigate đến SpeakingLessonAI
+      await AsyncStorage.setItem('levelSlug', selectedLevel.slug.toString());
+      await AsyncStorage.setItem('topicSlug', selectedTopic.slug.toString());
+      console.log('Selected Level:', selectedLevel.slug);
+      console.log('Selected Topic:', selectedTopic.slug);
+      setLoading(true);
+      navigation.navigate('LessonSpeakingAI');
     }
   };
 
