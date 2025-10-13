@@ -799,7 +799,7 @@ export default function LessonSpeaking() {
                       height: 40,
                       borderRadius: 20,
                       backgroundColor: isCurrent
-                        ? 'rgba(255,255,255,0.2)'
+                        ? '#fbbf24'
                         : isCompleted
                         ? '#10b981'
                         : isLocked
@@ -818,7 +818,7 @@ export default function LessonSpeaking() {
                       <Text
                         style={{
                           fontWeight: 'bold',
-                          color: isCurrent ? '#fff' : '#c2410c',
+                          color: isCurrent ? 'black' : '#c2410c',
                           fontSize: 16,
                         }}
                       >
@@ -831,7 +831,7 @@ export default function LessonSpeaking() {
                       style={{
                         fontWeight: '600',
                         color: isCurrent
-                          ? '#fff'
+                          ? 'black'
                           : isCompleted
                           ? '#065f46'
                           : isLocked
@@ -843,11 +843,7 @@ export default function LessonSpeaking() {
                       Câu {index + 1}
                     </Text>
                     {isCurrent && (
-                      <Text
-                        style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}
-                      >
-                        {lesson.content}
-                      </Text>
+                      <Text style={{ fontSize: 12 }}>{lesson.content}</Text>
                     )}
                   </View>
                   {isCurrent && <ChevronRight size={24} color="#fff" />}

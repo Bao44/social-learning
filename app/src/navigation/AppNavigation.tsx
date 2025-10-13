@@ -37,6 +37,8 @@ import Speaking from '../screens/learning/speaking/Speaking';
 import Writing from '../screens/learning/writing/Writing';
 import LessonSpeaking from '../screens/learning/speaking/lesson/LessonSpeaking';
 import LessonSpeakingAI from '../screens/learning/speaking/lessonAI/LessonSpeaking';
+import Vocabulary from '../screens/learning/vocabulary/Vocabulary';
+import VocabularyDetail from '../screens/learning/vocabulary/VocabularyDetail';
 
 const Tab = createBottomTabNavigator();
 
@@ -195,7 +197,7 @@ const AppNavigation = () => {
           component={ListeningDetail}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Speaking"
           component={Speaking}
           options={{ headerShown: false }}
@@ -205,12 +207,22 @@ const AppNavigation = () => {
           component={LessonSpeaking}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="LessonSpeakingAI"
           component={LessonSpeakingAI}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
+          name="Vocabulary"
+          component={Vocabulary}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VocabularyDetail"
+          component={VocabularyDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Writing"
           component={Writing}
           options={{ headerShown: false }}
