@@ -14,3 +14,23 @@ export const insertOrUpdateVocabularyErrors = async ({ userId, vocabData }: { us
   });
   return response.data;
 };
+
+
+export const generateVocabByAI = async ({ userId, word }: { userId: string; word: string }) => {
+  const response = await api.post(`/api/bot-cover-learning/generate-personal-word-by-AI`, {
+    userId,
+    word
+  });
+  return response.data;
+};
+
+export const getListPersonalVocabByUserIdAndCreated = async ({ userId }: { userId: string }) => {
+  const response = await api.get(`/api/learning/vocabulary/created/${userId}`);
+  return response.data;
+};
+
+
+export const getPersonalVocabById = async ({ personalVocabId }: { personalVocabId: string }) => {
+  const response = await api.get(`/api/learning/vocabulary/${personalVocabId}`);
+  return response.data;
+}

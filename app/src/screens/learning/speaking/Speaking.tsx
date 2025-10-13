@@ -71,9 +71,6 @@ export default function Speaking() {
           </TouchableOpacity>
 
           <View style={styles.headerCenter}>
-            <View style={styles.headerIconContainer}>
-              <Volume2 size={24} color="#fff" />
-            </View>
             <View>
               <Text style={styles.headerTitle}>Luyện nói</Text>
               <Text style={styles.headerSubtitle}>
@@ -210,16 +207,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
   headerTitle: {
+    textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',

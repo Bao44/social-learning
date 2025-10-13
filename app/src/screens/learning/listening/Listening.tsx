@@ -76,9 +76,6 @@ export default function Listening() {
           </TouchableOpacity>
 
           <View style={styles.headerCenter}>
-            <View style={styles.headerIconContainer}>
-              <AudioLines size={24} color="#fff" />
-            </View>
             <View>
               <Text style={styles.headerTitle}>Luyện nghe</Text>
               <Text style={styles.headerSubtitle}>Nâng cao khả năng nghe</Text>
@@ -213,16 +210,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
   headerTitle: {
+    textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
