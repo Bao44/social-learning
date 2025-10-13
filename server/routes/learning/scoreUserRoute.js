@@ -20,4 +20,7 @@ router.get("/scoreStatisticsListening", scoreUserController.getScoreStatisticsLi
 // Route to get score statistics by skill
 router.get("/scoreStatisticsBySkill", scoreUserController.getScoreStatisticsBySkill);
 
+// Route to get active calendar days
+router.get("/getActivityHeatmap", scoreUserController.getActivityHeatmap); 
+
 module.exports = router;

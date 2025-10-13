@@ -27,6 +27,7 @@ import SkillGoals from "@/components/ui/skill-goals";
 import ChartComparison from "@/components/ui/chart-comparison";
 import ChartArea from "./components/AreaChart";
 import ChartRadar from "./components/RadarChart";
+import ActivityHeatmap from "./components/ActivitySchedule";
 
 const skillConfig = {
   speaking: {
@@ -125,7 +126,7 @@ export default function LearningProgressChart() {
           <div className="space-y-6 sm:space-y-8">
             <OverviewStats />
 
-            <Achievements />
+            <ActivityHeatmap />
 
             <SkillGoals />
 
@@ -276,6 +277,8 @@ export default function LearningProgressChart() {
                 </div>
               )}
             </div>
+
+            <Achievements />
           </div>
         </div>
       </main>
