@@ -436,8 +436,6 @@ const botCoverLearningController = {
         content: json.content,
       };
 
-      console.log("Data to be sent:", data);
-
       res.json({ message: "Tạo bài tập nói thành công", data });
     } catch (error) {
       console.error("Error generating content:", error);
