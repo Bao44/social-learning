@@ -33,12 +33,19 @@
   "loadMore": "Load more",
   "noMorePosts": "No more posts",
 
+  "yourAchievements": "Your Achievements",
+  "practiceScore": "Practice Score",
+  "testScore": "Test Score",
+  "snowFlakes": "Snowflakes",
+  "score": "score",
+
   "master": "Master",
   "expert": "Expert",
   "advanced": "Advanced",
   "intermediate": "Intermediate",
   "beginner": "Beginner",
   "newbie": "Newbie",
+  "yourScore": "Your Score",
 
   "selectTopic": "Select Topic",
 
@@ -66,6 +73,8 @@
   "searching": "Searching...",
   "noResults": "No results found",
 
+  "social": "Social",
+  "learning": "Learning",
   "noNotifications": "No notifications yet",
   "commentedOnYourPost": "Commented on your post",
 
@@ -174,6 +183,7 @@
   "unfollowSuccess": "Unfollowed",
   "followFailed": "Failed to follow",
   "unfollowFailed": "Failed to unfollow",
+  "unfollowConfirmation": "Confirm unfollow",
   "noUsers": "No users",
 
   "title": "Friend Recommendations",
@@ -183,5 +193,22 @@
   "retry": "Retry",
   "noSuggestionsHint": "Try following some people to get mutual friend suggestions, or upgrade your level.",
   "matchingCriteria": "matching criteria",
-  "addFriend": "Add Friend"
+  "addFriend": "Add Friend",
+
+  "daysAgo": "days ago",
+  "minutesAgo": "minutes ago",
+  "secondsAgo": "seconds ago",
+  "hoursAgo": "hours ago",
+  "justNow": "Just now",
+  "chat": "Chat",
+  "startChat": "Let's start a conversation",
+  "sendMessage": "Send a message",
+  "displaySearch": "Show search results...",
+  "typeYourMessage": "Type your message here...",
+  "newMessage": "New Message",
+  "to": "To",
+  "recipient": "Enter recipient name...",
+  "recommendations": "Recommendations",
+  "you": "You",
+  "unsupportedContent": "Unsupported content"
 }

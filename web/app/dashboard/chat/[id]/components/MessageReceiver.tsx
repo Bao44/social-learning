@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatTime } from "@/utils/formatTime";
 

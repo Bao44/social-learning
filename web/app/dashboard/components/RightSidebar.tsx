@@ -5,13 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import useAuth from "@/hooks/useAuth";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { followUser, getFollowers, getFollowing } from "@/app/api/follow/route";
+import {
+  followUser,
+  getFollowers,
+  getFollowing,
+} from "@/app/apiClient/follow/follow";
 import FollowModal from "../profile/components/FollowModal";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { getScoreUserByUserId } from "@/app/apiClient/learning/score/score";
+import { Trophy, Award, Snowflake, TrendingUp, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface FriendSuggestion {
   id: string;
@@ -32,6 +45,28 @@ interface Follower {
   avatar?: string;
 }
 
+const formatCompactNumber = (num: number): string => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+  }
+  return num.toString();
+};
+
+const formatFullNumber = (num: number): string => {
+  return num.toLocaleString("vi-VN");
+};
+
+const getResponsiveFontSize = (num: number): string => {
+  const str = num.toString();
+  if (str.length >= 7) return "text-lg"; // 1,000,000+
+  if (str.length >= 5) return "text-xl"; // 10,000+
+  if (str.length >= 4) return "text-2xl"; // 1,000+
+  return "text-3xl"; // < 1,000
+};
+
 export function RightSidebar() {
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -44,6 +79,9 @@ export function RightSidebar() {
   const [openFollower, setOpenFollower] = useState(false);
   const [follower, setFollower] = useState<Follower[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [yourPracticeScore, setYourPracticeScore] = useState(0);
+  const [yourTestScore, setYourTestScore] = useState(0);
+  const [yourSnowFlake, setSnowFlake] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300);
@@ -61,6 +99,11 @@ export function RightSidebar() {
 
         if (!session?.access_token) return;
 
+        const res = await getScoreUserByUserId(user.id);
+        setYourPracticeScore(res.data.practice_score || 0);
+        setYourTestScore(res.data.test_score || 0);
+        setSnowFlake(res.data.number_snowflake || 0);
+
         const { data, error } = await supabase.functions.invoke(
           "recommend-friends",
           {
@@ -77,8 +120,7 @@ export function RightSidebar() {
           return;
         }
 
-        // Chỉ lấy 4 người đầu tiên cho sidebar
-        setSuggestions((data || []).slice(0, 4));
+        setSuggestions((data || []).slice(0, 3));
       } catch (error) {
         console.error("Error:", error);
       } finally {
@@ -102,7 +144,6 @@ export function RightSidebar() {
         return;
       }
 
-      // Xóa user đã follow khỏi danh sách gợi ý
       setSuggestions((prev) => prev.filter((s) => s.id !== userId));
     } catch (error) {
       console.error("Error:", error);
@@ -161,7 +202,7 @@ export function RightSidebar() {
 
   return (
     <div
-      className={`space-y-6 fixed mt-20 transform transition-all duration-700 ease-out ${
+      className={`space-y-6 fixed transform transition-all duration-700 ease-out ${
         isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
       }`}
     >
@@ -171,8 +212,166 @@ export function RightSidebar() {
         <div className="absolute bottom-1/4 -right-6 w-20 h-20 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full opacity-30 animate-float-slow"></div>
       </div>
 
+      {/* Điểm số người dùng */}
+      <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform animate-slide-in-right relative z-10 overflow-hidden">
+        {/* Decorative gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 opacity-50"></div>
+
+        <CardHeader className="relative">
+          <CardTitle className="text-base font-bold flex items-center">
+            <span className="bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+             {t("dashboard.yourAchievements")}
+            </span>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="relative mt-[-15px]">
+          <TooltipProvider>
+            <div className="space-y-3">
+              {/* Practice Score */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="relative group cursor-default"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl px-4 py-2 border border-orange-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-md flex-shrink-0">
+                          <Trophy className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-orange-700 font-medium mb-1">
+                           {t("dashboard.practiceScore")}
+                          </p>
+                          <p
+                            className={`${getResponsiveFontSize(
+                              yourPracticeScore
+                            )} font-bold bg-gradient-to-br from-orange-600 to-orange-700 bg-clip-text text-transparent leading-none`}
+                          >
+                            {formatCompactNumber(yourPracticeScore)}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                            <span className="text-xs font-bold text-orange-700">
+                              {yourPracticeScore >= 1000 ? "🔥" : "💪"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="left"
+                  className="bg-orange-600 text-white border-orange-700"
+                >
+                  <p className="font-semibold">
+                    {formatFullNumber(yourPracticeScore)} {t("dashboard.score")}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Test Score */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="relative group cursor-default"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-pink-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-gradient-to-r from-pink-50 to-pink-100 rounded-xl p-4 border border-pink-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-md flex-shrink-0">
+                          <Award className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-pink-700 font-medium mb-1">
+                           {t("dashboard.testScore")}
+                          </p>
+                          <p
+                            className={`${getResponsiveFontSize(
+                              yourTestScore
+                            )} font-bold bg-gradient-to-br from-pink-600 to-pink-700 bg-clip-text text-transparent leading-none`}
+                          >
+                            {formatCompactNumber(yourTestScore)}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center">
+                            <span className="text-xs font-bold text-pink-700">
+                              {yourTestScore >= 1000 ? "🏆" : "📝"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="left"
+                  className="bg-pink-600 text-white border-pink-700"
+                >
+                  <p className="font-semibold">
+                    {formatFullNumber(yourTestScore)} {t("dashboard.score")}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Snowflake */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="relative group cursor-default"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-gradient-to-r from-blue-50 to-purple-100 rounded-xl p-4 border border-purple-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-md flex-shrink-0">
+                          <Snowflake className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-purple-700 font-medium mb-1">
+                            {t("dashboard.snowFlakes")}
+                          </p>
+                          <p
+                            className={`${getResponsiveFontSize(
+                              yourSnowFlake
+                            )} font-bold bg-gradient-to-br from-blue-600 to-purple-700 bg-clip-text text-transparent leading-none`}
+                          >
+                            {formatCompactNumber(yourSnowFlake)}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
+                            <span className="text-xs font-bold text-purple-700">
+                              {yourSnowFlake >= 1000 ? "❄️" : "⭐"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="left"
+                  className="bg-purple-600 text-white border-purple-700"
+                >
+                  <p className="font-semibold">
+                    {formatFullNumber(yourSnowFlake)} {t("dashboard.snowFlakes")}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+        </CardContent>
+      </Card>
+
       {/* Thông tin cá nhân */}
-      <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-slide-in-right relative z-10">
+      <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-slide-in-right relative z-10 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
         <CardContent className="p-4">
           <div className="flex items-center space-x-3">
             <Avatar className="h-14 w-14 ring-2 ring-orange-200 hover:ring-orange-400 transition-all duration-300 transform hover:scale-110">
@@ -225,7 +424,7 @@ export function RightSidebar() {
 
       {/* Gợi ý */}
       <Card
-        className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in-right relative z-10"
+        className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in-right relative z-10 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50"
         style={{ animationDelay: "200ms" }}
       >
         <CardHeader>

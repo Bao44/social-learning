@@ -10,13 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getUserImageSrc } from "@/app/api/image/route";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { Button } from "@/components/ui/button";
 import {
   checkIsFollowing,
   followUser,
   unfollowUser,
-} from "@/app/api/follow/route";
+} from "@/app/apiClient/follow/follow";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -215,7 +215,7 @@ export default function FollowModal({
         <DialogContent className="sm:max-w-md rounded-2xl p-0">
           <DialogHeader className="p-4 pb-2">
             <DialogTitle className="text-center text-lg">
-              {t("dashboard.confirmUnfollow")}
+              {t("dashboard.unfollowConfirmation")}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col divide-y">
@@ -229,7 +229,7 @@ export default function FollowModal({
               {t("dashboard.unfollow")}
             </button>
             <button
-              className="py-3 font-medium cursor-pointer hover:bg-gray-50 transition-colors"
+              className="py-3 font-medium cursor-pointer transition-colors"
               onClick={() => setSelectedUserId(null)}
             >
               {t("dashboard.close")}

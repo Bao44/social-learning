@@ -1,12 +1,13 @@
 "use client"
 
-import { getTypeExercisesBySlug } from "@/app/api/learning/route"
+import { getTypeExercisesBySlug } from "@/app/apiClient/learning/learning"
 import { Icon } from "@/components/icons/Icon"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/components/contexts/LanguageContext"
 
 type TypeExercise = {
     id: string;
@@ -19,6 +20,7 @@ type TypeExercise = {
 
 export function CardTypeEx() {
     const router = useRouter();
+    const { t, language } = useLanguage();
     const [types, setTypes] = useState<TypeExercise[]>([]);
 
     useEffect(() => {
@@ -30,12 +32,12 @@ export function CardTypeEx() {
                 const normalize = (item: any) => ({
                     id: String(item.id),
                     icon: item.icon,
-                    title: item.title,
-                    description: item.description,
-                    features: typeof item.features === "string"
-                        ? item.features.split(",").map((f: string) => f.trim())
-                        : Array.isArray(item.features)
-                            ? item.features
+                    title: item[`title_${language}`],
+                    description: item[`description_${language}`],
+                    features: typeof item[`features_${language}`] === "string"
+                        ? item[`features_${language}`].split(",").map((f: string) => f.trim())
+                        : Array.isArray(item[`features_${language}`])
+                            ? item[`features_${language}`]
                             : [],
                     slug: item.slug
                 });
@@ -48,7 +50,7 @@ export function CardTypeEx() {
         };
 
         fetchData();
-    }, []);
+    }, [language]);
 
     // Handle card click
     const handleCardClick = (slug: string) => {
@@ -93,7 +95,7 @@ export function CardTypeEx() {
                                     className="w-full group-hover:bg-primary/90 transition-colors hover:cursor-pointer uppercase"
                                     onClick={() => handleCardClick(type.slug)}
                                 >
-                                    Bắt đầu luyện tập
+                                    {t("learning.buttonStart")}
                                 </Button>
                             </CardFooter>
                         </Card>

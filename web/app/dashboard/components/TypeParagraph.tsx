@@ -1,10 +1,11 @@
 "use client";
 
-import { getAllTypeParagraphs } from "@/app/api/learning/route";
+import { getAllTypeParagraphs } from "@/app/apiClient/learning/learning";
 import { Icon } from "@/components/icons/Icon";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 type TypeParagraph = {
   id: number;
@@ -12,9 +13,11 @@ type TypeParagraph = {
     name: string;
     color: string;
   };
-  name: string;
+  name_vi: string;
+  name_en: string;
   slug: string;
-  description: string;
+  description_vi: string;
+  description_en: string;
 };
 
 type TypeParagraphProps = {
@@ -31,6 +34,7 @@ export function TypeParagraph({
   selectedTypeParagraph,
   setSelectedTypeParagraph,
 }: TypeParagraphProps) {
+  const { t, language } = useLanguage();
   const [typeParagraphs, setTypeParagraphs] = useState<TypeParagraph[]>([]);
 
   // Lấy danh sách chủ đề
@@ -52,7 +56,7 @@ export function TypeParagraph({
 
   return (
     <div className="flex-1">
-      <h2 className="text-xl font-semibold">Chọn loại văn bản</h2>
+      <h2 className="text-xl font-semibold">{t("learning.selectTypeParagraphTitle")}</h2>
       <div className="grid grid-cols-4 gap-4 mt-4 min-h-44">
         {typeParagraphs.map((typeParagraph) => {
           return (
@@ -67,7 +71,7 @@ export function TypeParagraph({
                 onClick={() =>
                   setSelectedTypeParagraph({
                     slug: typeParagraph.slug,
-                    name: typeParagraph.name,
+                    name: typeParagraph[`name_${language}`],
                   })
                 }
                 key={typeParagraph.id}
@@ -92,10 +96,10 @@ export function TypeParagraph({
                 </div>
                 <div className="flex flex-col items-center gap-2">
                   <h3 className="text-lg font-semibold">
-                    {typeParagraph.name}
+                    {typeParagraph[`name_${language}`]}
                   </h3>
                   <p className="text-md text-gray-500 text-center">
-                    {typeParagraph.description}
+                    {typeParagraph[`description_${language}`]}
                   </p>
                 </div>
               </Card>

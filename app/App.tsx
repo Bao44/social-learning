@@ -6,16 +6,19 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { AuthProvider } from './components/contexts/AuthContext';
 import ChatBotAI from './src/chatbot/ChatBotAI';
 import AppNavigation from './src/navigation/AppNavigation';
+import OnlineStatusProvider from './components/contexts/OnlineStatusProvider';
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
         <NavigationContainer>
-          <AppNavigation />
-          <Toast />
+          <OnlineStatusProvider>
+            <AppNavigation />
+            <Toast />
+            {/* <ChatBotAI /> */}
+          </OnlineStatusProvider>
         </NavigationContainer>
-        {/* <ChatBotAI /> */}
       </AuthProvider>
     </SafeAreaProvider>
   );

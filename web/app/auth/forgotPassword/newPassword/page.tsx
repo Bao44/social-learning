@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { forgotPassword } from "@/app/api/auth/route";
+import { forgotPassword } from "@/app/apiClient/auth/auth";
 import { toast } from "react-toastify";
 import {
   Card,

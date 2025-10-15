@@ -143,35 +143,40 @@ const writingService = {
         return updatedData;
     },
 
-    // Đếm số lần submit bài tập writingParagraph của user
-    async countSubmitsWritingParagraph(user_id, paragraph_id) {
-        const { count, error } = await supabase
+    // Get all history submit writingParagraph with feedback information by user_id and paragraph_id
+    async getAllHistorySubmitWritingParagraph(user_id, paragraph_id) {
+        const { data: history, error } = await supabase
             .from("submitExParagraph")
-            .select("*", { count: "exact", head: true })
-            .eq("user_id", user_id)
-            .eq("exParagraph_id", paragraph_id);
-        if (error) {
-            console.error("Error counting submits:", error);
-            throw error;
-        }
-        return count;
-    },
-
-    // Đếm số lần submit cho câu hiện tại (để tính điểm)
-    async countSubmitsForCurrentSentence(user_id, paragraph_id, sentence_index) {
-        const { count, error } = await supabase
-            .from("submitExParagraph")
-            .select("*", { count: "exact", head: true })
+            .select(`
+            id,
+            user_id,
+            exParagraph_id,
+            content_submit,
+            submit_date,
+            feedback:feedbackParagraphAI (
+                id,
+                comment,
+                score,
+                accuracy,
+                strengths,
+                errors: errorFeedback (
+                    id,
+                    original,
+                    error_type,
+                    highlight,
+                    suggestion: suggestions
+                )
+            )
+        `)
             .eq("user_id", user_id)
             .eq("exParagraph_id", paragraph_id)
-            .eq("index_sentence", sentence_index);
+            .order("submit_date", { ascending: false });
 
         if (error) {
-            console.error("Error counting submits for current sentence:", error);
+            console.error("Error fetching writing history:", error);
             throw error;
         }
-
-        return count;
+        return history;
     }
 };
 
