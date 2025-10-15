@@ -3,7 +3,7 @@
 import useAuth from "@/hooks/useAuth";
 import { PostCard } from "./PostCard";
 import { useEffect, useState, useRef } from "react";
-import { fetchPosts } from "@/app/api/post/route";
+import { fetchPosts } from "@/app/apiClient/post/post";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

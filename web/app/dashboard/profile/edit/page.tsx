@@ -22,11 +22,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useAuth from "@/hooks/useAuth";
-import { updateUserData } from "@/app/api/user/route";
+import { updateUserData } from "@/app/apiClient/user/user";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { convertToDateTime } from "@/utils/formatTime";
-import { getUserImageSrc, uploadFile } from "@/app/api/image/route";
+import { getUserImageSrc, uploadFile } from "@/app/apiClient/image/image";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 const getGenderDisplay = (gender: boolean | null | undefined): string => {

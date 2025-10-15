@@ -7,11 +7,13 @@ import { Topic } from "../../components/Topic";
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { TypeParagraph } from "../../components/TypeParagraph";
-import { generateWritingParagraphByAI } from "@/app/api/learning/writing/route";
+import { generateWritingParagraphByAI } from "@/app/apiClient/learning/writing/writing";
 import { Loader2 } from "lucide-react"; // icon loading
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function Page() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { type } = useParams();
   const [selectedLevel, setSelectedLevel] = useState<{
     id: number;
@@ -83,16 +85,16 @@ export default function Page() {
         ? `${selectedTypeParagraph.name} - ${selectedLevel.name}`
         : ""
       : selectedLevel && selectedTopic
-      ? `${selectedTopic.name} - ${selectedLevel.name}`
-      : "";
+        ? `${selectedTopic.name} - ${selectedLevel.name}`
+        : "";
 
   return (
     <>
       <div className="flex-1 px-6 py-6 pb-36">
         <div className="flex flex-col items-center justify-center text-center gap-2 mt-6">
-          <h2 className="text-3xl font-semibold">Luyện viết đoạn văn</h2>
+          <h2 className="text-3xl font-semibold">{type === "writing-paragraph" ? t("learning.titlePracticeTypeParagraph") : t("learning.titlePracticeTypeSentence")}</h2>
           <p className="text-lg tracking-widest text-gray-600">
-            Không ngừng cải thiện kỹ năng viết của bạn để giao tiếp hiệu quả hơn
+            {t("learning.descriptionPracticeType")}
           </p>
         </div>
 
@@ -116,17 +118,17 @@ export default function Page() {
       </div>
 
       {isReady && (
-        <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50">
-          <div className="flex flex-col items-center gap-3 bg-white shadow-xl px-6 py-4 rounded-2xl max-w-5xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+          <div className="flex flex-col items-center gap-3 bg-white shadow-xl px-6 py-4 rounded-2xl">
             <span className="text-lg font-semibold underline text-center">
               {selectedInfo}
             </span>
             <div className="flex items-center gap-4">
-              <Button variant={"destructive"} onClick={handleGenerateAI}>
+              <Button variant="destructive" onClick={handleGenerateAI}>
                 Generate AI
               </Button>
               or
-              <Button variant={"default"} onClick={handleStart}>
+              <Button variant="default" onClick={handleStart}>
                 Next step
               </Button>
             </div>

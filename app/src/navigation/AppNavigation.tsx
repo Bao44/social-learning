@@ -13,8 +13,6 @@ import ProfileTab from '../(tabs)/Profile';
 import Notification from '../screens/notification/Notification';
 import Message from '../screens/message/Message';
 import Options from '../screens/user/Options';
-import Rankings from '../screens/learning/Rankings';
-import Progress from '../screens/user/Progress';
 import EditProfile from '../screens/user/EditProfile';
 import Follow from '../screens/user/components/Follow';
 import ChatDetail from '../screens/message/chat/ChatDetail';
@@ -31,6 +29,16 @@ import PostDetail from '../screens/post/PostDetail';
 import EditPost from '../screens/post/EditPost';
 import UserFollowScreen from '../screens/follow/UserFollow';
 import RecommendFriend from '../screens/recommend/friends/RecommendFriend';
+import Listening from '../screens/learning/listening/Listening';
+import ListeningDetail from '../screens/learning/listening/ListeningDetail';
+import Speaking from '../screens/learning/speaking/Speaking';
+import Writing from '../screens/learning/writing/Writing';
+import LessonSpeaking from '../screens/learning/speaking/lesson/LessonSpeaking';
+import LessonSpeakingAI from '../screens/learning/speaking/lessonAI/LessonSpeaking';
+import Vocabulary from '../screens/learning/vocabulary/Vocabulary';
+import VocabularyDetail from '../screens/learning/vocabulary/VocabularyDetail';
+import ProgressPage from '../screens/learning/progress/Progress';
+import Ranking from '../screens/learning/ranking/Ranking';
 
 const Tab = createBottomTabNavigator();
 
@@ -180,13 +188,53 @@ const AppNavigation = () => {
 
         {/* Learning */}
         <Stack.Screen
-          name="Rankings"
-          component={Rankings}
+          name="Listening"
+          component={Listening}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ListeningDetail"
+          component={ListeningDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Speaking"
+          component={Speaking}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LessonSpeaking"
+          component={LessonSpeaking}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LessonSpeakingAI"
+          component={LessonSpeakingAI}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Vocabulary"
+          component={Vocabulary}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VocabularyDetail"
+          component={VocabularyDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Writing"
+          component={Writing}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Ranking"
+          component={Ranking}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Progress"
-          component={Progress}
+          component={ProgressPage}
           options={{ headerShown: false }}
         />
 

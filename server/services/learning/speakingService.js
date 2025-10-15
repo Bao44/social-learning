@@ -5,7 +5,7 @@ const speakingService = {
   async getSpeakingByTopicAndLevel(levelId, topicId) {
     const { data, error } = await supabase
       .from("speakingLessons")
-      .select("content, vocabulary_suggestions, topic_id, level_id")
+      .select("id, content, topic_id, level_id")
       .eq("topic_id", topicId)
       .eq("level_id", levelId);
 

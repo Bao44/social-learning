@@ -8,4 +8,8 @@ router.put("/:notificationId/read", notificationController.markAsRead);
 
 router.get("/:receiverId", notificationController.fetchNotifications);
 
+router.put("/learning/:notificationLearningId/read", notificationController.markAsReadNotificationLearning);
+
+router.get("/learning/:userId", notificationController.fetchNotificationsLearning);
+
 module.exports = router;

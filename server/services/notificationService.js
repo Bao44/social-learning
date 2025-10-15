@@ -40,6 +40,30 @@ const notificationService = {
     if (error) throw error;
     return { data, error };
   },
+
+  async markAsReadNotificationLearning(notificationLearningId) {
+    const { data, error } = await supabase
+      .from("notificationsLearning")
+      .update({ is_read: true })
+      .eq("id", notificationLearningId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return { data, error };
+  },
+
+  async fetchNotificationsLearning(userId) {
+    const { data, error } = await supabase
+      .from("notificationsLearning")
+      .select("*")
+      .eq("userId", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return { data, error };
+  },
 };
 
 module.exports = notificationService;

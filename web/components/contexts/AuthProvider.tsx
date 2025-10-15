@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserData } from "@/app/api/user/route";
+import { getUserData } from "@/app/apiClient/user/user";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, use, useEffect, useState } from "react";
@@ -36,6 +36,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const sessionUser = data?.session?.user;
       if (sessionUser) {
         updateUserData(sessionUser, sessionUser.email);
+        
       } else {
         setUser(null);
         router.replace("/");

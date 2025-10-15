@@ -15,13 +15,13 @@ import { X, Upload, ArrowLeft, FileText, Video, File } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import { getSupabaseFileUrl, getUserImageSrc } from "@/app/api/image/route";
+import { getSupabaseFileUrl, getUserImageSrc } from "@/app/apiClient/image/image";
 import {
   convertFileToBase64,
   type CreatePostData,
   updatePost,
   createPost,
-} from "@/app/api/post/route";
+} from "@/app/apiClient/post/post";
 import { toast } from "react-toastify";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 

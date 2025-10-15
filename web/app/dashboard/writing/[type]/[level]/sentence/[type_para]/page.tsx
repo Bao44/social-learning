@@ -4,7 +4,7 @@ import Link from 'next/link';
 import CardWritingExercise from '@/app/dashboard/writing/components/CardExercise';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getListWritingParagraphsByTypeLevelTypeParagraph } from '@/app/api/learning/writing/route';
+import { getListWritingParagraphsByTypeLevelTypeParagraph } from '@/app/apiClient/learning/writing/writing';
 import { useRouter } from 'next/navigation';
 
 interface WritingExercise {

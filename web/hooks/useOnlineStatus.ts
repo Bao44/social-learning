@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { generateVocabByAI } from "@/app/apiClient/learning/vocabulary/vocabulary";
 
 export function useOnlineStatus() {
   useEffect(() => {
@@ -14,17 +15,42 @@ export function useOnlineStatus() {
       if (!session?.access_token) return;
 
       await supabase.functions.invoke("update-last-seen", {
-        body: { name: "Functions" },
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
     }
 
-    // Ping lần đầu khi mount
-    pingLastSeen();
+    async function checkPersonalVocab() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
 
-    // Ping mỗi 2 phút
-    interval = setInterval(pingLastSeen, 120 * 1000);
+      const { data: personalVocab, error: personalVocabError } =
+        await supabase.functions.invoke("check-personal-vocab", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+
+      if (personalVocab?.data && personalVocab?.data.length > 0) {
+        personalVocab.data.forEach((item: any) => {
+          const res = generateVocabByAI({
+            userId: item.userId,
+            word: item.word,
+          });
+        });
+      }
+    }
+
+    // Gọi cả 2 ngay khi mount
+    pingLastSeen();
+    checkPersonalVocab();
+
+    // Lặp lại mỗi 30 giây
+    interval = setInterval(() => {
+      pingLastSeen();
+      checkPersonalVocab();
+    }, 30 * 1000);
 
     return () => clearInterval(interval);
   }, []);

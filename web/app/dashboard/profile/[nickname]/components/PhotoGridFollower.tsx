@@ -1,7 +1,7 @@
 "use client";
 
-import { getSupabaseFileUrl } from "@/app/api/image/route";
-import { fetchPostsByUserId } from "@/app/api/post/route";
+import { getSupabaseFileUrl } from "@/app/apiClient/image/image";
+import { fetchPostsByUserId } from "@/app/apiClient/post/post";
 import { Camera } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
