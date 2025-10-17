@@ -41,8 +41,6 @@ const scoreUserController = {
     }
   },
 
-  // Trừ điểm bông tuyết
-
   // Thống kê điểm theo kỹ năng speaking và thời gian
   getScoreStatisticsSpeaking: async (req, res) => {
     const { userId, period } = req.query;
