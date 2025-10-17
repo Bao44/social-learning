@@ -92,7 +92,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -156,7 +156,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateListening(level.name_vi, topic.name_vi);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -263,7 +263,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       // Lọc JSON thuần từ Gemini
