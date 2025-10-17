@@ -268,39 +268,40 @@ export default function ListeningDetail() {
 
       {/* Content */}
       <View style={styles.content}>
+        {/* Audio Player cố định */}
+        <View style={styles.audioContainer}>
+          <View style={styles.audioHeader}>
+            <Volume2 size={20} color="#4ECDC4" />
+            <Text style={styles.audioTitle}>Audio Player</Text>
+          </View>
+
+          <View style={styles.audioControls}>
+            <TouchableOpacity
+              style={styles.audioButton}
+              activeOpacity={0.8}
+            >
+              {isPlaying ? (
+                <Pause size={24} color="#fff" />
+              ) : (
+                <Play size={24} color="#fff" />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.audioButtonSecondary}
+              activeOpacity={0.8}
+            >
+              <RotateCcw size={20} color="#4ECDC4" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Scroll chỉ cho đoạn văn */}
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* Audio Player */}
-          <View style={styles.audioContainer}>
-            <View style={styles.audioHeader}>
-              <Volume2 size={20} color="#4ECDC4" />
-              <Text style={styles.audioTitle}>Audio Player</Text>
-            </View>
-
-            <View style={styles.audioControls}>
-              <TouchableOpacity
-                style={styles.audioButton}
-                activeOpacity={0.8}
-              >
-                {isPlaying ? (
-                  <Pause size={24} color="#fff" />
-                ) : (
-                  <Play size={24} color="#fff" />
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.audioButtonSecondary}
-                activeOpacity={0.8}
-              >
-                <RotateCcw size={20} color="#4ECDC4" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Text with blanks */}
           <View style={styles.textContainer}>
             <View style={styles.textHeader}>
@@ -322,14 +323,16 @@ export default function ListeningDetail() {
                         maxLength={correctAnswer.length}
                         placeholder={"_ ".repeat(correctAnswer.length)}
                         className={`text-[16px] border-b-2 text-center bg-white px-1 py-0.5 rounded-sm tracking-widest
-                            ${isCorrect === true
+                      ${isCorrect === true
                             ? "border-green-500 text-green-500"
                             : isCorrect === false
                               ? "border-red-500 text-red-500"
                               : "border-gray-400 text-blue-700"
                           }`}
                         value={userAnswer}
-                        onChangeText={text => setAnswers({ ...answers, [position]: text })}
+                        onChangeText={text =>
+                          setAnswers({ ...answers, [position]: text })
+                        }
                       />
                     </View>
                   );
@@ -347,6 +350,8 @@ export default function ListeningDetail() {
           <View style={styles.bottomSpacing} />
         </ScrollView>
       </View>
+
+
       <FloatingMenu
         onCheck={handleCheckAnswers}
         onHint={handleSuggestHint}
@@ -513,35 +518,12 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100,
   },
-  instructionsContainer: {
-    backgroundColor: '#f0fdfa',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#a7f3d0',
-  },
-  instructionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  instructionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
-  },
-  instructionText: {
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-  },
   audioContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
-    marginBottom: 20,
+    marginHorizontal: 20,
+    marginVertical: 20,
     borderWidth: 1,
     borderColor: '#e5e7eb',
     elevation: 2,
