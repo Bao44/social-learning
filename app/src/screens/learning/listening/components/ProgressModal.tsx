@@ -17,7 +17,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({ visible, onClose, progres
                 <Text style={styles.modalTitle}>📈 Tiến độ học</Text>
 
                 {progress ? (
-                    <View style={styles.progressBox}>
+                    <View className="gap-2" style={styles.progressBox}>
                         <Text style={styles.progressText}>🔰 Trạng thái: {progress?.isCorrect === true ? "Đã hoàn thành" : "Chưa hoàn thành"}</Text>
                         <Text style={styles.progressText}>
                             📅 Số lần nộp: {progress?.submit_times || 0}
