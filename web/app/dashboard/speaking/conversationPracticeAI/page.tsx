@@ -30,7 +30,6 @@ import { addSkillScore } from "@/app/apiClient/learning/score/score";
 function ConversationPracticeContent() {
   const { user } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [dialogue, setDialogue] = useState<any[]>([]);
   const [description, setDescription] = useState("");
@@ -255,7 +254,7 @@ function ConversationPracticeContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex-1 items-center justify-center">
         <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}

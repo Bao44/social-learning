@@ -32,4 +32,13 @@ router.get("/streak/restoreLearningStreak", scoreUserController.restoreLearningS
 // Route reset daily streak
 router.post("/streak/resetLearningStreak", scoreUserController.resetLearningStreak);
 
+// Route to get streak
+router.get("/streak/getLearningStreak", scoreUserController.getLearningStreak);
+
+// Route to get all achievements
+router.get("/achievements/getAllAchievements", scoreUserController.getAllAchievements);
+
+// Route to get achievements
+router.get("/achievements/getUserAchievements", scoreUserController.getUserAchievements);
+
 module.exports = router;
