@@ -260,6 +260,53 @@ const scoreUserService = {
 
     return { data, error: null };
   },
+
+  // Lấy chuỗi
+  async getLearningStreak(userId) {
+    const { data, error } = await supabase
+      .from("learningStreak")
+      .select("*")
+      .eq("userId", userId)
+      .single();
+
+    if (error) throw error;
+
+    return { data, error };
+  },
+
+  // Lấy toàn bộ thành tích
+  async getAllAchievements() {
+    const { data, error } = await supabase
+      .from("learningAchievements")
+      .select("*");
+    if (error) throw error;
+    return data;
+  },
+
+  // Lấy thành tích của user
+  async getUserAchievements(userId) {
+    const { data, error } = await supabase
+      .from("userAchievements")
+      .select(
+        `
+      id,
+      progress,
+      unlocked,
+      learningAchievements (
+        title,
+        description,
+        icon,
+        type,
+        skill,
+        target
+      )
+    `
+      )
+      .eq("userId", userId);
+
+    if (error) throw error;
+    return data;
+  },
 };
 
 module.exports = scoreUserService;

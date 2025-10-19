@@ -215,6 +215,44 @@ const scoreUserController = {
       return res.status(500).json({ error: err.message });
     }
   },
+
+  // Lấy chuỗi
+  getLearningStreak: async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId" });
+    }
+    try {
+      const data = await scoreUserService.getLearningStreak(userId);
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  },
+
+  // Lấy toàn bộ thành tích
+  getAllAchievements: async (req, res) => {
+    try {
+      const data = await scoreUserService.getAllAchievements();
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  },
+
+  // Lấy thành tích của user
+  getUserAchievements: async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId" });
+    }
+    try {
+      const data = await scoreUserService.getUserAchievements(userId);
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = scoreUserController;
