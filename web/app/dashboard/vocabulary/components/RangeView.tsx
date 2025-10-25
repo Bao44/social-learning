@@ -10,6 +10,7 @@ import {
   List,
   Grid3x3,
   Sparkles,
+  Volume2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -17,8 +18,9 @@ import { Switch } from "@/components/ui/switch";
 interface VocabItem {
   id: string;
   word: string;
-  translation?: string;
   mastery_score: number;
+  translation?: string;
+  related_words?: { word_vi: string }[];
 }
 
 interface Props {
@@ -35,9 +37,9 @@ export default function OverviewRangeView({
   onSelectWord,
 }: Props) {
   const ranges: Record<string, [number, number]> = {
-    "0–29% – Cần ôn gấp": [0, 29],
-    "30–69% – Cần củng cố": [30, 69],
-    "70–99% – Sắp thành thạo": [70, 99],
+    "Cần ôn gấp": [0, 29],
+    "Đang tiến bộ": [30, 69],
+    "Sắp thành thạo": [70, 99],
   };
   const [min, max] = ranges[title] ?? [0, 100];
 
@@ -49,9 +51,17 @@ export default function OverviewRangeView({
 
   // Filter lại list mỗi khi props thay đổi
   useEffect(() => {
-    const filtered = listPersonalVocab.filter(
+    const relatedFiltered = listPersonalVocab.map((v) => {
+      if (!v.translation && v.related_words && v.related_words.length > 0) {
+        return { ...v, translation: v.related_words[0].word_vi };
+      }
+      return v;
+    });
+
+    const filtered = relatedFiltered.filter(
       (v) => v.mastery_score >= min && v.mastery_score <= max
     );
+
     setVocabs(filtered);
     setCurrentIndex(0);
     setIsFlipped(false);
@@ -65,6 +75,42 @@ export default function OverviewRangeView({
       setIsFlipped(false);
     }
   }, [shuffle]);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      window.speechSynthesis.getVoices();
+    };
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+    return () =>
+      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+  }, []);
+
+  const speakWord = (text: string) => {
+    if (!window.speechSynthesis) {
+      console.warn("Speech Synthesis not supported");
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+
+    // Lấy tất cả voice tiếng Anh
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoices = voices.filter((v) => v.lang.startsWith("en-US"));
+
+    // Random voice nếu có
+    if (englishVoices.length > 0) {
+      const randomVoice =
+        englishVoices[Math.floor(Math.random() * englishVoices.length)];
+      utterance.voice = randomVoice;
+      utterance.lang = randomVoice.lang;
+    }
+
+    window.speechSynthesis.cancel(); // dừng voice cũ
+    window.speechSynthesis.speak(utterance);
+  };
 
   const getMasteryColor = (score: number) => {
     if (score >= 70) return "text-green-600";
@@ -106,13 +152,27 @@ export default function OverviewRangeView({
       className="mt-4 flex-1 px-6 py-6 pb-36"
     >
       <div className="max-w-7xl mx-auto">
-        <Button variant="ghost" onClick={onBack} className="mb-6">
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Quay lại tổng quan
-        </Button>
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={onBack}
+              className="mb-6 cursor-pointer"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Quay lại
+            </Button>
 
-        <h1 className="text-3xl font-bold mb-6">{title}</h1>
-
+            <h1 className="text-3xl font-bold mb-6">{title}</h1>
+          </div>
+          <Button
+            variant="ghost"
+            onClick={() => console.log(vocabs.map((v) => v.word))}
+            className="cursor-pointer bg-gradient-to-br from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white p-6 rounded-4xl text-lg font-bold shadow-lg hover:shadow-xl"
+          >
+            Luyện tập
+          </Button>
+        </div>
         {/* Flashcard Section */}
         {vocabs.length > 0 ? (
           <div className="mb-12">
@@ -142,6 +202,17 @@ export default function OverviewRangeView({
                     transition={{ duration: 0.6 }}
                     style={{ backfaceVisibility: "hidden" }}
                   >
+                    <Button
+                      variant="outline"
+                      className="border-orange-200 hover:bg-orange-50 bg-transparent absolute top-4 right-4 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        speakWord(currentVocab.word);
+                      }}
+                    >
+                      <Volume2 className="mr-2 h-4 w-4" />
+                      Phát âm
+                    </Button>
                     <h3 className="text-4xl font-bold text-gray-800">
                       {currentVocab.word}
                     </h3>
@@ -156,36 +227,10 @@ export default function OverviewRangeView({
                     style={{ backfaceVisibility: "hidden" }}
                   >
                     {currentVocab.translation && (
-                      <p className="text-xl text-gray-600 mb-6 text-center">
+                      <h3 className="text-4xl font-bold text-gray-800">
                         {currentVocab.translation}
-                      </p>
+                      </h3>
                     )}
-                    <div className="w-full max-w-xs">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600">
-                          Mức độ thành thạo
-                        </span>
-                        <span
-                          className={`text-sm font-bold ${getMasteryColor(
-                            currentVocab.mastery_score
-                          )}`}
-                        >
-                          {currentVocab.mastery_score}%
-                        </span>
-                      </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full transition-all duration-500 bg-gradient-to-r ${
-                            currentVocab.mastery_score >= 70
-                              ? "from-green-500 to-emerald-500"
-                              : currentVocab.mastery_score >= 30
-                              ? "from-yellow-500 to-orange-500"
-                              : "from-red-500 to-pink-500"
-                          }`}
-                          style={{ width: `${currentVocab.mastery_score}%` }}
-                        />
-                      </div>
-                    </div>
                   </motion.div>
                 </motion.div>
               )}
@@ -263,14 +308,8 @@ export default function OverviewRangeView({
           >
             <AnimatePresence mode="popLayout">
               {vocabs.map((v, i) => (
-                <motion.div
+                <div
                   key={v.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: i * 0.05 }}
-                  whileHover={{ scale: 1.02, y: -4 }}
                   onClick={() => onSelectWord?.(v.id)}
                   className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group"
                 >
@@ -282,15 +321,20 @@ export default function OverviewRangeView({
                   <div className="relative z-10">
                     <div className="flex items-start justify-between mb-3">
                       <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
-                        {v.word}
+                        {v.word}{" "}
+                        <span className="text-sm text-gray-600">
+                          {v.translation}
+                        </span>
                       </h3>
-                      <Sparkles className="w-5 h-5 text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Volume2
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          speakWord(v.word);
+                        }}
+                        className="w-6 h-6 text-orange-300 opacity-0 group-hover:opacity-100 transition-opacity hover:text-orange-500 cursor-pointer"
+                      />
                     </div>
-                    {v.translation && (
-                      <p className="text-sm text-gray-600 mb-4">
-                        {v.translation}
-                      </p>
-                    )}
+
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-gray-600">
                         Mức độ thành thạo
@@ -317,7 +361,7 @@ export default function OverviewRangeView({
                       />
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </AnimatePresence>
           </motion.div>

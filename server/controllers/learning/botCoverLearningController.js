@@ -5,12 +5,14 @@ const promptGenerateListening = require("../../utils/prompt/generateListening");
 const promptGenerateSpeaking = require("../../utils/prompt/generateSpeaking");
 const promptGeneratePersonalWord = require("../../utils/prompt/generateVocabulary");
 const promptGenerateConversationPractice = require("../../utils/prompt/generateConversationPractice");
+const promptGenerateWordsPractice = require("../../utils/prompt/generateWordsPractice");
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { GoogleGenAI } = require("@google/genai");
 const writingService = require("../../services/learning/writingService");
 const promptGiveFeedbackWritingParagraph = require("../../utils/prompt/feedbackAIExParagraph");
 const scoreUserService = require("../../services/learning/scoreUserService");
+const topicService = require("../../services/learning/topicService");
 const {
   updatePersonalVocab,
 } = require("../../services/learning/vocabularyService");
@@ -381,7 +383,6 @@ const botCoverLearningController = {
           .json({ error: "Lỗi phân tích JSON", raw: jsonMatch[1] });
       }
 
-      const topic = json.topic;
       const data = json.words;
 
       // Lưu từ vựng cá nhân vào data
@@ -398,7 +399,11 @@ const botCoverLearningController = {
       }));
 
       // Lưu vào mảng jsonb của bảng personalVocab
-      const resultSaveVocab = await updatePersonalVocab(userId, word, topic, personalVocab);
+      const resultSaveVocab = await updatePersonalVocab(
+        userId,
+        word,
+        personalVocab
+      );
 
       if (resultSaveVocab.error) {
         return res.status(500).json({ error: "Lỗi khi lưu từ vựng cá nhân" });
@@ -458,6 +463,65 @@ const botCoverLearningController = {
     } catch (error) {
       console.error("Error generating content:", error);
       return res.status(500).json({ error: "Error generating content" });
+    }
+  },
+
+  createGenerateWordsPracticeByAI: async (req, res) => {
+    const { userId, words } = req.body;
+
+    if (!userId || !words) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Prompt để gọi Gemini
+    const prompt = promptGenerateWordsPractice(words);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const result = await model.generateContent(prompt);
+
+      const text = result.response.text();
+      // Lọc JSON thuần từ Gemini
+      const jsonMatch = text.match(/```json\s*([\s\S]*?)```/i);
+      if (!jsonMatch) {
+        return res
+          .status(500)
+          .json({ error: "Gemini không trả JSON hợp lệ", raw: text });
+      }
+
+      let json;
+      try {
+        json = JSON.parse(jsonMatch[1]);
+      } catch (e) {
+        console.error("Lỗi parse JSON:", e);
+        return res
+          .status(500)
+          .json({ error: "Lỗi phân tích JSON", raw: jsonMatch[1] });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Tạo bài tập thành công",
+        json,
+      });
+    } catch (error) {
+      console.error("Error generating content:", error);
+      return res.status(500).json({ error: "Error generating content" });
+    }
+  },
+
+  generateTopicsForUser: async (req, res) => {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId" });
+    }
+
+    try {
+      const result = await topicService.generateTopicsForUser(userId);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      console.error("Error generating topics:", error);
+      res.status(500).json({ error: error.message });
     }
   },
 };

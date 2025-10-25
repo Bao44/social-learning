@@ -50,3 +50,10 @@ export const getPersonalVocabByTopic = async ( {userId, topic}:any) => {
   const response = await api.get(`/api/learning/vocabulary/topics/${userId}/${topic}`);
   return response.data;
 }
+
+export const generateTopicsForUser = async ({ userId }: { userId: string }) => {
+  const response = await api.post(`/api/bot-cover-learning/generate-topics`, {
+    userId
+  });
+  return response.data;
+}
