@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
   RotateCcw,
-  List,
-  Grid3x3,
-  Sparkles,
   Volume2,
+  Search,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 
 interface VocabItem {
   id: string;
@@ -24,15 +23,19 @@ interface VocabItem {
 }
 
 interface Props {
+  t: (key: string) => string;
   title: string;
   listPersonalVocab: VocabItem[];
+  speakWord: (text: string) => void;
   onBack: () => void;
   onSelectWord?: (id: string) => void;
 }
 
 export default function OverviewRangeView({
+  t,
   title,
-  listPersonalVocab,
+  listPersonalVocab = [],
+  speakWord,
   onBack,
   onSelectWord,
 }: Props) {
@@ -44,72 +47,64 @@ export default function OverviewRangeView({
   const [min, max] = ranges[title] ?? [0, 100];
 
   const [vocabs, setVocabs] = useState<VocabItem[]>([]);
+  const [shuffle, setShuffle] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+  const vocabRef = useRef<HTMLDivElement>(null);
+
+  // Flashcard states
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [shuffle, setShuffle] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const currentVocab = vocabs[currentIndex];
 
-  // Filter lại list mỗi khi props thay đổi
+  // Filter theo mastery
   useEffect(() => {
-    const relatedFiltered = listPersonalVocab.map((v) => {
-      if (!v.translation && v.related_words && v.related_words.length > 0) {
+    if (!listPersonalVocab || !Array.isArray(listPersonalVocab)) {
+      setVocabs([]);
+      return;
+    }
+
+    const withTranslation = listPersonalVocab.map((v) => {
+      if (!v.translation && v.related_words?.length) {
         return { ...v, translation: v.related_words[0].word_vi };
       }
       return v;
     });
 
-    const filtered = relatedFiltered.filter(
+    const filtered = withTranslation.filter(
       (v) => v.mastery_score >= min && v.mastery_score <= max
     );
 
     setVocabs(filtered);
+    setCurrentPage(1);
     setCurrentIndex(0);
-    setIsFlipped(false);
   }, [listPersonalVocab, min, max]);
 
-  // Shuffle (nên clone mảng thay vì sort trực tiếp)
+  // Shuffle
   useEffect(() => {
     if (shuffle && vocabs.length > 0) {
       setVocabs((prev) => [...prev].sort(() => Math.random() - 0.5));
-      setCurrentIndex(0);
-      setIsFlipped(false);
+      setCurrentPage(1);
     }
   }, [shuffle]);
 
-  useEffect(() => {
-    const loadVoices = () => {
-      window.speechSynthesis.getVoices();
-    };
-    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-    return () =>
-      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
-  }, []);
+  // Flashcard controls
+  const handleNextCard = () => {
+    setIsFlipped(false);
+    setCurrentIndex((prev) => (prev < vocabs.length - 1 ? prev + 1 : prev));
+  };
 
-  const speakWord = (text: string) => {
-    if (!window.speechSynthesis) {
-      console.warn("Speech Synthesis not supported");
-      return;
-    }
+  const handlePreviousCard = () => {
+    setIsFlipped(false);
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+  };
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-
-    // Lấy tất cả voice tiếng Anh
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoices = voices.filter((v) => v.lang.startsWith("en-US"));
-
-    // Random voice nếu có
-    if (englishVoices.length > 0) {
-      const randomVoice =
-        englishVoices[Math.floor(Math.random() * englishVoices.length)];
-      utterance.voice = randomVoice;
-      utterance.lang = randomVoice.lang;
-    }
-
-    window.speechSynthesis.cancel(); // dừng voice cũ
-    window.speechSynthesis.speak(utterance);
+  const handleResetCard = () => {
+    setIsFlipped(false);
+    setCurrentIndex(0);
   };
 
   const getMasteryColor = (score: number) => {
@@ -124,72 +119,78 @@ export default function OverviewRangeView({
     return "from-red-500/20 to-pink-500/20";
   };
 
-  const handleNext = () => {
-    if (currentIndex < vocabs.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setIsFlipped(false);
+  // Alphabet filtering
+  const alphabet = useMemo(() => {
+    const letters = new Set<string>();
+    vocabs.forEach((v) => {
+      const firstLetter = v.word.charAt(0).toUpperCase();
+      if (/[A-Z]/.test(firstLetter)) letters.add(firstLetter);
+    });
+    return Array.from(letters).sort();
+  }, [vocabs]);
+
+  const filteredVocabs = useMemo(() => {
+    let filtered = vocabs;
+    if (searchQuery)
+      filtered = filtered.filter((v) =>
+        v.word.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    if (selectedLetter)
+      filtered = filtered.filter(
+        (v) => v.word.charAt(0).toUpperCase() === selectedLetter
+      );
+    return filtered;
+  }, [vocabs, searchQuery, selectedLetter]);
+
+  const totalPages = Math.ceil(filteredVocabs.length / itemsPerPage);
+  const displayedVocabs = filteredVocabs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((p) => p + 1);
+      vocabRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setIsFlipped(false);
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((p) => p - 1);
+      vocabRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-  const handleReset = () => {
-    setCurrentIndex(0);
-    setIsFlipped(false);
-  };
-
-  const currentVocab = vocabs[currentIndex];
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-4 flex-1 px-6 py-6 pb-36"
+      className="flex-1 px-6 py-6 pb-20"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto" ref={vocabRef}>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
           <div>
             <Button
               variant="ghost"
               onClick={onBack}
               className="mb-6 cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Quay lại
+              <ArrowLeft className="w-5 h-5 mr-2" /> Quay lại
             </Button>
-
             <h1 className="text-3xl font-bold mb-6">{title}</h1>
           </div>
-          <Button
-            variant="ghost"
-            onClick={() => console.log(vocabs.map((v) => v.word))}
-            className="cursor-pointer bg-gradient-to-br from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white p-6 rounded-4xl text-lg font-bold shadow-lg hover:shadow-xl"
-          >
+          <Button className="bg-gradient-to-br from-orange-600 to-pink-600 text-white font-bold shadow-lg">
             Luyện tập
           </Button>
         </div>
-        {/* Flashcard Section */}
-        {vocabs.length > 0 ? (
-          <div className="mb-12">
-            {/* Controls */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Switch checked={shuffle} onCheckedChange={setShuffle} />
-                <span className="text-sm text-gray-600">Ngẫu nhiên</span>
-              </div>
-              <div className="text-sm text-gray-600">
-                {currentIndex + 1} / {vocabs.length}
-              </div>
-            </div>
 
-            {/* Flashcard */}
-            <div className="flex justify-center mb-6">
-              {currentVocab && (
+        {/* ✅ Flashcard Section */}
+        <div className="mb-10">
+          {currentVocab ? (
+            <>
+              {/* Flashcard */}
+              <div className="flex justify-center mb-6">
                 <motion.div
                   className="relative w-full max-w-md h-64 cursor-pointer"
                   onClick={() => setIsFlipped(!isFlipped)}
@@ -233,139 +234,194 @@ export default function OverviewRangeView({
                     )}
                   </motion.div>
                 </motion.div>
-              )}
-            </div>
+              </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentIndex === 0}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button variant="outline" onClick={handleReset}>
-                <RotateCcw className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleNext}
-                disabled={currentIndex === vocabs.length - 1}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <p className="text-gray-600 text-center py-12">
-            Không có từ nào trong khoảng này.
-          </p>
-        )}
+              {/* Flashcard navigation */}
+              <div className="flex justify-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={handlePreviousCard}
+                  disabled={currentIndex === 0}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+                <Button variant="outline" onClick={handleResetCard}>
+                  <RotateCcw className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleNextCard}
+                  disabled={currentIndex === vocabs.length - 1}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-600 text-center py-12">
+              Không có từ nào trong khoảng này.
+            </p>
+          )}
+        </div>
 
         {/* Divider */}
         <div className="my-12 border-t border-gray-200" />
 
-        {/* List/Grid view */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Tất cả từ trong nhóm</h2>
-            <div className="flex gap-2 bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-gray-200">
-              <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-                className={
-                  viewMode === "list"
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500"
-                    : ""
-                }
+        {/* Search */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <Input
+              placeholder={t("learning.searchVocab")}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="pl-12 pr-10 h-12 bg-white/80 border-gray-200 focus:border-orange-300 focus:ring-orange-200"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <List className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "grid" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-                className={
-                  viewMode === "grid"
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500"
-                    : ""
-                }
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Alphabet Filter */}
+        {alphabet.length > 0 && (
+          <div className="mb-8 p-4 bg-white/80 rounded-2xl border border-gray-200 shadow-lg">
+            <p className="text-sm font-semibold text-gray-600 mb-3">
+              {t("learning.filterByLetter")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedLetter(null)}
+                className={`px-3 py-2 rounded-lg font-semibold cursor-pointer ${
+                  selectedLetter === null
+                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
-                <Grid3x3 className="w-4 h-4" />
-              </Button>
+                Tất cả
+              </button>
+              {alphabet.map((letter) => (
+                <button
+                  key={letter}
+                  onClick={() =>
+                    setSelectedLetter(selectedLetter === letter ? null : letter)
+                  }
+                  className={`px-3 py-2 rounded-lg font-semibold cursor-pointer ${
+                    selectedLetter === letter
+                      ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {letter}
+                </button>
+              ))}
             </div>
           </div>
+        )}
 
-          <motion.div
-            layout
-            className={`grid gap-4 ${
-              viewMode === "grid"
-                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                : "grid-cols-1"
-            }`}
-          >
-            <AnimatePresence mode="popLayout">
-              {vocabs.map((v, i) => (
+        {/* Pagination Header */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-lg font-semibold text-gray-700">
+            Tổng:{" "}
+            <span className="text-orange-500">{filteredVocabs.length}</span> từ
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 cursor-pointer"
+            >
+              <ChevronLeft className="inline w-5 h-5 mr-2" />
+              {t("learning.prePage")}
+            </button>
+            <span className="text-gray-600 font-medium">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 cursor-pointer"
+            >
+              {t("learning.nextPage")}{" "}
+              <ChevronRight className="inline w-5 h-5 ml-2" />
+            </button>
+          </div>
+        </div>
+
+        {/* Grid/List */}
+        <motion.div
+          layout
+          className={`grid gap-4 ${
+            viewMode === "grid"
+              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              : "grid-cols-1"
+          }`}
+        >
+          <AnimatePresence mode="popLayout">
+            {displayedVocabs.map((v) => (
+              <motion.div
+                key={v.id}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="bg-white/80 rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl relative overflow-hidden group"
+                onClick={() => onSelectWord?.(v.id)}
+              >
                 <div
-                  key={v.id}
-                  onClick={() => onSelectWord?.(v.id)}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group"
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${getMasteryBgColor(
-                      v.mastery_score
-                    )} opacity-0 group-hover:opacity-100 transition-opacity`}
-                  />
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
-                        {v.word}{" "}
-                        <span className="text-sm text-gray-600">
-                          {v.translation}
-                        </span>
-                      </h3>
-                      <Volume2
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          speakWord(v.word);
-                        }}
-                        className="w-6 h-6 text-orange-300 opacity-0 group-hover:opacity-100 transition-opacity hover:text-orange-500 cursor-pointer"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-gray-600">
-                        Mức độ thành thạo
+                  className={`absolute inset-0 bg-gradient-to-br ${getMasteryBgColor(
+                    v.mastery_score
+                  )} opacity-0 group-hover:opacity-100 transition-opacity`}
+                />
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
+                      {v.word}
+                      <span className="text-sm text-gray-600 ml-2">
+                        {v.translation}
                       </span>
-                      <span
-                        className={`text-sm font-bold ${getMasteryColor(
-                          v.mastery_score
-                        )}`}
-                      >
-                        {v.mastery_score}%
-                      </span>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${v.mastery_score}%` }}
-                        className={`h-full bg-gradient-to-r ${
-                          v.mastery_score >= 70
-                            ? "from-green-500 to-emerald-500"
-                            : v.mastery_score >= 30
-                            ? "from-yellow-500 to-orange-500"
-                            : "from-red-500 to-pink-500"
-                        }`}
-                      />
-                    </div>
+                    </h3>
+                    <Volume2
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        speakWord(v.word);
+                      }}
+                      className="w-6 h-6 text-orange-300 opacity-0 group-hover:opacity-100 transition-opacity hover:text-orange-500 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-600">Mức độ</span>
+                    <span
+                      className={`text-sm font-bold ${getMasteryColor(
+                        v.mastery_score
+                      )}`}
+                    >
+                      {v.mastery_score}%
+                    </span>
+                  </div>
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${v.mastery_score}%` }}
+                      className={`h-full bg-gradient-to-r ${
+                        v.mastery_score >= 70
+                          ? "from-green-500 to-emerald-500"
+                          : v.mastery_score >= 30
+                          ? "from-yellow-500 to-orange-500"
+                          : "from-red-500 to-pink-500"
+                      }`}
+                    />
                   </div>
                 </div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </motion.div>
   );

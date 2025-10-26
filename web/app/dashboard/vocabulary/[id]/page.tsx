@@ -114,13 +114,6 @@ export default function VocabularyDetailPage() {
             <p className="mb-4 text-muted-foreground">
               Từ vựng này không tồn tại hoặc đã bị xóa.
             </p>
-            <Button
-              onClick={() => router.push("/dashboard/vocabulary")}
-              className="bg-gradient-to-r from-orange-500 to-pink-500"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại danh sách
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -144,35 +137,6 @@ export default function VocabularyDetailPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl space-y-6">
-        {/* Back Button and IPA */}
-        <div className="flex items-center gap-4 justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <Button
-              variant="ghost"
-              onClick={() => router.back()}
-              className="group hover:bg-gray-200 cursor-pointer"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Quay lại
-            </Button>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <Button
-              variant="ghost"
-              onClick={() => router.push("/dashboard/vocabulary/ipa")}
-              className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer text-white hover:text-white"
-            >
-              Xem bảng IPA
-            </Button>
-          </motion.div>
-        </div>
-
         {/* Header Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -266,9 +230,18 @@ export default function VocabularyDetailPage() {
 
               {/* Action Buttons */}
               <div className="md:mt-[-35px] mt-6 flex flex-wrap gap-3">
-                <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer">
-                  <Sparkles className="mr-2 h-4 w-4" />
+                <Button
+                  onClick={() => console.log(personalVocab)}
+                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+                >
                   Luyện tập ngay
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => router.push("/dashboard/vocabulary/ipa")}
+                  className="border-orange-200 hover:bg-orange-50 bg-transparent cursor-pointer"
+                >
+                  Bảng IPA
                 </Button>
                 <Button
                   variant="outline"
