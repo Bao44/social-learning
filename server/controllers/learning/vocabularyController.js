@@ -199,6 +199,50 @@ const vocabularyController = {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   },
+
+  async getUserTopics(req, res) {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing or invalid parameters" });
+    }
+
+    try {
+      const { data, error } = await vocabularyService.getUserTopics(userId);
+      if (error) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching user vocabulary topics" });
+      }
+
+      return res.status(200).json({ success: true, data });
+    } catch (error) {
+      console.error("Error in getUserTopics:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
+  async getVocabByTopic(req, res) {
+    const { userId, topicId } = req.params;
+    
+    if (!userId || !topicId) {
+      return res.status(400).json({ error: "Missing or invalid parameters" });
+    }
+
+    try {
+      const { data, error } = await vocabularyService.getVocabByTopic(
+        userId,
+        topicId
+      );
+      if (error) {
+        return res.status(500).json({ error: "Error fetching vocabulary by topic" });
+      }
+      return res.status(200).json({ success: true, data });
+    } catch (error) {
+      console.error("Error in getVocabByTopic:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 };
 
 module.exports = vocabularyController;

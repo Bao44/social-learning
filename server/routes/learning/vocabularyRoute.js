@@ -47,4 +47,10 @@ router.get(
   vocabularyController.getPersonalVocabByTopic
 );
 
+// Route to get user topic
+router.get("/user_topics/:userId", vocabularyController.getUserTopics);
+
+// Route to get vocab by topic
+router.get("/vocab_topic/:userId/:topicId", vocabularyController.getVocabByTopic);
+
 module.exports = router;

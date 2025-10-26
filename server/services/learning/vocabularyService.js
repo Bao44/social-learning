@@ -114,5 +114,42 @@ const vocabularyService = {
 
     return { data, total, error };
   },
+
+  // Lấy danh sách chủ đề từ vựng của người dùng
+  async getUserTopics(userId) {
+    const { data, error } = await supabase
+      .from("topicsVocab")
+      .select("id, name_en, name_vi, total_vocab")
+      .eq("userId", userId)
+      .order("name_en", { ascending: true });
+
+    if (error) throw error;
+
+    return { data, error };
+  },
+
+  // Lấy danh sách từ vựng theo chủ đề
+  async getVocabByTopic(userId, topicId) {
+    const { data, error } = await supabase
+      .from("personalVocabTopics")
+      .select(
+        `
+        personal_vocab_id,
+        personalVocab:personal_vocab_id (
+          word,
+          related_words,
+          mastery_score
+        )
+        `
+      )
+      .eq("topic_vocab_id", topicId)
+      .eq("personalVocab.userId", userId);
+
+    if (error) throw error;
+
+    // map lại cho dễ dùng
+    const mappedData = data.map((item) => item.personalVocab);
+    return { data: mappedData, error };
+  },
 };
 module.exports = vocabularyService;
