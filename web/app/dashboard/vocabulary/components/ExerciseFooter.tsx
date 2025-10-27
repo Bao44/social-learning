@@ -1,3 +1,4 @@
+// components/ExerciseFooter.tsx
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,10 +10,9 @@ export type FeedbackStatus = {
 
 interface Props {
   feedback: FeedbackStatus;
-  onContinue: () => void;
 }
 
-export default function ExerciseFooter({ feedback, onContinue }: Props) {
+export default function ExerciseFooter({ feedback }: Props) {
   const isCorrect = feedback?.status === "correct";
   const title = isCorrect ? "Chính xác!" : "Không chính xác!";
   const bgColor = isCorrect ? "bg-green-100" : "bg-red-100";
@@ -29,7 +29,7 @@ export default function ExerciseFooter({ feedback, onContinue }: Props) {
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className={`fixed bottom-0 left-0 right-0 p-6 rounded-t-2xl shadow-2xl ${bgColor}`}
+          className={`mt-auto p-6 rounded-b-2xl ${bgColor}`}
         >
           <h3 className={`text-xl font-bold ${textColor}`}>{title}</h3>
           {!isCorrect && (
@@ -38,12 +38,6 @@ export default function ExerciseFooter({ feedback, onContinue }: Props) {
               <span className="font-bold">{feedback.correctAnswer}</span>
             </p>
           )}
-          <button
-            onClick={onContinue}
-            className={`w-full mt-4 py-3 rounded-xl text-white font-bold text-lg ${buttonColor}`}
-          >
-            Tiếp tục
-          </button>
         </motion.div>
       )}
     </AnimatePresence>
