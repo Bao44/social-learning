@@ -51,7 +51,7 @@ export default function RoleSelector({ onSelectRole }: Props) {
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center shadow">
-                <Bot className="w-8 h-8 text-white" />
+                <User className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-800">Người B</h3>
               <p className="text-sm text-gray-600 text-center">
