@@ -377,7 +377,7 @@ function ConversationPracticeContent() {
           tweenDuration={5000}
         />
       )}
-      <div className="max-w-4xl mx-auto relative z-10 flex flex-col h-[calc(100vh-100px)]">
+      <div className="max-w-5xl mx-auto relative z-10 flex flex-col h-[calc(100vh-100px)]">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

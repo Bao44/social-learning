@@ -26,15 +26,6 @@ export default function ConversationPreview({
     <div className="flex-grow flex flex-col justify-center p-6 md:p-8">
       <div className="space-y-6">
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center shadow">
-              {role === "A" ? (
-                <User className="w-8 h-8 text-white" />
-              ) : (
-                <Bot className="w-8 h-8 text-white" />
-              )}
-            </div>
-          </div>
           <h2 className="text-2xl font-bold text-gray-800">
             Bạn đã chọn vai trò:{" "}
             <span className="text-orange-600">Người {role}</span>
