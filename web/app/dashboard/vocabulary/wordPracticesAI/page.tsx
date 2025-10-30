@@ -295,6 +295,7 @@ export default function WordPracticeAI() {
           height={height}
           recycle={false}
           numberOfPieces={500}
+          style={{ zIndex: 9999 }}
           gravity={0.3}
         />
       )}
