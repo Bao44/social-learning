@@ -7,11 +7,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PlusCircle } from "lucide-react"
 import CreatePathModal from "./components/CreatePathModal"
 import { useLanguage } from "@/components/contexts/LanguageContext"
+import { getRoadmapByUserId } from "@/app/apiClient/learning/roadmap/roadmap"
+import useAuth from "@/hooks/useAuth"
 
 export default function LearningPathPage() {
-    const [paths, setPaths] = useState<any[]>([])
-    const [openModal, setOpenModal] = useState(false)
-    const { t } = useLanguage()
+    const { user } = useAuth();
+    const [paths, setPaths] = useState<any[]>([]);
+    const [openModal, setOpenModal] = useState(false);
+    const { t } = useLanguage();
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const fetchData = async () => {
+            try {
+                const res = await getRoadmapByUserId(user.id);
+                setPaths(res ? [res] : []);
+            } catch (error) {
+                console.error("Error fetching learning paths:", error);
+            }
+        };
+
+        fetchData();
+    }, [user?.id]);
+
 
     return (
         <div className="flex-1 px-6 py-6">

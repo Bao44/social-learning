@@ -63,7 +63,7 @@ export default function WordPracticeAI() {
   const [wrongPile, setWrongPile] = useState<any[]>([]);
   // State cho SRS (lưu các từ đã từng làm sai)
   const [implicitlyHardWords, setImplicitlyHardWords] = useState<string[]>([]);
-  const stored = sessionStorage.getItem("practiceWords");
+  const [stored, setStored] = useState<string | null>(null);
 
   const update_mastery_on_success = async (userId: string, word: string) => {
     await supabase.rpc("update_mastery_on_success", {
@@ -73,10 +73,9 @@ export default function WordPracticeAI() {
   };
   // Load từ
   useEffect(() => {
-    if (stored) {
-      setWords(JSON.parse(stored));
-    } else {
-      setError("Không tìm thấy từ để luyện tập.");
+    if (typeof window !== "undefined") {
+      const data = sessionStorage.getItem("practiceWords");
+      setStored(data);
     }
   }, []);
 
@@ -299,9 +298,8 @@ export default function WordPracticeAI() {
         />
       )}
       <div
-        className={`flex flex-col flex-1 mx-auto mt-10 relative transition-all overflow-hidden ${
-          showOutOfLivesModal ? "blur-sm" : ""
-        }`}
+        className={`flex flex-col flex-1 mx-auto mt-10 relative transition-all overflow-hidden ${showOutOfLivesModal ? "blur-sm" : ""
+          }`}
       >
         <div className="p-6 md:p-12 pb-0">
           {/* Thanh Header mới bao gồm Progress và Lives */}

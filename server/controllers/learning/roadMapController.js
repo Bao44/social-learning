@@ -1,4 +1,5 @@
 const learningService = require('../../services/learning/learningService');
+const roadmapService = require('../../services/learning/roadMapService');
 const scoreUserService = require('../../services/learning/scoreUserService');
 const generateRoadMap = require('../../utils/prompt/generateRoadMap');
 require("dotenv").config();
@@ -7,6 +8,31 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const roadMapController = {
+    // Get roadmap by userId
+    getRoadmapByUserId: async (req, res) => {
+        try {
+            const { userId } = req.params;
+            const roadmap = await roadmapService.getRoadmapByUserId(userId);
+            return res.json(roadmap);
+        } catch (error) {
+            console.error("❌ Lỗi khi lấy lộ trình:", error);
+            return res.status(500).json({ error: "Lỗi khi lấy lộ trình" });
+        }
+    },
+
+    // Get roadmap and lessons by userId
+    getRoadmapAndLessonsByUserId: async (req, res) => {
+        try {
+            const { userId } = req.params;
+            const roadmap = await roadmapService.getRoadmapAndLessonsByUserId(userId);
+            return res.json(roadmap);
+        } catch (error) {
+            console.error("❌ Lỗi khi lấy lộ trình và bài học:", error);
+            return res.status(500).json({ error: "Lỗi khi lấy lộ trình và bài học" });
+        }
+    },
+
+    // Create roadmap for user
     createRoadMapForUser: async (req, res) => {
         try {
             const { userId, input } = req.body;
@@ -57,8 +83,14 @@ const roadMapController = {
             const json = JSON.parse(match[0]);
 
             // TODO: lưu json xuống DB
-            console.log("✅ Roadmap JSON:", JSON.stringify(json, null, 2));
+            const savedRoadmap = await roadmapService.createRoadmapForUser(userId, {
+                totalWeeks: json.totalWeeks,
+                focus: json.focus,
+            });
 
+            for (const lesson of json.lessons) {
+                await roadmapService.createLessonRoadmap(savedRoadmap[0].id, lesson);
+            }
 
             return res.json({ message: "Tạo lộ trình thành công", roadmap: json });
 
