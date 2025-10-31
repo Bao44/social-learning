@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import useAuth from "@/hooks/useAuth";
-import { generateExerciseByVocabList } from "@/app/apiClient/learning/vocabulary/vocabulary";
+import {
+  generateExerciseByVocabList,
+  updateMasteryScoreRPC,
+} from "@/app/apiClient/learning/vocabulary/vocabulary";
 import { ProgressBar } from "../components/ProgressBar";
 import ExerciseItem from "../components/ExerciseItem";
 import Confetti from "react-confetti";
@@ -22,7 +25,6 @@ import { useLanguage } from "@/components/contexts/LanguageContext";
 import LivesIndicator from "../components/LivesIndicator";
 import OutOfLivesModal from "../components/OutOfLivesModal";
 import { toast } from "react-toastify";
-import { supabase } from "@/lib/supabase";
 
 const shuffle = (array: any[]) => {
   let currentIndex = array.length,
@@ -63,20 +65,16 @@ export default function WordPracticeAI() {
   const [wrongPile, setWrongPile] = useState<any[]>([]);
   // State cho SRS (lưu các từ đã từng làm sai)
   const [implicitlyHardWords, setImplicitlyHardWords] = useState<string[]>([]);
-  const stored = sessionStorage.getItem("practiceWords");
+  const [stored, setStored] = useState<string | null>(null);
 
   const update_mastery_on_success = async (userId: string, word: string) => {
-    await supabase.rpc("update_mastery_on_success", {
-      user_id: userId,
-      word_input: word,
-    });
+    await updateMasteryScoreRPC({ userId, word });
   };
   // Load từ
   useEffect(() => {
-    if (stored) {
-      setWords(JSON.parse(stored));
-    } else {
-      setError("Không tìm thấy từ để luyện tập.");
+    if (typeof window !== "undefined") {
+      const data = sessionStorage.getItem("practiceWords");
+      setStored(data);
     }
   }, []);
 
@@ -295,6 +293,7 @@ export default function WordPracticeAI() {
           height={height}
           recycle={false}
           numberOfPieces={500}
+          style={{ zIndex: 9999 }}
           gravity={0.3}
         />
       )}
