@@ -7,9 +7,9 @@ export const getRoadmapByUserId = async (userId: string) => {
     return response.data;
 };
 
-// Get roadmap and lessons by userId
-export const getRoadmapAndLessonsByUserId = async (userId: string) => {
-    const response = await api.get(`/api/learning/roadmap/getRoadmapAndLessonsByUserId/${userId}`);
+// Get roadmap and lessons by roadmapId
+export const getRoadmapAndLessonsById = async (roadmapId: string) => {
+    const response = await api.get(`/api/learning/roadmap/getRoadmapAndLessonsById/${roadmapId}`);
     return response.data;
 };
 
