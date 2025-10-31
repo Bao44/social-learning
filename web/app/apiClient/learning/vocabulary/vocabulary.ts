@@ -6,7 +6,6 @@ interface VocabularyData {
   skill: string;
 }
 
-// Insert vocabulary errors of user
 export const insertOrUpdateVocabularyErrors = async ({ userId, vocabData }: { userId: string; vocabData: VocabularyData }) => {
   const response = await api.post(`/api/learning/vocabulary/insert`, {
     userId,
@@ -24,7 +23,6 @@ export const generateVocabByAI = async ({ userId, word }: { userId: string; word
   return response.data;
 };
 
-// Get personal vocabulary list by user ID and created word
 export const getListPersonalVocabByUserIdAndCreated = async ({ userId }: { userId: string }) => {
   const response = await api.get(`/api/learning/vocabulary/created/${userId}`);
   return response.data;
@@ -68,7 +66,7 @@ export const getVocabByTopic = async ({ userId, topicId }: { userId: string; top
   return response.data;
 }
 
-// Tạo bài tập theo danh sách từ vựng
+// Tạo bài tập theo danh sách từ vựng 
 export const generateExerciseByVocabList = async ({ userId, words }: { userId: string; words: string[] }) => {
   const response = await api.post(`/api/bot-cover-learning/generate-words-practice-by-AI`, {
     userId,
