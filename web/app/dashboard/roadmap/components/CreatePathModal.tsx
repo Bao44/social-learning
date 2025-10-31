@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { motion } from "framer-motion"
 import { createRoadMapForUser } from "@/app/apiClient/learning/roadmap/roadmap"
 import useAuth from "@/hooks/useAuth"
+import parseTimeToMinutes from "@/utils/parseTimeToMinutes"
 
 interface Props {
     open: boolean
@@ -55,9 +56,8 @@ export default function CreatePathModal({ open, onClose }: Props) {
         const finalField = customField.trim() || field
         const finalStudyTime = customStudyTime.trim() || studyTime
 
-        // Chuyển studyTime (VD: "1 giờ/ngày") thành số
-        const hoursMatch = finalStudyTime.match(/\d+(\.\d+)?/)
-        const hoursPerDay = hoursMatch ? parseFloat(hoursMatch[0]) : 1
+        // Quy đổi thời gian học thành phút
+        const minutesPerDay = parseTimeToMinutes(customStudyTime.trim() || studyTime)
 
         const inputUser = {
             userId: user!.id,
@@ -66,14 +66,14 @@ export default function CreatePathModal({ open, onClose }: Props) {
             goal: finalGoal,
             field: finalField,
             studyPlan: {
-                hoursPerDay,
+                minutesPerDay,
                 rawInput: finalStudyTime,
             },
         }
-
         await createRoadMapForUser(user!.id, inputUser)
         onClose()
     }
+
 
 
     return (

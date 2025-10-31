@@ -1,4 +1,5 @@
 const learningService = require('../../services/learning/learningService');
+const roadmapService = require('../../services/learning/roadMapService');
 const scoreUserService = require('../../services/learning/scoreUserService');
 const generateRoadMap = require('../../utils/prompt/generateRoadMap');
 require("dotenv").config();
@@ -7,6 +8,31 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const roadMapController = {
+    // Get roadmap by userId
+    getRoadmapByUserId: async (req, res) => {
+        try {
+            const { userId } = req.params;
+            const roadmap = await roadmapService.getRoadmapByUserId(userId);
+            return res.json(roadmap);
+        } catch (error) {
+            console.error("❌ Lỗi khi lấy lộ trình:", error);
+            return res.status(500).json({ error: "Lỗi khi lấy lộ trình" });
+        }
+    },
+
+    // Get roadmap and lessons by userId
+    getRoadmapAndLessonsById: async (req, res) => {
+        try {
+            const { roadmapId } = req.params;
+            const roadmap = await roadmapService.getRoadmapAndLessonsById(roadmapId);
+            return res.json(roadmap);
+        } catch (error) {
+            console.error("❌ Lỗi khi lấy lộ trình và bài học:", error);
+            return res.status(500).json({ error: "Lỗi khi lấy lộ trình và bài học" });
+        }
+    },
+
+    // Create roadmap for user
     createRoadMapForUser: async (req, res) => {
         try {
             const { userId, input } = req.body;
@@ -57,7 +83,33 @@ const roadMapController = {
             const json = JSON.parse(match[0]);
 
             // TODO: lưu json xuống DB
-            console.log("✅ Roadmap JSON:", JSON.stringify(json, null, 2));
+            const savedRoadmap = await roadmapService.createRoadmapForUser(userId, {
+                totalWeeks: json.totalWeeks,
+                field: input.field,
+                goal: input.goal,
+                targetSkills: input.targetSkills,
+                pathName: input.pathName,
+                studyPlan: input.studyPlan.minutesPerDay
+            });
+
+            // Lưu weeks
+            for (const week of json.weeks) {
+                const savedWeek = await roadmapService.createWeekRoadmaps(savedRoadmap[0].id, {
+                    week: week.week,
+                    focus: week.focus,
+                });
+
+                // Lưu lessons
+                for (const lesson of week.lessons) {
+                    await roadmapService.createLessonRoadmap(savedWeek[0].id, {
+                        type: lesson.type,
+                        level: lesson.level,
+                        topic: lesson.topic,
+                        description: lesson.description,
+                        quantity: lesson.quantity,
+                    });
+                }
+            }
 
 
             return res.json({ message: "Tạo lộ trình thành công", roadmap: json });
