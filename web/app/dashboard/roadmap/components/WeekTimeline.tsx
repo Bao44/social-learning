@@ -1,0 +1,87 @@
+"use client"
+
+import { CheckCircle, Flag } from "lucide-react";
+
+const WeekTimeline = ({ totalWeeks, currentWeek }: { totalWeeks: number; currentWeek: number }) => {
+    return (
+        <div className="mt-6 mb-4">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-600">Tiến độ học tập</span>
+                <span className="text-sm text-gray-500">
+                    Tuần {currentWeek} / {totalWeeks}
+                </span>
+            </div>
+
+            <div className="relative">
+                {/* Đường nền */}
+                <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-full -translate-y-1/2" />
+
+                {/* Đường tiến trình */}
+                <div
+                    className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full -translate-y-1/2 transition-all duration-500"
+                    style={{ width: `${(currentWeek / totalWeeks) * 100}%` }}
+                />
+
+                {/* Các mốc tuần */}
+                <div className="relative flex justify-between items-center">
+                    {Array.from({ length: totalWeeks }, (_, i) => i + 1).map((week) => {
+                        const isCompleted = week < currentWeek
+                        const isCurrent = week === currentWeek
+                        const isPending = week > currentWeek
+
+                        return (
+                            <div key={week} className="flex flex-col items-center">
+                                {/* Điểm mốc */}
+                                <div className={`
+                                    w-8 h-8 rounded-full border-4 flex items-center justify-center
+                                    transition-all duration-300 z-10
+                                    ${isCompleted ? 'bg-green-500 border-green-300 shadow-lg' : ''}
+                                    ${isCurrent ? 'bg-purple-500 border-purple-300 shadow-xl scale-125' : ''}
+                                    ${isPending ? 'bg-white border-gray-300' : ''}
+                                `}>
+                                    {isCompleted && (
+                                        <CheckCircle className="w-4 h-4 text-white" />
+                                    )}
+                                    {isCurrent && (
+                                        <Flag className="w-4 h-4 text-white animate-pulse" />
+                                    )}
+                                    {isPending && (
+                                        <span className="text-xs text-gray-400 font-medium">{week}</span>
+                                    )}
+                                </div>
+
+                                {/* Nhãn tuần */}
+                                <span className={`
+                                    text-xs mt-2 font-medium
+                                    ${isCompleted ? 'text-green-600' : ''}
+                                    ${isCurrent ? 'text-purple-600' : ''}
+                                    ${isPending ? 'text-gray-400' : ''}
+                                `}>
+                                    {isCurrent ? 'Hiện tại' : `T${week}`}
+                                </span>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {/* Chú thích */}
+            <div className="flex items-center justify-center gap-6 mt-4 text-xs">
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <span className="text-gray-600">Hoàn thành</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Flag className="w-3 h-3 text-purple-500" />
+                    <span className="text-gray-600">Đang học</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-white border-2 border-gray-300" />
+                    <span className="text-gray-600">Sắp tới</span>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default WeekTimeline;
