@@ -16,40 +16,40 @@ const stories = [
   {
     id: 1,
     username: "sarah_writes",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
   {
     id: 2,
     username: "mike_english",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
   {
     id: 3,
     username: "emma_learns",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
   {
     id: 4,
     username: "alex_writer",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
   {
     id: 5,
     username: "lisa_grammar",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
   {
     id: 6,
     username: "david_vocab",
-    avatar: "/globe.svg?height=64&width=64",
+    avatar: "/default-avatar-profile-icon.jpg",
     hasStory: true,
   },
-];
+];  
 
 export function StoriesHorizontal() {
   const { user } = useAuth();
