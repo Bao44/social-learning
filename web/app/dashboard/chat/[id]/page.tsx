@@ -15,6 +15,7 @@ import { getSocket } from "@/socket/socketClient";
 import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { checkUserOnline } from "@/app/apiClient/user/user";
 
 export default function ChatDetail() {
   const { t } = useLanguage();
@@ -23,6 +24,8 @@ export default function ChatDetail() {
   const [files, setFiles] = useState<File[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const { selectedConversation } = useConversation();
+  const [onlineStatus, setOnlineStatus] = useState<boolean>(false);
+  const [offlineTime, setOfflineTime] = useState<string | null>(null);
 
   // Lắng nghe sự kiện tin nhắn mới từ socket
   useEffect(() => {
@@ -113,48 +116,81 @@ export default function ChatDetail() {
     setText("");
   };
 
+  // kiểm tra online status
+  useEffect(() => {
+    const checkOnlineStatus = async () => {
+      if (!selectedConversation?.members || !user) return;
+      const members = selectedConversation.members.filter(
+        (m: any) => m.id !== user?.id
+      );
+      for (const member of members) {
+        const res = await checkUserOnline(member.id);
+        setOnlineStatus(res.data.isOnline);
+        setOfflineTime(res.data.offlineTime);
+      }
+    };
+
+    checkOnlineStatus();
+  }, [selectedConversation]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Chat header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div className="flex items-center gap-4">
           {selectedConversation?.type === "private" ? (
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src={getUserImageSrc(
-                  selectedConversation?.members.filter(
-                    (member: { id: string }) => member.id !== user?.id
-                  )[0]?.avatarUrl
-                )}
-                alt={user?.name}
-                className="rounded-full"
-              />
-              <AvatarFallback className="bg-gray-300">
-                {user?.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <>
+              <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={getUserImageSrc(
+                    selectedConversation?.members.filter(
+                      (member: { id: string }) => member.id !== user?.id
+                    )[0]?.avatarUrl
+                  )}
+                  alt={user?.name}
+                  className="rounded-full"
+                />
+                <AvatarFallback className="bg-gray-300">
+                  {user?.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </>
           ) : selectedConversation?.avatar === "" ? (
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src={getUserImageSrc(selectedConversation?.avatar)}
-                alt={selectedConversation?.name}
-                className="rounded-full"
-              />
-              <AvatarFallback className="bg-gray-300">
-                {selectedConversation?.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <>
+              <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={getUserImageSrc(selectedConversation?.avatar)}
+                  alt={selectedConversation?.name}
+                  className="rounded-full"
+                />
+                <AvatarFallback className="bg-gray-300">
+                  {selectedConversation?.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </>
           ) : (
             <AvatarGroup members={selectedConversation?.members || []} />
           )}
           {selectedConversation?.type === "private" ? (
-            <h2 className="text-lg font-semibold">
-              {
-                selectedConversation?.members.filter(
-                  (member: { id: string }) => member.id !== user?.id
-                )[0]?.name
-              }
-            </h2>
+            <>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">
+                  {
+                    selectedConversation?.members.filter(
+                      (member: { id: string }) => member.id !== user?.id
+                    )[0]?.name
+                  }
+                </h2>
+                {onlineStatus ? (
+                  <span className="w-3 h-3 bg-green-500 rounded-full mb-1"></span>
+                ) : (
+                  <span className="w-3 h-3 bg-red-500 rounded-full mb-1"></span>
+                )}
+              </div>
+              <div className="text-gray-500">
+                {onlineStatus ? "Đang online" : offlineTime || ""}
+              </div>
+            </>
           ) : selectedConversation?.name ? (
             <h2 className="text-lg font-semibold">
               {selectedConversation?.name}
