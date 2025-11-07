@@ -8,5 +8,12 @@
     "sendMessage": "Gửi tin nhắn",
     "let_send_message": "Hãy gửi một tin nhắn",
     "loading": "Đang tải...",
-    "noResults": "Không tìm thấy cuộc trò chuyện nào."
+    "noResults": "Không tìm thấy cuộc trò chuyện nào.",
+
+    "users_noOnline": "Không có thành viên nào online.",
+    "user_noOnline": "Người dùng không online.",
+    "isOnline":"Đang online",
+    "calling_you":"đang gọi bạn...",
+    "accept_call":"Chấp nhận",
+    "decline_call":"Từ chối"
 }

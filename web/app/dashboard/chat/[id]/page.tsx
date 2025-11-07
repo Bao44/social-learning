@@ -145,17 +145,17 @@ export default function ChatDetail() {
       else {
         if (otherMembers.length > 0) {
           try {
-            // 1. Tạo một mảng các promise để check status của tất cả thành viên
+            // Tạo một mảng các promise để check status của tất cả thành viên
             const statusPromises = otherMembers.map((member: any) =>
               checkUserOnline(member.id)
-            ); // 2. Chờ tất cả các API call hoàn thành
-            const statusResults = await Promise.all(statusPromises); // 3. Kiểm tra xem có BẤT KỲ (some) ai online không
+            ); // Chờ tất cả các API call hoàn thành
+            const statusResults = await Promise.all(statusPromises); // Kiểm tra xem có ai online không
 
             const isAnyoneOnline = statusResults.some(
               (res) => res.data.isOnline
-            ); // 4. Set state MỘT LẦN duy nhất
+            );
 
-            setOnlineStatus(isAnyoneOnline); // 5. Không set offlineTime cho group
+            setOnlineStatus(isAnyoneOnline);
             setOfflineTime(null);
           } catch (error) {
             console.error("Failed to check group online status:", error);
@@ -167,27 +167,7 @@ export default function ChatDetail() {
     };
 
     checkOnlineStatus();
-
-    // Bạn có thể thêm một interval để check lại status mỗi 30 giây
-    // const intervalId = setInterval(checkOnlineStatus, 30000);
-    // return () => clearInterval(intervalId);
   }, [selectedConversation, user?.id]);
-
-  // // Hàm xử lý bắt đầu cuộc gọi
-  // const handleStartCall = () => {
-  //   // 1. Kiểm tra trạng thái online
-  //   if (!onlineStatus) {
-  //     const message =
-  //       selectedConversation?.type === "private"
-  //         ? "Người dùng không online."
-  //         : "Không có thành viên nào online";
-  //     toast.info(message, { autoClose: 1000 });
-  //     return;
-  //   }
-
-  //   // 2. Chuyển đến trang cuộc gọi
-  //   router.push(`/room/${selectedConversation?.id}`);
-  // };
 
   // // Hàm xử lý bắt đầu cuộc gọi
   const handleStartCall = () => {
@@ -195,12 +175,12 @@ export default function ChatDetail() {
     if (!onlineStatus) {
       const message =
         selectedConversation?.type === "private"
-          ? "Người dùng không online."
-          : "Không có thành viên nào online";
+          ? `${t("chat.user_noOnline")}`
+          : `${t("chat.users_noOnline")}`;
       toast.info(message, { autoClose: 1000 });
       return;
-    } 
-    
+    }
+
     // GỬI TÍN HIỆU GỌI
     const socket = getSocket();
     const callPayload = {
@@ -269,7 +249,7 @@ export default function ChatDetail() {
                 )}
               </div>
               <div className="text-gray-500">
-                {onlineStatus ? "Đang online" : offlineTime || ""}
+                {onlineStatus ? `${t("chat.isOnline")}` : offlineTime || ""}
               </div>
             </>
           ) : selectedConversation?.name ? (
