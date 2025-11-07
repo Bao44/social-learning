@@ -56,6 +56,18 @@ const conversationService = {
         });
         return conversation;
     },
+
+    // Đếm tổng số tin nhắn chưa đọc của người dùng trong tất cả cuộc trò chuyện
+    async countTotalUnreadMessages(userId) {
+        const conversations = await this.getUserConversations(userId);
+        let totalUnread = 0;
+        for (const convo of conversations) {
+            const unreadCount = await this.countUnreadMessages(convo._id, userId);
+            totalUnread += unreadCount;
+        }
+        return totalUnread;
+    }
+
 };
 
 module.exports = conversationService;
