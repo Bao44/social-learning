@@ -74,7 +74,7 @@ function Page() {
         container: element,
 
         // HIỂN THỊ MÀN HÌNH PRE-JOIN (UI JOIN)
-        showPreJoinView: true,
+        showPreJoinView: false,
 
         sharedLinks: [
           {

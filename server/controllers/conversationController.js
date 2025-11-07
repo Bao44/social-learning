@@ -149,6 +149,18 @@ const conversationController = {
             res.status(500).json({ error: "Internal Server Error" });
         }
     },
+
+    // Đếm tổng số tin nhắn chưa đọc của người dùng trong tất cả cuộc trò chuyện
+    countTotalUnreadMessages: async (req, res) => {
+        const userId = req.params.userId;
+        try {
+            const totalUnread = await conversationService.countTotalUnreadMessages(userId);
+            res.status(200).json({ totalUnread });
+        } catch (error) {
+            console.error("Error counting total unread messages:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    },
 };
 
 module.exports = conversationController;

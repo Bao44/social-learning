@@ -46,3 +46,14 @@ export async function createConversation(consversationData:any) {
         throw error;
     }
 }
+
+// Hàm đếm tổng số tin nhắn chưa đọc của người dùng trong tất cả cuộc trò chuyện
+export async function fetchTotalUnreadMessages(userId:any) {
+    try {
+        const response = await api.get(`/api/conversations/totalUnread/${userId}`);
+        return response.data.totalUnread;
+    } catch (error) {
+        console.error("Error fetching total unread messages:", error);
+        return 0;
+    }
+}
