@@ -86,7 +86,8 @@ export default function RoadmapZigzagPage() {
                         <div key={week.week} className="grid grid-cols-3 items-center gap-4 relative">
                             {isOddWeek ? (
                                 <>
-                                    <div className="flex justify-start pr-6">
+                                    {/* Tuần lẻ: card bên trái */}
+                                    <div className="flex justify-start pr-6 relative z-[60]">
                                         <WeekCard
                                             week={week}
                                             expandedWeeks={expandedWeeks}
@@ -98,18 +99,32 @@ export default function RoadmapZigzagPage() {
                                             setPageLoading={setLoading}
                                         />
                                     </div>
-                                    <div className="flex justify-center z-50">
-                                        <WeekNode week={week} expandedWeeks={expandedWeeks} toggleWeek={toggleWeek} />
+
+                                    {/*  Thêm pointer-events-none để WeekNode không chặn hover */}
+                                    <div className="flex justify-center z-10 pointer-events-none">
+                                        <WeekNode
+                                            week={week}
+                                            expandedWeeks={expandedWeeks}
+                                            toggleWeek={toggleWeek}
+                                        />
                                     </div>
+
                                     <div /> {/* empty */}
                                 </>
                             ) : (
                                 <>
                                     <div /> {/* empty */}
-                                    <div className="flex justify-center z-50">
-                                        <WeekNode week={week} expandedWeeks={expandedWeeks} toggleWeek={toggleWeek} />
+
+                                    {/* 🟢 Tuần chẵn cũng thêm pointer-events-none */}
+                                    <div className="flex justify-center z-10 pointer-events-none">
+                                        <WeekNode
+                                            week={week}
+                                            expandedWeeks={expandedWeeks}
+                                            toggleWeek={toggleWeek}
+                                        />
                                     </div>
-                                    <div className="flex justify-start pl-6">
+
+                                    <div className="flex justify-start pl-6 relative z-[60]">
                                         <WeekCard
                                             week={week}
                                             expandedWeeks={expandedWeeks}
@@ -126,8 +141,11 @@ export default function RoadmapZigzagPage() {
                         </div>
                     )
                 })}
+
+                {/* Đường line trung tâm (đã có pointer-events-none) */}
                 <div className="absolute left-1/2 top-8 bottom-8 w-[2px] bg-gradient-to-b from-emerald-200 via-sky-200 to-emerald-200 -translate-x-1/2 rounded-full pointer-events-none"></div>
             </div>
+
             {loading && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-[9999]">
                     <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-2xl shadow-lg">
@@ -139,5 +157,3 @@ export default function RoadmapZigzagPage() {
         </div>
     )
 }
-
-
