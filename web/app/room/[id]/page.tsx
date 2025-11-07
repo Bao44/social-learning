@@ -58,11 +58,11 @@ function Page() {
     let zp: ZegoUIKitPrebuilt | null = null;
 
     const myMeeting = async (element: HTMLDivElement) => {
-      const appID = 615480249;
-      const serverSecret = "6591e01fe5241fdfbd2262b4bfcd7ebd";
+      const appID = parseInt(process.env.NEXT_PUBLIC_ZEGOCLOUD_APP_ID || "0");
+      const serverSecret = process.env.NEXT_PUBLIC_ZEGOCLOUD_SERVER_SECRET || "";
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
-        serverSecret,
+        serverSecret?.toString(),
         id?.toString() || "",
         currentUserId,
         currentUserName
@@ -73,7 +73,6 @@ function Page() {
       zp.joinRoom({
         container: element,
 
-        // HIỂN THỊ MÀN HÌNH PRE-JOIN (UI JOIN)
         showPreJoinView: false,
 
         sharedLinks: [
@@ -88,6 +87,7 @@ function Page() {
           },
         ],
         scenario: {
+          // đang 1-1 call
           mode: ZegoUIKitPrebuilt.OneONoneCall,
         },
         maxUsers: 10,

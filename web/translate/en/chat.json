@@ -8,5 +8,12 @@
     "sendMessage": "Send Message",
     "let_send_message": "Let's send a message",
     "loading": "Loading...",
-    "noResults": "No conversations found."
+    "noResults": "No conversations found.",
+
+    "users_noOnline": "No members are online.",
+    "user_noOnline": "User is offline.",
+    "isOnline":"Online",
+    "calling_you":"calling you...",
+    "accept_call":"Accept",
+    "decline_call":"Decline"
 }
