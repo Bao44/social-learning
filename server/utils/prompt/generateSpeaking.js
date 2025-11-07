@@ -45,5 +45,6 @@ Nếu level là "Advanced":
 11. Không sử dụng [email], [your name], [your country], [your favorite place] hoặc các cụm từ tương tự mà hãy hãy tạo tên bất kì.
 12. Không sử dụng kí tự đặc biệt như @, #, $, %, ^, &, *, (, ), -, +, =, v.v.
 13. Nếu câu có số là thời gian ( ví dụ: 7 am, 12 pm, 7:00 am, 12:00 pm ...), hãy chuyển thành dạng 7:00, 12:00 ...
+14. Nếu câu có email thì hãy chuyển thành e-mail.
 Chỉ trả về một danh sách JSON thuần, không giải thích, không chèn text, không xuống dòng thừa.
 `;

@@ -53,20 +53,28 @@ const WeekCard = ({
 
     // Handle click options inside lesson card
     const handleLessonClickSystemExercise = async (lesson: Lesson) => {
+        const resLevels = await getLevelsByNameVi(lesson.level);
+        const resTopics = await getTopicsByNameVi(lesson.topic);
         if (lesson.type === "Listening") {
             // Handle Listening lesson click
-            const resLevels = await getLevelsByNameVi(lesson.level);
-            const resTopics = await getTopicsByNameVi(lesson.topic);
             router.push(`/dashboard/listening/list?level=${resLevels[0].slug}&topic=${resTopics[0].slug}`);
+        } else if (lesson.type === "Speaking") {
+            // Handle Speaking lesson click
+            localStorage.setItem("levelSlug", JSON.stringify(resLevels[0].slug));
+            localStorage.setItem("topicSlug", JSON.stringify(resTopics[0].slug));
+            router.push(
+                `/dashboard/speaking/lesson?level=${resLevels[0].id}&topic=${resTopics[0].id}`
+            );
         }
     }
 
     // Handle Generate AI
     const handleGenerateAIForLesson = async (lesson: Lesson) => {
         setPageLoading(true);
+        const resLevels = await getLevelsByNameVi(lesson.level);
+        const resTopics = await getTopicsByNameVi(lesson.topic);
         if (lesson.type === "Listening") {
-            const resLevels = await getLevelsByNameVi(lesson.level);
-            const resTopics = await getTopicsByNameVi(lesson.topic);
+            // Handle Listening AI generation
             const response = await listeningService.generateListeningExerciseByAI(resLevels[0].slug, resTopics[0].slug);
             if (response && response.data && response.data.id) {
                 const listeningExerciseId = response.data.id;
@@ -74,6 +82,13 @@ const WeekCard = ({
             } else {
                 console.error("Invalid response from AI generation:", response);
             }
+        } else if (lesson.type === "Speaking") {
+            // Handle Speaking AI generation
+            localStorage.setItem("levelSlug", JSON.stringify(resLevels[0].slug));
+            localStorage.setItem("topicSlug", JSON.stringify(resTopics[0].slug));
+            router.push(
+                `/dashboard/speaking/lessonAI?level=${resLevels[0].id}&topic=${resTopics[0].id}`
+            );
         }
         setPageLoading(false);
     }
