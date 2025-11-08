@@ -6,6 +6,7 @@ Hãy tự ước lượng tổng thời gian (số tuần cần thiết) để �
 - Thời gian mỗi ngày dành cho việc học (hoursPerDay)
 - Mức độ cam kết của học viên
 - Số lượng bài học cần hoàn thành hàng tuần
+- Riêng kỹ năng Writing thì hãy lấy typeParagraph thay thay cho topic để chọn bài học phù hợp.
 
 Từ đó, hãy tạo lộ trình học cá nhân hóa chỉ cho các kỹ năng mà học viên chọn sau: ${inputUser.targetSkills.join(", ")}.
 - Mỗi tuần có một “focus” là **mục tiêu tổng quan tuần đó**, có thể kết hợp nhiều kỹ năng.  
@@ -39,8 +40,8 @@ Kết quả mong muốn (JSON):
         {
           "type": "Writing",
           "level": "Beginner",
-          "topic": "Introduction Paragraphs",
-          "description": "Learn how to write effective introduction paragraphs."
+          "topic": "Article",
+          "description": "Learn how to write effective articles."
           "quantity": 3
         },
         {
