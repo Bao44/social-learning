@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react'; // Đã cập nhật
 import {
   View,
   Text,
@@ -33,30 +33,42 @@ import SubmitModal from './components/SubmitModal';
 import SubmittingModal from "./components/SubmittingModal";
 import { getScoreUserByUserId } from '../../../api/learning/score/route';
 
+// --- Imports cho audio player ---
+import Video from 'react-native-video';
+import Slider from '@react-native-community/slider';
+// ---------------------------------
+
 export default function ListeningDetail() {
   const route = useRoute();
   const { user } = useAuth();
   const navigation = useNavigation<any>();
   const { id } = route.params as { id: string };
 
+  // --- State gốc ---
   const [exercise, setExercise] = useState<any>(null);
   const [score, setScore] = useState<any>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [checkResult, setCheckResult] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resSubmit, setResSubmit] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null)
   const [history, setHistory] = useState<any[]>([]);
-
   const [showTopMenu, setShowTopMenu] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
-
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ correct: number, total: number }>({ correct: 0, total: 0 });
 
+  // --- State cho Audio Player ---
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(true);
+  const [isSeeking, setIsSeeking] = useState(false); // Quan trọng: để xử lý việc tua
+
+  // --- Ref cho Audio Player ---
+  const audioRef = useRef<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,8 +77,8 @@ export default function ListeningDetail() {
         setExercise(data);
 
         if (user) {
-          const score = await getScoreUserByUserId(user?.id)
-          setScore(score.data)
+          const scoreData = await getScoreUserByUserId(user?.id) // Sửa lại tên biến
+          setScore(scoreData.data) // Sửa lại tên biến
 
           const prog = await listeningService.getUserProgress(user.id, id as string)
           setProgress(prog)
@@ -96,7 +108,7 @@ export default function ListeningDetail() {
     );
   }
 
-  // map vị trí từ bị ẩn
+  // --- Các hàm xử lý (Giữ nguyên) ---
   const hiddenMap: Record<number, string> = {};
   exercise.wordHidden?.forEach((wh: any) => {
     hiddenMap[wh.position] = wh.answer;
@@ -104,7 +116,6 @@ export default function ListeningDetail() {
 
   const words = exercise.text_content.split(/\s+/);
 
-  // Hàm kiểm tra đáp án
   const handleCheckAnswers = () => {
     const result: Record<number, boolean> = {}
     Object.keys(hiddenMap).forEach((pos) => {
@@ -116,7 +127,6 @@ export default function ListeningDetail() {
     setCheckResult(result)
   }
 
-  // Hàm gợi ý
   const handleSuggestHint = () => {
     const unansweredPositions = Object.keys(hiddenMap).filter((pos) => !answers[parseInt(pos)]);
     if (unansweredPositions.length === 0) return;
@@ -128,9 +138,10 @@ export default function ListeningDetail() {
     setCheckResult(prev => ({ ...prev, [parseInt(randomPos)]: true }));
   };
 
-  // Handle submit
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    // Tạm dừng âm thanh khi nộp bài
+    setIsPlaying(false);
 
     const wordAnswers = exercise.wordHidden.map((wh: any) => ({
       word_hidden_id: wh.id,
@@ -168,20 +179,14 @@ export default function ListeningDetail() {
     }
   };
 
-  // Xử lý khi người dùng chọn một mục trong lịch sử
   const handleHistory = (historyItem: any) => {
     if (!historyItem || !historyItem.answers) {
       console.error("Dữ liệu lịch sử không hợp lệ");
       return;
     }
-
-    // 1. Tạo một Map để tra cứu nhanh: { word_hidden_id => position }
-    // `exercise.wordHidden` là mảng chứa thông tin các từ bị ẩn, bao gồm cả id và position
     const wordIdToPositionMap = new Map(
       exercise.wordHidden.map((wh: any) => [wh.id, wh.position])
     );
-
-    // 2. Tạo các object state mới từ dữ liệu lịch sử
     const historicalAnswers: Record<number, string> = {};
     const historicalCheckResult: Record<number, boolean> = {};
 
@@ -192,8 +197,6 @@ export default function ListeningDetail() {
         historicalCheckResult[position] = ans.is_correct;
       }
     }
-
-    // 3. Cập nhật lại state của component để UI thay đổi theo
     setAnswers(historicalAnswers);
     setCheckResult(historicalCheckResult);
     setShowHistoryModal(false)
@@ -201,7 +204,38 @@ export default function ListeningDetail() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header với gradient */}
+      {/* --- Component Video để xử lý âm thanh (ẩn) --- */}
+      {exercise?.audio_url && ( // <-- Thay 'audio_url' bằng tên trường của bạn
+        <Video
+          ref={audioRef}
+          source={{ uri: exercise.audio_url }} // <-- Thay 'audio_url' bằng tên trường của bạn
+          paused={!isPlaying}
+          playInBackground={true}
+          // Khi audio được tải
+          onLoad={(data) => {
+            setDuration(data.duration);
+            setIsLoadingAudio(false);
+          }}
+          // Khi audio đang phát (cập nhật tiến trình)
+          onProgress={(data) => {
+            // Chỉ cập nhật currentTime nếu người dùng KHÔNG đang kéo
+            if (!isSeeking) {
+              setCurrentTime(data.currentTime);
+            }
+          }}
+          // Khi audio phát xong
+          onEnd={() => {
+            setIsPlaying(false);
+            audioRef.current?.seek(0);
+            setCurrentTime(0);
+          }}
+          resizeMode="none"
+          style={{ height: 0, width: 0 }} // Ẩn component
+        />
+      )}
+      {/* ---------------------------------------------------- */}
+
+      {/* Header với gradient (Giữ nguyên) */}
       <LinearGradient
         colors={['#4ECDC4', '#6DD5DB']}
         start={{ x: 0, y: 0 }}
@@ -228,7 +262,7 @@ export default function ListeningDetail() {
             </View>
           </View>
 
-          {/* Nút menu */}
+          {/* Nút menu (Giữ nguyên) */}
           <View style={{ position: 'relative' }}>
             <TouchableOpacity
               onPress={() => setShowTopMenu((prev) => !prev)}
@@ -237,8 +271,6 @@ export default function ListeningDetail() {
             >
               <Menu size={24} color="#fff" />
             </TouchableOpacity>
-
-            {/* Menu dropdown */}
             {showTopMenu && (
               <View style={styles.dropdownMenu}>
                 <TouchableOpacity
@@ -250,7 +282,6 @@ export default function ListeningDetail() {
                 >
                   <Text style={styles.dropdownText}>📜 History</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                   style={styles.dropdownItem}
                   onPress={() => {
@@ -268,17 +299,50 @@ export default function ListeningDetail() {
 
       {/* Content */}
       <View style={styles.content}>
-        {/* Audio Player cố định */}
+        {/* --- Cập nhật Audio Player --- */}
         <View style={styles.audioContainer}>
           <View style={styles.audioHeader}>
             <Volume2 size={20} color="#4ECDC4" />
             <Text style={styles.audioTitle}>Audio Player</Text>
           </View>
 
+          {/* --- Thanh tua (Slider) --- */}
+          <Slider
+            style={{ width: '100%', height: 40 }}
+            minimumValue={0}
+            maximumValue={duration}
+            value={currentTime}
+            minimumTrackTintColor="#4ECDC4"
+            maximumTrackTintColor="#d1d5db"
+            thumbTintColor="#4ECDC4"
+            disabled={isLoadingAudio || duration === 0}
+            // Khi bắt đầu kéo
+            onSlidingStart={() => {
+              setIsSeeking(true);
+            }}
+            // Khi đang kéo (cập nhật UI ngay lập tức)
+            onValueChange={(value) => {
+              setCurrentTime(value);
+            }}
+            // Khi thả tay (tua audio)
+            onSlidingComplete={(value) => {
+              audioRef.current?.seek(value);
+              setIsSeeking(false);
+            }}
+          />
+          {/* --- Hiển thị thời gian --- */}
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
+            <Text style={styles.timeText}>{formatTime(duration)}</Text>
+          </View>
+          {/* ------------------------- */}
+
           <View style={styles.audioControls}>
             <TouchableOpacity
               style={styles.audioButton}
               activeOpacity={0.8}
+              onPress={() => setIsPlaying(!isPlaying)}
+              disabled={isLoadingAudio || duration === 0}
             >
               {isPlaying ? (
                 <Pause size={24} color="#fff" />
@@ -290,19 +354,25 @@ export default function ListeningDetail() {
             <TouchableOpacity
               style={styles.audioButtonSecondary}
               activeOpacity={0.8}
+              onPress={() => {
+                audioRef.current?.seek(0)
+                setCurrentTime(0);
+              }}
+              disabled={isLoadingAudio || duration === 0}
             >
               <RotateCcw size={20} color="#4ECDC4" />
             </TouchableOpacity>
           </View>
         </View>
+        {/* ----------------------------- */}
 
-        {/* Scroll chỉ cho đoạn văn */}
+        {/* ScrollView (Giữ nguyên) */}
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* Text with blanks */}
+          {/* Text with blanks (Giữ nguyên) */}
           <View style={styles.textContainer}>
             <View style={styles.textHeader}>
               <FileText size={20} color="#4ECDC4" />
@@ -323,7 +393,7 @@ export default function ListeningDetail() {
                         maxLength={correctAnswer.length}
                         placeholder={"_ ".repeat(correctAnswer.length)}
                         className={`text-[16px] border-b-2 text-center bg-white px-1 py-0.5 rounded-sm tracking-widest
-                      ${isCorrect === true
+                      ${isCorrect === true
                             ? "border-green-500 text-green-500"
                             : isCorrect === false
                               ? "border-red-500 text-red-500"
@@ -352,12 +422,14 @@ export default function ListeningDetail() {
       </View>
 
 
+      {/* Floating Menu (Giữ nguyên) */}
       <FloatingMenu
         onCheck={handleCheckAnswers}
         onHint={handleSuggestHint}
         onSubmit={handleSubmit}
       />
 
+      {/* Modals (Giữ nguyên) */}
       <HistoryModal
         visible={showHistoryModal}
         onClose={() => setShowHistoryModal(false)}
@@ -384,6 +456,21 @@ export default function ListeningDetail() {
     </SafeAreaView>
   );
 }
+
+// --- Hàm tiện ích để format thời gian ---
+const formatTime = (seconds: number) => {
+  // Xử lý trường hợp duration chưa được tải (NaN)
+  if (isNaN(seconds) || seconds < 0) return '00:00';
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+};
+// ----------------------------------------
 
 const styles = StyleSheet.create({
   container: {
@@ -460,7 +547,7 @@ const styles = StyleSheet.create({
   },
   headerGradient: {
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: 12, // Điều chỉnh nếu dùng SafeAreaView
     paddingBottom: 20,
   },
   headerContent: {
@@ -516,7 +603,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 100,
+    paddingBottom: 100, // Thêm khoảng đệm cho FloatingMenu
   },
   audioContainer: {
     backgroundColor: '#ffffff',
@@ -535,7 +622,7 @@ const styles = StyleSheet.create({
   audioHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 16, // Thêm khoảng cách cho Slider
   },
   audioTitle: {
     fontSize: 16,
@@ -548,6 +635,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
+    paddingTop: 12, // Thêm khoảng cách với thanh Slider
   },
   audioButton: {
     width: 60,
@@ -572,6 +660,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#a7f3d0',
   },
+  // --- STYLE MỚI CHO AUDIO TIME ---
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    marginTop: -10, // Kéo lên cho gần Slider
+  },
+  timeText: {
+    fontSize: 12,
+    color: '#6b7280',
+    fontVariant: ['tabular-nums'], // Giữ độ rộng số ổn định
+  },
+  // ----------------------------------
   textContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
@@ -602,13 +703,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    lineHeight: 28,
+    lineHeight: 28, // Quan trọng để các input thẳng hàng
   },
   inputWrapper: {
     position: 'relative',
     marginHorizontal: 2,
     marginVertical: 4,
   },
+  // Style này đã bị ghi đè bởi className,
+  // nhưng giữ lại để tham khảo nếu bạn gỡ Tailwind
   textInput: {
     borderBottomWidth: 2,
     borderColor: '#d1d5db',
@@ -631,7 +734,7 @@ const styles = StyleSheet.create({
   },
   correctAnswer: {
     position: 'absolute',
-    top: 30,
+    top: 30, // Điều chỉnh vị trí của đáp án gợi ý
     left: 0,
     right: 0,
     fontSize: 12,
@@ -693,7 +796,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   bottomSpacing: {
-    height: 32,
+    height: 32, // Khoảng trống ở cuối ScrollView
   },
   actionContainer: {
     position: 'absolute',
@@ -774,7 +877,7 @@ const styles = StyleSheet.create({
   },
   dropdownMenu: {
     position: 'absolute',
-    top: 38,
+    top: 48, // Tăng lên 48px để có khoảng hở với nút Menu
     right: 0,
     backgroundColor: 'white',
     borderRadius: 8,
@@ -784,10 +887,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: 150,
-    zIndex: 999,
+    zIndex: 999, // Đảm bảo menu nổi lên trên
   },
   dropdownItem: {
-    paddingVertical: 10,
+    paddingVertical: 12, // Tăng padding
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
