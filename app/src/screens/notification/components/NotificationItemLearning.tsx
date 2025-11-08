@@ -20,7 +20,11 @@ const NotificationItemLearning = ({ item, navigation, onRead }: any) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container, !item.is_read && styles.unread]}
+      style={[
+        styles.container,
+        !item.is_read && styles.unreadContainer,
+        item.is_read && styles.readContainer,
+      ]}
       onPress={handleClick}
       activeOpacity={0.8}
     >
@@ -48,9 +52,14 @@ const styles = StyleSheet.create({
     borderColor: '#f3f4f6',
     marginBottom: 10,
   },
-  unread: {
+  unreadContainer: {
     backgroundColor: '#f8faff',
-    borderColor: '#dbeafe',
+    borderColor: '#e0e7ff',
+    borderLeftWidth: 4,
+    borderLeftColor: '#667eea',
+  },
+  readContainer: {
+    opacity: 0.7,
   },
   icon: {
     width: 32,
