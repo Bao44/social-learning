@@ -19,7 +19,7 @@ export default function CardExercise({ paragraph, onPress }: { paragraph: Listen
             className="rounded-3xl p-4 flex-row justify-between items-center w-full bg-slate-200 min-h-28 my-2"
         >
             <View className="flex-1 shrink max-w-[85%]">
-                <Text className="text-xl font-bold text-gray-900">{paragraph.title_vi}</Text>
+                <Text numberOfLines={1} className="text-xl font-bold text-gray-900">{paragraph.title_vi}</Text>
                 <Text numberOfLines={2} className="text-md text-gray-600 mt-1">{paragraph.description}</Text>
             </View>
             <View>

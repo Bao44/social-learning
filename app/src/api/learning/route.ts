@@ -67,3 +67,15 @@ export const getTopicBySlug = async (slug: string) => {
     throw error;
   }
 };
+
+// Get type paragraph by slug
+export const getTypeParagraphBySlug = async (slug: string) => {
+  try {
+    const response = await api.get(`/api/learning/type-paragraph/slug/${slug}`);
+    return response.data;
+  }
+  catch (error) {
+    console.error("Error fetching type paragraph by slug:", error);
+    throw error;
+  }
+};
