@@ -8,44 +8,52 @@ import {
   Modal,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   FlatList,
 } from 'react-native';
 import {
   ArrowLeft,
-  PenTool,
   Sparkles,
   ArrowRight,
   Zap,
 } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Level } from '../../../components/Level';
-import { Topic } from '../../../components/Topic';
+import { TypeParagraph } from '../../../components/TypeParagraph';
+import { generateWritingParagraphByAI } from '../../../api/learning/writing/route';
 
 export default function Writing() {
   const navigation = useNavigation<any>();
   const [selectedLevel, setSelectedLevel] = useState<any>(null);
-  const [selectedTopic, setSelectedTopic] = useState<any>(null);
+  const [selectedTypeParagraph, setSelectedTypeParagraph] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const isReady = selectedLevel && selectedTopic;
+  const isReady = selectedLevel && selectedTypeParagraph;
 
   const handleStart = () => {
     if (isReady) {
       // navigation.navigate("WritingList");
-      console.log('Navigate to WritingList');
+      navigation.navigate('ListExerciseWriting', {
+        type: 'writing-paragraph',
+        level: selectedLevel.slug,
+        typeParagraph: selectedTypeParagraph.slug,
+      });
     }
   };
 
   const handleGenerateAI = async () => {
     setLoading(true);
     if (isReady) {
-      // Simulate API call
-      setTimeout(() => {
+      // Simulate API 
+      setLoading(true);
+      const res = await generateWritingParagraphByAI(
+        selectedLevel.slug,
+        selectedTypeParagraph.slug,
+      );
+      if (res && res.data && res.data.id) {
         setLoading(false);
-        console.log('Generated AI writing exercise');
-        // navigation.navigate('WritingDetail', { id: 'generated-id' });
-      }, 2000);
+        const writingParagraphId = res.data.id;
+        navigation.navigate('WritingDetail', { id: writingParagraphId });
+      }
     }
   };
 
@@ -100,9 +108,9 @@ export default function Writing() {
                 setSelectedLevel={setSelectedLevel}
               />
 
-              <Topic
-                selectedTopic={selectedTopic}
-                setSelectedTopic={setSelectedTopic}
+              <TypeParagraph
+                selectedTypeParagraph={selectedTypeParagraph}
+                setSelectedTypeParagraph={setSelectedTypeParagraph}
               />
 
               <View style={styles.bottomSpacing} />
@@ -122,8 +130,8 @@ export default function Writing() {
                 <Text style={styles.summaryValue}>{selectedLevel?.name}</Text>
               </Text>
               <Text style={styles.summaryText}>
-                <Text style={styles.summaryLabel}>Chủ đề: </Text>
-                <Text style={styles.summaryValue}>{selectedTopic?.name}</Text>
+                <Text style={styles.summaryLabel}>Loại văn bản: </Text>
+                <Text style={styles.summaryValue}>{selectedTypeParagraph?.name}</Text>
               </Text>
             </View>
 

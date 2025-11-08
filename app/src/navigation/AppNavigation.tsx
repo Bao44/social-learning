@@ -40,6 +40,8 @@ import VocabularyDetail from '../screens/learning/vocabulary/VocabularyDetail';
 import ProgressPage from '../screens/learning/progress/Progress';
 import Ranking from '../screens/learning/ranking/Ranking';
 import ListExercise from '../screens/learning/listening/ListExercise';
+import WritingDetail from '../screens/learning/writing/WritingDetail';
+import ListExerciseWriting from '../screens/learning/writing/ListExerciseWriting';
 
 const Tab = createBottomTabNavigator();
 
@@ -231,6 +233,16 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Writing"
           component={Writing}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ListExerciseWriting"
+          component={ListExerciseWriting}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="WritingDetail"
+          component={WritingDetail}
           options={{ headerShown: false }}
         />
         <Stack.Screen

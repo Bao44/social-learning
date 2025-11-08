@@ -219,11 +219,11 @@ export default function ListeningDetail() {
 
           <View className='flex-row items-center justify-end gap-10'>
             <View className='flex flex-row items-center justify-center gap-2'>
-              <Text className='text-[#0000FF] text-xl'>{score?.practice_score || 0}</Text>
+              <Text className='text-[#0000FF] text-xl'>{score?.number_snowflake || 0}</Text>
               <Snowflake className="h-5 w-5" color={"#0000FF"} />
             </View>
             <View className='flex flex-row items-center justify-center gap-2'>
-              <Text className='text-[#FFFF00] text-xl'>{score?.number_snowflake || 0}</Text>
+              <Text className='text-[#FFFF00] text-xl'>{score?.practice_score || 0}</Text>
               <CircleEqual className="h-5 w-5" color={"#FFFF00"} />
             </View>
           </View>
@@ -586,15 +586,17 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   textHeader: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 16,
+    gap: 4,
   },
   textTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1f2937',
     marginLeft: 8,
+    textAlign: 'center',
   },
   textContent: {
     flexDirection: 'row',
