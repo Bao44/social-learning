@@ -54,7 +54,7 @@ export function LeftSideBarHiddenLabel() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
   const [notificationCount, setNotificationCount] = useState(0);
-  const [messagesCount, setMessagesCount] = useState(1);
+  const [messagesCount, setMessagesCount] = useState(0);
 
   // Lắng nghe realtime Supabase
   useEffect(() => {

@@ -64,7 +64,7 @@ export function LeftSidebarMobile() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
   const [notificationCount, setNotificationCount] = useState(0);
-  const [messagesCount, setMessagesCount] = useState(1);
+  const [messagesCount, setMessagesCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
   // Lắng nghe realtime supabase
