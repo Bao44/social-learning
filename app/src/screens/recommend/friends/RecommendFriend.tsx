@@ -84,18 +84,6 @@ const RecommendFriend = () => {
     fetchFriends();
   }, []);
 
-  const handleAddFriend = (item: Friend) => {
-    Alert.alert('Kết bạn', `Gửi lời mời kết bạn tới ${item.name}?`, [
-      { text: 'Hủy', style: 'cancel' },
-      {
-        text: 'Gửi lời mời',
-        onPress: () => {
-          Alert.alert('Thành công', `Đã gửi lời mời tới ${item.name}`);
-        },
-      },
-    ]);
-  };
-
   const renderItem = ({ item }: { item: Friend }) => {
     const avatarUrl = item.avatar ? getSupabaseFileUrl(item.avatar) : null;
 
@@ -153,15 +141,6 @@ const RecommendFriend = () => {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
-
-        {/* Add Friend Button */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => handleAddFriend(item)}
-          activeOpacity={0.8}
-        >
-          <UserPlus size={18} color="#fff" />
         </TouchableOpacity>
       </View>
     );

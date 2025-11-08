@@ -72,9 +72,6 @@ const SearchTab = () => {
             <Text style={styles.userNickname}>{item.nick_name}</Text>
           </View>
         </View>
-        <View style={styles.userAction}>
-          <UserPlus size={20} color="#667eea" />
-        </View>
       </TouchableOpacity>
     );
   };
@@ -347,7 +344,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: '#f3f4f6',
     alignItems: 'center',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     marginBottom: 20,
   },
   emptyTitle: {

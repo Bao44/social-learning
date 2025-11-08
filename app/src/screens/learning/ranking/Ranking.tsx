@@ -86,7 +86,7 @@ export default function Ranking() {
 
   const userRank = leaderboardData.find(entry => entry.users?.id === user?.id);
   const topThree = leaderboardData.slice(0, 3);
-  const restOfList = leaderboardData.slice(3);
+  const restOfList = leaderboardData.slice(3, leaderboardData.length);
 
   const renderTopThree = ({ item, index }: { item: any; index: number }) => {
     const rankColor =
@@ -122,7 +122,11 @@ export default function Ranking() {
             }}
           >
             <Image
-              source={{ uri: getUserImageSrc(item.users?.avatar) }}
+              source={{
+                uri:
+                  getUserImageSrc(item.users?.avatar) ||
+                  require('../../../../assets/images/default-avatar-profile-icon.jpg'),
+              }}
               style={{
                 width: 76,
                 height: 76,
@@ -169,7 +173,7 @@ export default function Ranking() {
             textAlign: 'center',
           }}
         >
-          {item.users?.name || 'Ẩn danh'}
+          {item.users?.name}
         </Text>
         <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center' }}>
           {item.users?.nick_name}
@@ -288,7 +292,9 @@ export default function Ranking() {
                       >
                         <Image
                           source={{
-                            uri: getUserImageSrc(userRank?.users?.avatar),
+                            uri:
+                              getUserImageSrc(userRank?.users?.avatar) ||
+                              require('../../../../assets/images/default-avatar-profile-icon.jpg'),
                           }}
                           style={{
                             width: 46,
@@ -403,9 +409,7 @@ export default function Ranking() {
               <FlatList
                 data={topThree}
                 renderItem={renderTopThree}
-                keyExtractor={item =>
-                  item.users?.id || Math.random().toString()
-                }
+                keyExtractor={item => item.users?.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
@@ -431,10 +435,8 @@ export default function Ranking() {
                     }
                   />
                 )}
-                keyExtractor={item =>
-                  item.users?.id || Math.random().toString()
-                }
-                contentContainerStyle={{ paddingBottom: 100 }}
+                keyExtractor={item => item.users?.id}
+                contentContainerStyle={{ paddingBottom: 100 }} // ẩn các user ở dưới cùng
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
                   <View style={{ padding: 40, alignItems: 'center' }}>

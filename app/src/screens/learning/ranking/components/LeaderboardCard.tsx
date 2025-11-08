@@ -1,8 +1,6 @@
-// components/LeaderboardCard.tsx
 import { AwardIcon, CrownIcon, MedalIcon } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,19 +26,6 @@ export default function LeaderboardCard({
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
-
-  const getRankColor = () => {
-    switch (index + 1) {
-      case 1:
-        return ['#ffd700', '#ffa500'];
-      case 2:
-        return ['#c0c0c0', '#a9a9a9'];
-      case 3:
-        return ['#cd7f32', '#c68e17'];
-      default:
-        return ['#f59e0b', '#ef4444'];
-    }
-  };
 
   const getRankIcon = () => {
     switch (index + 1) {
@@ -76,9 +61,7 @@ export default function LeaderboardCard({
           padding: 12,
           marginBottom: 8,
           borderRadius: 12,
-          backgroundColor: isCurrentUser
-            ? 'rgba(249, 115, 22, 0.1)'
-            : 'rgba(255,255,255,0.9)',
+          backgroundColor: 'rgba(255,255,255,0.9)',
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.1,
@@ -110,7 +93,11 @@ export default function LeaderboardCard({
           }}
         >
           <Image
-            source={{ uri: getUserImageSrc(entry.users?.avatar) }}
+            source={{
+              uri:
+                getUserImageSrc(entry.users?.avatar) ||
+                require('../../../../../assets/images/default-avatar-profile-icon.jpg'),
+            }}
             style={{ width: '100%', height: '100%' }}
             resizeMode="cover"
           />
@@ -125,7 +112,7 @@ export default function LeaderboardCard({
             }}
             numberOfLines={1}
           >
-            {entry.users?.name || 'Ẩn danh'}
+            {entry.users?.name}
           </Text>
           <Text
             style={{
