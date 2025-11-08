@@ -68,7 +68,7 @@ function StreakStatusCard() {
         res.status === "not_learned_today" &&
         !sessionStorage.getItem(todayKey)
       ) {
-        toast.info(t("dashboard.reminder"));
+        toast.info(t("dashboard.reminder"), { autoClose: 2000 });
         sessionStorage.setItem(todayKey, "shown");
       }
     } catch (err) {
@@ -84,10 +84,10 @@ function StreakStatusCard() {
     if (!user) return;
     try {
       await restoreLearningStreak(user.id);
-      toast.success(t("dashboard.restoreSuccess"));
+      toast.success(t("dashboard.restoreSuccess"), { autoClose: 2000 });
       fetchStreak();
     } catch (err) {
-      toast.error(t("dashboard.restoreFailed"));
+      toast.error(t("dashboard.restoreFailed"), { autoClose: 2000 });
       console.error(err);
     }
   };
@@ -96,10 +96,10 @@ function StreakStatusCard() {
     if (!user) return;
     try {
       await resetLearningStreak(user.id);
-      toast.info(t("dashboard.resetSuccess"));
+      toast.info(t("dashboard.resetSuccess"), { autoClose: 2000 });
       fetchStreak();
     } catch (err) {
-      toast.error(t("dashboard.resetFailed"));
+      toast.error(t("dashboard.resetFailed"), { autoClose: 2000 });
       console.error(err);
     }
   };
@@ -147,9 +147,7 @@ function StreakStatusCard() {
       )}
 
       {streak.status === "no_streak" && (
-        <p className="text-gray-600 italic">
-          {t("dashboard.startLearning")}
-        </p>
+        <p className="text-gray-600 italic">{t("dashboard.startLearning")}</p>
       )}
     </motion.div>
   );
