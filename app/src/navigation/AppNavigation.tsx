@@ -45,6 +45,7 @@ import ListExerciseWriting from '../screens/learning/writing/ListExerciseWriting
 import RoadMap from '../screens/learning/roadmap/RoadMap';
 import VocabularyTopicDetail from '../screens/learning/vocabulary/VocabularyTopicDetail';
 import RoadmapDetailScreen from '../screens/learning/roadmap/RoadmapDetail';
+import VocabularyPracticeAI from '../screens/learning/vocabulary/VocabularyPracticeAI';
 
 const Tab = createBottomTabNavigator();
 
@@ -236,6 +237,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="VocabularyTopicDetail"
           component={VocabularyTopicDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VocabularyPracticeAI"
+          component={VocabularyPracticeAI}
           options={{ headerShown: false }}
         />
         <Stack.Screen
