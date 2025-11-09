@@ -439,7 +439,7 @@ export default function ProgressScreen() {
 
       {/* Header với gradient */}
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={['#6BCF7F', '#04c22a']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.headerGradient}
@@ -468,105 +468,106 @@ export default function ProgressScreen() {
           <View style={styles.headerRight} />
         </Animated.View>
       </LinearGradient>
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Period Filter */}
-        <View style={styles.filterContainer}>
-          <View style={styles.filterHeader}>
-            <Calendar size={20} color="#667eea" />
-            <Text style={styles.filterTitle}>Khoảng thời gian</Text>
-          </View>
-
-          <View style={styles.filterButtons}>
-            {[
-              { key: '7days', label: '7 ngày' },
-              { key: '30days', label: '30 ngày' },
-              { key: 'all', label: 'Tất cả' },
-            ].map(({ key, label }) => (
-              <TouchableOpacity
-                key={key}
-                onPress={() => setPeriod(key as any)}
-                style={[
-                  styles.filterButton,
-                  period === key && styles.filterButtonActive,
-                ]}
-                activeOpacity={0.8}
-              >
-                <Text
-                  style={[
-                    styles.filterButtonText,
-                    period === key && styles.filterButtonTextActive,
-                  ]}
-                >
-                  {label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Skill Cards */}
-        {renderSkillCard('writing', dataWriting)}
-        {renderSkillCard('listening', dataListening)}
-        {renderSkillCard('speaking', dataSpeaking)}
-
-        {/* Heatmap Section */}
-        <View style={styles.heatmapContainer}>
-          <View style={styles.heatmapHeader}>
-            <View style={styles.heatmapHeaderLeft}>
-              <Flame size={20} color="#8b5cf6" />
-              <Text style={styles.heatmapTitle}>Lịch sử học tập</Text>
+      <View style={styles.contentArea}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Period Filter */}
+          <View style={styles.filterContainer}>
+            <View style={styles.filterHeader}>
+              <Calendar size={20} color="#667eea" />
+              <Text style={styles.filterTitle}>Khoảng thời gian</Text>
             </View>
 
-            <View style={styles.yearPicker}>
-              {[2024, 2025].map(y => (
+            <View style={styles.filterButtons}>
+              {[
+                { key: '7days', label: '7 ngày' },
+                { key: '30days', label: '30 ngày' },
+                { key: 'all', label: 'Tất cả' },
+              ].map(({ key, label }) => (
                 <TouchableOpacity
-                  key={y}
-                  onPress={() => setYear(y)}
+                  key={key}
+                  onPress={() => setPeriod(key as any)}
                   style={[
-                    styles.yearButton,
-                    year === y && styles.yearButtonActive,
+                    styles.filterButton,
+                    period === key && styles.filterButtonActive,
                   ]}
                   activeOpacity={0.8}
                 >
                   <Text
                     style={[
-                      styles.yearButtonText,
-                      year === y && styles.yearButtonTextActive,
+                      styles.filterButtonText,
+                      period === key && styles.filterButtonTextActive,
                     ]}
                   >
-                    {y}
+                    {label}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          <Text style={styles.heatmapDescription}>
-            Hoạt động học tập trong năm {year}
-          </Text>
+          {/* Skill Cards */}
+          {renderSkillCard('writing', dataWriting)}
+          {renderSkillCard('listening', dataListening)}
+          {renderSkillCard('speaking', dataSpeaking)}
 
-          {heatmapData.length > 0 ? (
-            <Heatmap data={heatmapData} />
-          ) : (
-            <View style={styles.noHeatmapData}>
-              <Calendar size={32} color="#d1d5db" />
-              <Text style={styles.noDataText}>
-                Không có dữ liệu cho năm {year}
-              </Text>
-              <Text style={styles.noDataSubtext}>
-                Bắt đầu học để tạo lịch sử hoạt động
-              </Text>
+          {/* Heatmap Section */}
+          <View style={styles.heatmapContainer}>
+            <View style={styles.heatmapHeader}>
+              <View style={styles.heatmapHeaderLeft}>
+                <Flame size={20} color="#8b5cf6" />
+                <Text style={styles.heatmapTitle}>Lịch sử học tập</Text>
+              </View>
+
+              <View style={styles.yearPicker}>
+                {[2024, 2025].map(y => (
+                  <TouchableOpacity
+                    key={y}
+                    onPress={() => setYear(y)}
+                    style={[
+                      styles.yearButton,
+                      year === y && styles.yearButtonActive,
+                    ]}
+                    activeOpacity={0.8}
+                  >
+                    <Text
+                      style={[
+                        styles.yearButtonText,
+                        year === y && styles.yearButtonTextActive,
+                      ]}
+                    >
+                      {y}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
-          )}
-        </View>
 
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
+            <Text style={styles.heatmapDescription}>
+              Hoạt động học tập trong năm {year}
+            </Text>
+
+            {heatmapData.length > 0 ? (
+              <Heatmap data={heatmapData} />
+            ) : (
+              <View style={styles.noHeatmapData}>
+                <Calendar size={32} color="#d1d5db" />
+                <Text style={styles.noDataText}>
+                  Không có dữ liệu cho năm {year}
+                </Text>
+                <Text style={styles.noDataSubtext}>
+                  Bắt đầu học để tạo lịch sử hoạt động
+                </Text>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.bottomSpacing} />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -652,12 +653,22 @@ const styles = StyleSheet.create({
   headerRight: {
     width: 40,
   },
+  contentArea: {
+    flex: 1,
+    backgroundColor: '#f9fafb',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: -14,
+    overflow: 'hidden',
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     padding: 20,
     paddingTop: 8,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   filterContainer: {
     backgroundColor: '#ffffff',

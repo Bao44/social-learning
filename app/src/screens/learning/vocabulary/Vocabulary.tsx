@@ -459,6 +459,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     marginTop: -16,
     overflow: 'hidden',
+    padding: 20,
   },
 
   loadingContainer: {

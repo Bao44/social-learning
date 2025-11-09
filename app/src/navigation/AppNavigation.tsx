@@ -42,6 +42,7 @@ import Ranking from '../screens/learning/ranking/Ranking';
 import ListExercise from '../screens/learning/listening/ListExercise';
 import WritingDetail from '../screens/learning/writing/WritingDetail';
 import ListExerciseWriting from '../screens/learning/writing/ListExerciseWriting';
+import RoadMap from '../screens/learning/roadmap/RoadMap';
 
 const Tab = createBottomTabNavigator();
 
@@ -253,6 +254,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Progress"
           component={ProgressPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Roadmap"
+          component={RoadMap}
           options={{ headerShown: false }}
         />
 
