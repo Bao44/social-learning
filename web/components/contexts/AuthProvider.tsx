@@ -5,10 +5,13 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, use, useEffect, useState } from "react";
 import { getSocket } from "@/socket/socketClient";
+import { toast } from "react-toastify";
+import { useLanguage } from "./LanguageContext";
 
 interface User {
   id: string;
   email: string;
+  name?: string;
 }
 
 interface AuthContextType {
@@ -24,6 +27,7 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { t } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -36,7 +40,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const sessionUser = data?.session?.user;
       if (sessionUser) {
         updateUserData(sessionUser, sessionUser.email);
-        
       } else {
         setUser(null);
         router.replace("/");
@@ -91,10 +94,79 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const socket = getSocket();
+
     if (user?.id) {
       socket.emit("user-online", { userId: user.id });
+
+      // chấp nhận cuộc gọi
+      const handleAcceptCall = (conversationId: string) => {
+        toast.dismiss(); // Đóng thông báo
+        router.push(`/room/${conversationId}`);
+      };
+
+      // từ chối cuộc gọi
+      const handleDeclineCall = (conversationId: string) => {
+        toast.dismiss(); // Đóng thông báo
+        socket.emit("declineCall", {
+          conversationId,
+          declinerId: user.id, // Dùng user.id từ context
+        });
+      };
+
+      // hàm lắng nghe
+      const onIncomingCall = ({
+        callerName,
+        conversationId,
+      }: {
+        callerName: string;
+        conversationId: string;
+      }) => {
+        // Hiển thị thông báo (toast) cho người dùng
+        toast.info(
+          ({ closeToast }) => (
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold">
+                {callerName} {t("chat.calling_you")}
+              </p>
+              <div className="flex justify-around">
+                <button
+                  className="px-4 py-2 bg-green-500 text-white rounded cursor-pointer hover:bg-green-600"
+                  onClick={() => {
+                    handleAcceptCall(conversationId);
+                    closeToast?.();
+                  }}
+                >
+                  {t("chat.accept_call")}
+                </button>
+                <button
+                  className="px-4 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600"
+                  onClick={() => {
+                    handleDeclineCall(conversationId);
+                    closeToast?.();
+                  }}
+                >
+                  {t("chat.decline_call")}
+                </button>
+              </div>
+            </div>
+          ),
+          {
+            autoClose: false,
+            closeOnClick: false,
+            draggable: false,
+          }
+        );
+      };
+
+      // Lắng nghe sự kiện
+      socket.on("incomingCall", onIncomingCall);
+
+      // dọn dẹp
+      return () => {
+        socket.off("incomingCall", onIncomingCall);
+      };
     }
-  }, [user]);
+  }, [user, router]);
 
   const contextValue: AuthContextType = {
     user,

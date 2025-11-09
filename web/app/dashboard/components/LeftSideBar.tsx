@@ -44,6 +44,8 @@ import { toast } from "react-toastify";
 import { SearchPanel } from "./Search";
 import { NotificationsPanel } from "./Notifications";
 import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
+import { getSocket } from "@/socket/socketClient";
+import { fetchTotalUnreadMessages } from "@/app/apiClient/chat/conversation/conversation";
 
 export function LeftSidebar() {
   const { user } = useAuth();
@@ -55,6 +57,7 @@ export function LeftSidebar() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
   const [notificationCount, setNotificationCount] = useState(0);
+  const [messagesCount, setMessagesCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
   // Lắng nghe realtime supabase
@@ -121,13 +124,11 @@ export function LeftSidebar() {
       icon: MessageCircle,
       path: "/dashboard/chat",
       label: t("dashboard.messages"),
-      badge: 3,
     },
     {
       icon: Heart,
       path: "/dashboard/notifications",
       label: t("dashboard.notifications"),
-      badge: 0,
     },
     {
       icon: PlusSquare,
@@ -167,25 +168,45 @@ export function LeftSidebar() {
     {
       icon: ChartSpline,
       path: "/dashboard/roadmap",
-      label: "Lộ trình học tập",
-    }
+      label: t("dashboard.learningPath"),
+    },
   ];
 
   // --- NAV ITEMS CỦA ADMIN ---
   const adminNavItems = [
-    { icon: LayoutDashboard, path: "/dashboard", label: t("dashboard.dashboard") },
-    { icon: Users, path: "/admin/dashboard/users", label: t("dashboard.users") },
-    { icon: FileText, path: "/admin/dashboard/content", label: t("dashboard.content") },
-    { icon: Globe, path: "/admin/dashboard/social", label: t("dashboard.social") },
+    {
+      icon: LayoutDashboard,
+      path: "/dashboard",
+      label: t("dashboard.dashboard"),
+    },
+    {
+      icon: Users,
+      path: "/dashboard/admin/users",
+      label: t("dashboard.users"),
+    },
+    {
+      icon: FileText,
+      path: "/dashboard/admin/content",
+      label: t("dashboard.content"),
+    },
+    {
+      icon: Globe,
+      path: "/dashboard/admin/social",
+      label: t("dashboard.social"),
+    },
     {
       icon: BookOpen,
-      path: "/admin/dashboard/vocabulary",
+      path: "/dashboard/admin/vocabulary",
       label: t("dashboard.vocabularys"),
     },
-    { icon: BarChart, path: "/admin/dashboard/analytics", label: t("dashboard.analytics") },
+    {
+      icon: BarChart,
+      path: "/dashboard/admin/analytics",
+      label: t("dashboard.analytics"),
+    },
     {
       icon: Trophy,
-      path: "/admin/dashboard/achievements",
+      path: "/dashboard/admin/achievements",
       label: t("dashboard.achievements"),
     },
     { icon: User, path: "/dashboard/profile", label: t("dashboard.profile") },
@@ -202,6 +223,7 @@ export function LeftSidebar() {
       if (path === "/dashboard/chat") {
         if (selectedConversation) {
           router.push(`/dashboard/chat/${selectedConversation.id}`);
+          setMessagesCount(0);
           return;
         }
       }
@@ -232,6 +254,33 @@ export function LeftSidebar() {
   const toggleLanguage = () => {
     setLanguage(language === "vi" ? "en" : "vi");
   };
+
+  // Lắng nghe socket cho tin nhắn mới
+  useEffect(() => {
+    if (!user) return;
+    const socket = getSocket();
+
+    const fetchMessagesCount = async () => {
+      const res = await fetchTotalUnreadMessages(user?.id);
+      console.log("Total unread messages:", res);
+      setMessagesCount(res);
+    };
+
+    socket.on("notificationNewMessage", () => {
+      fetchMessagesCount();
+    });
+
+    socket.on("notificationMessagesRead", () => {
+      fetchMessagesCount();
+    });
+
+    fetchMessagesCount();
+
+    return () => {
+      socket.off("notificationNewMessage");
+      socket.off("notificationMessagesRead");
+    };
+  }, [user]);
 
   return (
     <>
@@ -298,15 +347,15 @@ export function LeftSidebar() {
                 {mainNavItems.map((item, index) => {
                   const isNotification =
                     item.path === "/dashboard/notifications";
+                  const isMessages = item.path === "/dashboard/chat";
                   return (
                     <Button
                       key={item.label}
                       variant="ghost"
-                      className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${
-                        pathname === item.path
+                      className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${pathname === item.path
                           ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
                           : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
-                      }`}
+                        }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() =>
                         isNotification
@@ -316,13 +365,17 @@ export function LeftSidebar() {
                     >
                       <div className="relative">
                         <item.icon
-                          className={`h-6 w-6 mr-4 transition-all duration-300 group-hover:scale-110 ${
-                            pathname === item.path ? "text-orange-600" : ""
-                          }`}
+                          className={`h-6 w-6 mr-4 transition-all duration-300 group-hover:scale-110 ${pathname === item.path ? "text-orange-600" : ""
+                            }`}
                         />
                         {isNotification && notificationCount > 0 && (
                           <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
                             {notificationCount}
+                          </Badge>
+                        )}
+                        {isMessages && messagesCount > 0 && (
+                          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
+                            {messagesCount}
                           </Badge>
                         )}
                       </div>
@@ -347,18 +400,16 @@ export function LeftSidebar() {
                       <Button
                         key={item.label}
                         variant="ghost"
-                        className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${
-                          pathname === item.path
+                        className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${pathname === item.path
                             ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
                             : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
-                        }`}
+                          }`}
                         style={{ animationDelay: `${(index + 6) * 100}ms` }}
                         onClick={() => handleMenuClick(item.path)}
                       >
                         <item.icon
-                          className={`h-6 w-6 mr-4 transition-all duration-300 group-hover:scale-110 ${
-                            pathname === item.path ? "text-orange-600" : ""
-                          }`}
+                          className={`h-6 w-6 mr-4 transition-all duration-300 group-hover:scale-110 ${pathname === item.path ? "text-orange-600" : ""
+                            }`}
                         />
                         <span className="text-base font-medium">
                           {item.label}

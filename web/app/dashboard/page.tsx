@@ -14,6 +14,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { Dashboard } from "./admin/components/Dashboard";
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 // ===================================================================
 // COMPONENT DASHBOARD CỦA ADMIN
@@ -35,7 +36,7 @@ function UserDashboard() {
   return (
     <>
       {/* Main content */}
-      <div className="flex-1 sm:px-6 py-6">
+      <div className="flex-1 lg:pl-12 lg:pr-3 md:pl-24 md:pr-4 py-6">
         <StreakStatusCard />
         <MainContentArea />
       </div>
@@ -52,6 +53,7 @@ function UserDashboard() {
 
 function StreakStatusCard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [streak, setStreak] = useState<any>(null);
 
   const fetchStreak = useCallback(async () => {
@@ -66,7 +68,7 @@ function StreakStatusCard() {
         res.status === "not_learned_today" &&
         !sessionStorage.getItem(todayKey)
       ) {
-        toast.info("🔥 Đừng quên hoàn thành bài học hôm nay để giữ chuỗi nha!");
+        toast.info(t("dashboard.reminder"), { autoClose: 2000 });
         sessionStorage.setItem(todayKey, "shown");
       }
     } catch (err) {
@@ -82,10 +84,10 @@ function StreakStatusCard() {
     if (!user) return;
     try {
       await restoreLearningStreak(user.id);
-      toast.success("Khôi phục chuỗi thành công!");
+      toast.success(t("dashboard.restoreSuccess"), { autoClose: 2000 });
       fetchStreak();
     } catch (err) {
-      toast.error("Lỗi khi khôi phục chuỗi!");
+      toast.error(t("dashboard.restoreFailed"), { autoClose: 2000 });
       console.error(err);
     }
   };
@@ -94,10 +96,10 @@ function StreakStatusCard() {
     if (!user) return;
     try {
       await resetLearningStreak(user.id);
-      toast.info("Chuỗi đã được reset về 1.");
+      toast.info(t("dashboard.resetSuccess"), { autoClose: 2000 });
       fetchStreak();
     } catch (err) {
-      toast.error("Lỗi khi reset chuỗi!");
+      toast.error(t("dashboard.resetFailed"), { autoClose: 2000 });
       console.error(err);
     }
   };
@@ -116,9 +118,9 @@ function StreakStatusCard() {
 
       {streak.status === "not_learned_today" && (
         <div className="text-orange-500 font-medium">
-          <p>{streak.message}</p>
+          <p>{t("dashboard.noLearningToday")}</p>
           <p className="text-sm text-gray-500 mt-1">
-            Giữ chuỗi của bạn bằng cách hoàn thành một bài học hôm nay nhé! 💪
+            {t("dashboard.keepYourPath")} 💪
           </p>
         </div>
       )}
@@ -131,23 +133,21 @@ function StreakStatusCard() {
               onClick={handleRestore}
               className="bg-orange-500 text-white hover:bg-orange-600"
             >
-              Khôi phục (10 ❄️)
+              {t("dashboard.restore")} (10 ❄️)
             </Button>
             <Button onClick={handleReset} variant="outline">
-              Không, reset chuỗi
+              {t("dashboard.no")}
             </Button>
           </div>
         </div>
       )}
 
       {streak.status === "expired" && (
-        <p className="text-red-500 font-medium">{streak.message}</p>
+        <p className="text-red-500 font-medium">{t("dashboard.streakReset")}</p>
       )}
 
       {streak.status === "no_streak" && (
-        <p className="text-gray-600 italic">
-          Bắt đầu học hôm nay để tạo chuỗi học mới!
-        </p>
+        <p className="text-gray-600 italic">{t("dashboard.startLearning")}</p>
       )}
     </motion.div>
   );

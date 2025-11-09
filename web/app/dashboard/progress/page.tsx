@@ -17,8 +17,6 @@ import {
   BookOpen,
   Mic,
   Headphones,
-  ChartSpline,
-  ChartPie,
   ChartNoAxesCombined,
 } from "lucide-react";
 import OverviewStats from "@/components/ui/overview-stats";
@@ -28,45 +26,47 @@ import ChartComparison from "@/components/ui/chart-comparison";
 import ChartArea from "./components/AreaChart";
 import ChartRadar from "./components/RadarChart";
 import ActivityHeatmap from "./components/ActivitySchedule";
-
-const skillConfig = {
-  speaking: {
-    label: "Kỹ năng Nói",
-    icon: Mic,
-    gradient: "from-orange-500 to-pink-500",
-    bgLight: "bg-orange-50",
-    textColor: "text-orange-600",
-  },
-  writing: {
-    label: "Kỹ năng Viết",
-    icon: BookOpen,
-    gradient: "from-pink-500 to-purple-500",
-    bgLight: "bg-pink-50",
-    textColor: "text-pink-600",
-  },
-  listening: {
-    label: "Kỹ năng Nghe",
-    icon: Headphones,
-    gradient: "from-purple-500 to-blue-500",
-    bgLight: "bg-purple-50",
-    textColor: "text-purple-600",
-  },
-};
+import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function LearningProgressChart() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [chartType, setChartType] = useState<"area" | "radar">("area");
   const [period, setPeriod] = useState("7days");
   const [loading, setLoading] = useState(false);
 
+  const skillConfig = {
+    speaking: {
+      label: `${t("learning.skillSpeaking")}`,
+      icon: Mic,
+      gradient: "from-orange-500 to-pink-500",
+      bgLight: "bg-orange-50",
+      textColor: "text-orange-600",
+    },
+    writing: {
+      label: `${t("learning.skillWriting")}`,
+      icon: BookOpen,
+      gradient: "from-pink-500 to-purple-500",
+      bgLight: "bg-pink-50",
+      textColor: "text-pink-600",
+    },
+    listening: {
+      label: `${t("learning.skillListening")}`,
+      icon: Headphones,
+      gradient: "from-purple-500 to-blue-500",
+      bgLight: "bg-purple-50",
+      textColor: "text-purple-600",
+    },
+  };
+
   const getPeriodLabel = () => {
     switch (period) {
       case "7days":
-        return "7 ngày qua";
+        return `7 ${t("learning.days")}`;
       case "30days":
-        return "30 ngày qua";
+        return `30 ${t("learning.days")}`;
       default:
-        return "Tất cả thời gian";
+        return `${t("learning.all")}`;
     }
   };
 
@@ -112,41 +112,49 @@ export default function LearningProgressChart() {
       </div>
       <main className="flex-1">
         <div className="container mx-auto py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <ChartNoAxesCombined className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-              Tiến trình học tập
-            </h1>
-            <ChartNoAxesCombined className="w-6 h-6 sm:w-8 sm:h-8 text-pink-400" />
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8 sm:mb-12"
+            >
+              <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <ChartNoAxesCombined className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400" />
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  {t("learning.progressLearning")}
+                </h1>
+                <ChartNoAxesCombined className="w-6 h-6 sm:w-8 sm:h-8 text-pink-400" />
+              </div>
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
+                {t("learning.progressLearningDescription")}
+              </p>
+            </motion.div>
           </div>
-          <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
-            Theo dõi sự tiến bộ của bạn qua các kỹ năng khác nhau
-          </p>
 
           <div className="space-y-6 sm:space-y-8">
-            <OverviewStats />
+            <OverviewStats user={user} t={t} />
 
-            <ActivityHeatmap />
+            <ActivityHeatmap user={user} t={t} />
 
-            <SkillGoals />
+            <SkillGoals user={user} t={t} />
 
             <div className="space-y-4">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                Biểu đồ so sánh
+                {t("learning.comparisonChart")}
               </h2>
-              <ChartComparison days={period} />
+              <ChartComparison t={t} user={user} days={period} />
             </div>
 
             <div className="space-y-4">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                Chi tiết từng kỹ năng
+                {t("learning.skillDetails")}
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                   <CardHeader>
                     <CardTitle className="text-sm font-medium text-gray-700">
-                      Khoảng thời gian
+                      {t("learning.period")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -155,9 +163,9 @@ export default function LearningProgressChart() {
                       value={period}
                       className="w-full bg-white border-2 border-gray-200 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                     >
-                      <option value="7days">7 ngày qua</option>
-                      <option value="30days">30 ngày qua</option>
-                      <option value="all">Tất cả</option>
+                      <option value="7days">7 {t("learning.days")}</option>
+                      <option value="30days">30 {t("learning.days")}</option>
+                      <option value="all">{t("learning.all")}</option>
                     </select>
                   </CardContent>
                 </Card>
@@ -165,7 +173,7 @@ export default function LearningProgressChart() {
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                   <CardHeader>
                     <CardTitle className="text-sm font-medium text-gray-700">
-                      Loại biểu đồ
+                      {t("learning.chartType")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -176,8 +184,8 @@ export default function LearningProgressChart() {
                       value={chartType}
                       className="w-full bg-white border-2 border-gray-200 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
                     >
-                      <option value="area">Biểu đồ miền</option>
-                      <option value="radar">Biểu đồ radar</option>
+                      <option value="area">{t("learning.areaChart")}</option>
+                      <option value="radar">{t("learning.radarChart")}</option>
                     </select>
                   </CardContent>
                 </Card>
@@ -188,7 +196,7 @@ export default function LearningProgressChart() {
                   <CardContent className="flex items-center justify-center py-12">
                     <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
                     <span className="ml-2 text-gray-600 font-medium">
-                      Đang tải dữ liệu...
+                      {t("learning.loadingData")}
                     </span>
                   </CardContent>
                 </Card>
@@ -222,17 +230,27 @@ export default function LearningProgressChart() {
                             </CardTitle>
                           </div>
                           <CardDescription className="text-sm text-gray-600">
-                            Hiển thị tiến trình học tập trong{" "}
+                            {t("learning.progressIn")}{" "}
                             {getPeriodLabel().toLowerCase()}
                           </CardDescription>
                         </CardHeader>
                         <CardContent className="p-4 sm:p-6 pt-0">
                           <div className="h-[200px] sm:h-[250px] w-full">
                             {chartType === "area" && (
-                              <ChartArea days={period} skillType={skillType} />
+                              <ChartArea
+                                t={t}
+                                user={user}
+                                days={period}
+                                skillType={skillType}
+                              />
                             )}
                             {chartType === "radar" && (
-                              <ChartRadar days={period} skillType={skillType} />
+                              <ChartRadar
+                                t={t}
+                                user={user}
+                                days={period}
+                                skillType={skillType}
+                              />
                             )}
                           </div>
                           <div className="mt-4 sm:mt-6 space-y-3">
@@ -245,7 +263,7 @@ export default function LearningProgressChart() {
                                 />
                               </div>
                               <span className="text-gray-600">
-                                Tăng trưởng:{" "}
+                                {t("learning.growth")}:{" "}
                                 <span className="font-bold text-gray-900">
                                   +12.5%
                                 </span>
@@ -263,7 +281,7 @@ export default function LearningProgressChart() {
                               }-500`}
                             >
                               <div className="text-sm text-gray-600">
-                                Điểm trung bình
+                                {t("learning.average")}
                               </div>
                               <div className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
                                 78.5
@@ -278,7 +296,7 @@ export default function LearningProgressChart() {
               )}
             </div>
 
-            <Achievements />
+            <Achievements t={t} user={user} />
           </div>
         </div>
       </main>

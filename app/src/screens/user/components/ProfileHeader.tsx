@@ -8,6 +8,7 @@ import Avatar from '../../../components/Avatar';
 import { hp } from '../../../../helpers/common';
 import { theme } from '../../../../constants/theme';
 import { Edit3, Archive } from 'lucide-react-native';
+import { Image } from 'react-native';
 
 export default function ProfileHeader() {
   const navigation = useNavigation<any>();
@@ -36,11 +37,25 @@ export default function ProfileHeader() {
     <View style={styles.container}>
       <View style={styles.profileSection}>
         <View style={styles.avatarContainer}>
-          <Avatar
-            uri={getUserImageSrc(user?.avatar)}
-            size={hp(12)}
-            rounded={theme.radius.xxl * 100}
-          />
+          {(user?.avatar && (
+            <Avatar
+              uri={getUserImageSrc(user?.avatar)}
+              size={hp(12)}
+              rounded={theme.radius.xxl * 100}
+            />
+          )) || (
+            <Image
+              source={require('../../../../assets/images/default-avatar-profile-icon.jpg')}
+              style={[
+                {
+                  height: hp(12),
+                  width: hp(12),
+                  borderRadius: theme.radius.xxl * 100,
+                  borderColor: theme.colors.darkLight,
+                },
+              ]}
+            />
+          )}
         </View>
 
         <View style={styles.infoSection}>
@@ -95,11 +110,8 @@ export default function ProfileHeader() {
           <Edit3 size={18} color="#667eea" />
           <Text style={styles.primaryButtonText}>Chỉnh sửa trang cá nhân</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          activeOpacity={0.8}
-        >
+
+        <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
           <Archive size={18} color="#6b7280" />
           <Text style={styles.secondaryButtonText}>Kho lưu trữ</Text>
         </TouchableOpacity>

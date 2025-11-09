@@ -40,6 +40,11 @@ import VocabularyDetail from '../screens/learning/vocabulary/VocabularyDetail';
 import ProgressPage from '../screens/learning/progress/Progress';
 import Ranking from '../screens/learning/ranking/Ranking';
 import ListExercise from '../screens/learning/listening/ListExercise';
+import WritingDetail from '../screens/learning/writing/WritingDetail';
+import ListExerciseWriting from '../screens/learning/writing/ListExerciseWriting';
+import RoadMap from '../screens/learning/roadmap/RoadMap';
+import VocabularyTopicDetail from '../screens/learning/vocabulary/VocabularyTopicDetail';
+import RoadmapDetailScreen from '../screens/learning/roadmap/RoadmapDetail';
 
 const Tab = createBottomTabNavigator();
 
@@ -229,8 +234,23 @@ const AppNavigation = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="VocabularyTopicDetail"
+          component={VocabularyTopicDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Writing"
           component={Writing}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ListExerciseWriting"
+          component={ListExerciseWriting}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="WritingDetail"
+          component={WritingDetail}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -241,6 +261,16 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Progress"
           component={ProgressPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Roadmap"
+          component={RoadMap}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RoadmapDetail"
+          component={RoadmapDetailScreen}
           options={{ headerShown: false }}
         />
 

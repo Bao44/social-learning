@@ -1,0 +1,19 @@
+{
+    "online": "Online",
+    "offline": "Offline",
+    "hello": "Hello!",
+    "nice_to_meet": "Nice to meet you!",
+    "ask_exchange": "Would you like to exchange contacts?",
+    "invite_talk": "Are you free to chat for a bit?",
+    "sendMessage": "Send Message",
+    "let_send_message": "Let's send a message",
+    "loading": "Loading...",
+    "noResults": "No conversations found.",
+
+    "users_noOnline": "No members are online.",
+    "user_noOnline": "User is offline.",
+    "isOnline":"Online",
+    "calling_you":"calling you...",
+    "accept_call":"Accept",
+    "decline_call":"Decline"
+}

@@ -1,272 +1,179 @@
-// screens/VocabularyPage.tsx
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  FlatList,
   ActivityIndicator,
-  Alert,
   SafeAreaView,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Animated, {
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import useAuth from '../../../../hooks/useAuth';
 import { getListPersonalVocabByUserIdAndCreated } from '../../../api/learning/vocabulary/route';
-import VocabularyCard from './components/VocabularyCard';
 import {
+  AlertCircle,
   ArrowLeft,
-  BookOpenIcon,
-  GridIcon,
-  ListIcon,
-  SearchIcon,
-  X,
+  BookOpen,
+  TrendingUp,
 } from 'lucide-react-native';
+import Tts from 'react-native-tts';
+import OverviewRangeView from './components/RangeView';
+import MasteredTab from './components/MasteredTab';
+import TopicsTab from './components/TopicsTab';
 
-const GRID_COLS = 2;
+const CustomButton = ({ onPress, title, style, textStyle }: any) => (
+  <TouchableOpacity onPress={onPress} style={[style]}>
+    <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+  </TouchableOpacity>
+);
 
 export default function Vocabulary() {
-  const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { user } = useAuth();
-  const personalVocabId = route.params?.personalVocabId;
 
   const [listPersonalVocab, setListPersonalVocab] = useState<any[]>([]);
-  const [filteredVocab, setFilteredVocab] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const isInitialLoad = useRef(true);
 
-  const searchInputRef = useRef<TextInput>(null);
+  // Load dữ liệu
+  useEffect(() => {
+    if (loading || !user?.id) return;
+    if (isInitialLoad.current) {
+      loadVocab();
+      isInitialLoad.current = false;
+    }
+  }, [loading, user?.id]);
 
-  const loadVocab = useCallback(async () => {
-    if (!user?.id) {
-      setLoading(false);
-      return;
+  const loadVocab = async () => {
+    setLoading(true);
+    if (!user) return;
+    const res = await getListPersonalVocabByUserIdAndCreated({
+      userId: user.id,
+    });
+
+    if (res.success) {
+      setListPersonalVocab(res.data);
     }
-    try {
-      const res = await getListPersonalVocabByUserIdAndCreated({
-        userId: user.id,
-      });
-      if (res.success) {
-        setListPersonalVocab(res.data || []);
-        setFilteredVocab(res.data || []);
-      }
-    } catch (error) {
-      Alert.alert('Lỗi', 'Không thể tải từ vựng');
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id]);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    loadVocab();
-  }, [loadVocab]);
+    Tts.getInitStatus().then(
+      () => {},
+      err => {
+        if (err.code === 'no_engine') {
+          console.warn('No TTS engine installed.');
+        }
+      },
+    );
+  }, []);
 
-  useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredVocab(listPersonalVocab);
+  const speakWord = async (text: string) => {
+    Tts.stop();
+    const voices = await Tts.voices();
+    const englishVoices = voices.filter(
+      (v: any) =>
+        v.language.startsWith('en-US') && !v.networkConnectionRequired,
+    );
+
+    if (englishVoices.length > 0) {
+      const randomVoice =
+        englishVoices[Math.floor(Math.random() * englishVoices.length)];
+      Tts.setDefaultLanguage(randomVoice.language);
+      Tts.setDefaultVoice(randomVoice.id);
     } else {
-      const filtered = listPersonalVocab.filter(vocab =>
-        vocab.word.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-      setFilteredVocab(filtered);
+      Tts.setDefaultLanguage('en-US');
     }
-  }, [searchQuery, listPersonalVocab]);
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await loadVocab();
-    setRefreshing(false);
-  }, [loadVocab]);
-
-  const handleVocabPress = (vocabId: string) => {
-    navigation.navigate('VocabularyDetail', { vocabId });
+    Tts.setDefaultRate(0.5);
+    Tts.setDefaultPitch(1.0);
+    Tts.speak(text);
   };
 
-  const clearSearch = () => {
-    setSearchQuery('');
-    searchInputRef.current?.focus();
-  };
+  // Tính stats
+  const totalWords = listPersonalVocab.length;
+  const averageMastery =
+    totalWords > 0
+      ? Math.round(
+          listPersonalVocab.reduce((sum, v) => sum + v.mastery_score, 0) /
+            totalWords,
+        )
+      : 0;
+  const wordsToReview = listPersonalVocab.filter(
+    v => v.mastery_score < 70,
+  ).length;
 
-  const renderCard = ({ item, index }: { item: any; index: number }) => (
-    <VocabularyCard
-      vocab={item}
-      isHighlighted={item.id === personalVocabId}
-      onPress={() => handleVocabPress(item.id)}
-      viewMode={viewMode}
-      isFirstInRow={viewMode === 'grid' && index % 2 === 0}
-      isLastInRow={viewMode === 'grid' && index % 2 !== 0}
-    />
-  );
+  const lowCount = listPersonalVocab.filter(v => v.mastery_score <= 29).length;
+  const midCount = listPersonalVocab.filter(
+    v => v.mastery_score >= 30 && v.mastery_score <= 69,
+  ).length;
+  const highCount = listPersonalVocab.filter(
+    v => v.mastery_score >= 70 && v.mastery_score <= 99,
+  ).length;
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <Animated.View
-        style={useAnimatedStyle(() => ({
-          transform: [
-            {
-              translateY: withRepeat(
-                withSequence(
-                  withTiming(-10, { duration: 1000 }),
-                  withTiming(0, { duration: 1000 }),
-                ),
-                -1,
-                true,
-              ),
-            },
-          ],
-        }))}
-      >
-        <LinearGradient
-          colors={['rgba(249, 115, 22, 0.2)', 'rgba(236, 72, 153, 0.2)']}
-          style={styles.emptyIconContainer}
-        >
-          <BookOpenIcon size={40} color="#f59e0b" />
-        </LinearGradient>
-      </Animated.View>
-      <Text style={styles.emptyTitle}>
-        {searchQuery ? 'Không tìm thấy từ vựng' : 'Chưa có từ vựng'}
-      </Text>
-      <Text style={styles.emptySubtitle}>
-        {searchQuery ? 'Hãy thử từ khóa khác' : 'Bắt đầu học từ vựng ngay!'}
-      </Text>
-      {searchQuery && (
-        <TouchableOpacity onPress={clearSearch} style={{ marginTop: 20 }}>
-          <LinearGradient
-            colors={['#f59e0b', '#ef4444']}
-            style={styles.clearSearchButton}
-          >
-            <Text style={styles.clearSearchButtonText}>Xóa tìm kiếm</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-
-  const ListHeader = () => {
-    const totalWords = listPersonalVocab.length;
-    const averageMastery =
-      totalWords > 0
-        ? Math.round(
-            listPersonalVocab.reduce(
-              (sum, vocab) => sum + (vocab.mastery_score || 0),
-              0,
-            ) / totalWords,
-          )
-        : 0;
-    const wordsToReview = listPersonalVocab.filter(
-      vocab => (vocab.mastery_score || 0) < 70,
-    ).length;
-
+  // Render Skeleton
+  const renderLoadingSkeleton = () => {
     return (
-      <View style={styles.listHeaderContainer}>
-        {/* Stats Cards */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.statsScroll}
-        >
-          <View style={styles.statsContainer}>
-            <View style={[styles.statCard, { borderColor: '#fee2e2' }]}>
-              <Text style={styles.statLabel}>Tổng từ</Text>
-              <Text style={[styles.statValue, { color: '#f59e0b' }]}>
-                {totalWords}
-              </Text>
-            </View>
-            <View style={[styles.statCard, { borderColor: '#d1fae5' }]}>
-              <Text style={styles.statLabel}>Độ thông thạo TB</Text>
-              <Text style={[styles.statValue, { color: '#10b981' }]}>
-                {averageMastery}%
-              </Text>
-            </View>
-            <View style={[styles.statCard, { borderColor: '#fef3c7' }]}>
-              <Text style={styles.statLabel}>Cần ôn</Text>
-              <Text style={[styles.statValue, { color: '#f59e0b' }]}>
-                {wordsToReview}
-              </Text>
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Search and View Toggle */}
-        <View style={styles.controlsContainer}>
-          <View style={styles.searchWrapper}>
-            <SearchIcon size={20} color="#9ca3af" style={styles.searchIcon} />
-            <TextInput
-              ref={searchInputRef}
-              style={styles.searchInput}
-              placeholder="Tìm kiếm từ vựng..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            {searchQuery ? (
-              <TouchableOpacity
-                onPress={clearSearch}
-                style={styles.clearSearchIcon}
-              >
-                <X size={20} color="#9ca3af" />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View style={styles.toggleWrapper}>
-            <TouchableOpacity
-              onPress={() => setViewMode('grid')}
-              style={[
-                styles.toggleButton,
-                {
-                  backgroundColor:
-                    viewMode === 'grid' ? '#f59e0b' : 'transparent',
-                },
-              ]}
-            >
-              <GridIcon
-                size={20}
-                color={viewMode === 'grid' ? '#fff' : '#374151'}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setViewMode('list')}
-              style={[
-                styles.toggleButton,
-                {
-                  backgroundColor:
-                    viewMode === 'list' ? '#f59e0b' : 'transparent',
-                  marginLeft: 4,
-                },
-              ]}
-            >
-              <ListIcon
-                size={20}
-                color={viewMode === 'list' ? '#fff' : '#374151'}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF6347" />
       </View>
     );
   };
 
-  if (loading && listPersonalVocab.length === 0) {
+  // Render Empty State
+  const renderEmptyState = () => {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#f59e0b" />
+      <View style={styles.emptyContainer}>
+        <View style={styles.emptyIconContainer}>
+          <View style={styles.emptyIconBackground}>
+            <BookOpen size={80} color="#FF6347" />
+          </View>
         </View>
-      </SafeAreaView>
+        <Text style={styles.emptyTitle}>
+          {searchQuery ? 'Không tìm thấy từ vựng' : 'Chưa có từ vựng'}
+        </Text>
+        <Text style={styles.emptySubtitle}>
+          {searchQuery
+            ? 'Hãy thử điều chỉnh truy vấn tìm kiếm của bạn'
+            : 'Bắt đầu học và thêm từ mới vào bộ sưu tập từ vựng cá nhân của bạn'}
+        </Text>
+        {searchQuery && (
+          <CustomButton
+            title={'learning.clearSearch'}
+            onPress={() => setSearchQuery('')}
+            style={styles.emptyButton}
+          />
+        )}
+      </View>
     );
-  }
+  };
+
+  // Các card cho tab "Overview"
+  const overviewCards = [
+    {
+      key: 'low',
+      title: 'Cần ôn gấp',
+      count: lowCount,
+      icon: AlertCircle,
+    },
+    {
+      key: 'mid',
+      title: 'Đang tiến bộ',
+      count: midCount,
+      icon: TrendingUp,
+    },
+    {
+      key: 'high',
+      title: 'Sắp thành thạo',
+      count: highCount,
+      icon: BookOpen,
+    },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -298,22 +205,164 @@ export default function Vocabulary() {
       </LinearGradient>
 
       <View style={styles.contentArea}>
-        <FlatList
-          key={viewMode}
-          data={filteredVocab}
-          renderItem={renderCard}
-          keyExtractor={item => item.id.toString()}
-          numColumns={viewMode === 'grid' ? GRID_COLS : 1}
-          ListHeaderComponent={ListHeader}
-          ListEmptyComponent={!loading ? renderEmptyState : null}
-          contentContainerStyle={styles.listContentContainer}
-          showsVerticalScrollIndicator={false}
-          onRefresh={onRefresh}
-          refreshing={refreshing}
-          removeClippedSubviews={true}
-          maxToRenderPerBatch={10}
-          windowSize={10}
-        />
+        <ScrollView style={styles.container}>
+          {/* Stats Cards */}
+          <View style={styles.statsContainer}>
+            {/* Card 1: Total Words */}
+            <View style={styles.statCard}>
+              <View style={styles.statContent}>
+                <View>
+                  <Text style={styles.statLabel}>Tổng số từ</Text>
+                  <Text style={styles.statValue}>{totalWords}</Text>
+                </View>
+              </View>
+            </View>
+            {/* Card 2: Average Mastery */}
+            <View style={styles.statCard}>
+              <View style={styles.statContent}>
+                <View>
+                  <Text style={styles.statLabel}>Trung bình thành thạo</Text>
+                  <Text style={[styles.statValue, { color: '#34D399' }]}>
+                    {averageMastery}%
+                  </Text>
+                </View>
+              </View>
+            </View>
+            {/* Card 3: Words to Review */}
+            <View style={styles.statCard}>
+              <View style={styles.statContent}>
+                <View>
+                  <Text style={styles.statLabel}>Cần xem lại</Text>
+                  <Text style={[styles.statValue, { color: '#F59E0B' }]}>
+                    {wordsToReview}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Tabs */}
+          <View style={styles.tabsContainer}>
+            <View style={styles.tabList}>
+              <TouchableOpacity
+                style={[
+                  styles.tabTrigger,
+                  activeTab === 'overview' && styles.tabTriggerActive,
+                ]}
+                onPress={() => {
+                  setActiveTab('overview');
+                  setSelectedTopic(null);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === 'overview' && styles.tabTextActive,
+                  ]}
+                >
+                  Tổng quan
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.tabTrigger,
+                  activeTab === 'mastered' && styles.tabTriggerActive,
+                ]}
+                onPress={() => setActiveTab('mastered')}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === 'mastered' && styles.tabTextActive,
+                  ]}
+                >
+                  Đã thành thạo
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.tabTrigger,
+                  activeTab === 'topics' && styles.tabTriggerActive,
+                ]}
+                onPress={() => setActiveTab('topics')}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === 'topics' && styles.tabTextActive,
+                  ]}
+                >
+                  Chủ đề
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* Tabs Content */}
+          <View>
+            {activeTab === 'overview' && (
+              <View>
+                {selectedTopic ? (
+                  <OverviewRangeView
+                    topicKey={selectedTopic}
+                    listPersonalVocab={listPersonalVocab}
+                    speakWord={speakWord}
+                    onBack={() => setSelectedTopic(null)}
+                    onSelectWord={(id: string) =>
+                      navigation.navigate('VocabularyDetail', { id: id })
+                    }
+                  />
+                ) : (
+                  <View style={styles.overviewGrid}>
+                    {overviewCards.map(card => {
+                      const Icon = card.icon;
+                      return (
+                        <View key={card.key} style={styles.overviewCard}>
+                          <TouchableOpacity
+                            onPress={() => setSelectedTopic(card.key)}
+                          >
+                            <View style={styles.overviewCardContent}>
+                              <View>
+                                <Text style={styles.overviewCardTitle}>
+                                  {card.title}
+                                </Text>
+                                <Text style={styles.overviewCardCount}>
+                                  {loading ? '…' : card.count}
+                                </Text>
+                              </View>
+                              <View style={styles.overviewCardIconWrapper}>
+                                <Icon size={28} color="#374151" />
+                              </View>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {activeTab === 'mastered' && (
+              <MasteredTab
+                user={user}
+                listPersonalVocab={listPersonalVocab}
+                loading={loading}
+                speakWord={speakWord}
+                renderLoadingSkeleton={renderLoadingSkeleton}
+                renderEmptyState={renderEmptyState}
+              />
+            )}
+
+            {activeTab === 'topics' && (
+              <TopicsTab
+                loading={loading}
+                user={user}
+                renderLoadingSkeleton={renderLoadingSkeleton}
+                renderEmptyState={renderEmptyState}
+              />
+            )}
+          </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -330,163 +379,212 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 20,
   },
+
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   headerCenter: {
-    flexDirection: 'row',
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
+    alignItems: 'center',
   },
+
   headerTitle: {
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#fff',
   },
+
   headerSubtitle: {
     fontSize: 14,
-    color: '#ffffff',
+    color: '#fff',
     opacity: 0.9,
   },
-  headerRight: {
-    width: 40,
-  },
+  headerRight: { width: 40 },
   contentArea: {
     flex: 1,
     backgroundColor: '#f9fafb',
-    marginTop: -12,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    marginTop: -16,
+    overflow: 'hidden',
+    padding: 20,
   },
-  listHeaderContainer: {
-    paddingTop: 24,
-    paddingHorizontal: 16,
-  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 50,
   },
-  statsScroll: {
-    marginBottom: 16,
-  },
+
   statsContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 12,
+    marginBottom: 28,
   },
+
   statCard: {
-    backgroundColor: '#ffffff',
-    padding: 16,
+    flex: 1,
+    backgroundColor: '#fff',
     borderRadius: 16,
-    minWidth: 140,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    padding: 16,
     elevation: 3,
     borderWidth: 1,
+    borderColor: '#F3F4F6',
   },
-  statLabel: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  controlsContainer: {
+
+  statContent: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  statLabel: {
+    fontSize: 16,
+    color: '#4B5563',
+  },
+
+  statValue: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FF6347',
+  },
+
+  statIconWrapper: {
+    padding: 12,
+    backgroundColor: '#FEE2E2',
+    borderRadius: 12,
+  },
+
+  tabsContainer: {
     marginBottom: 16,
   },
-  searchWrapper: {
-    flex: 1,
-    position: 'relative',
-    justifyContent: 'center',
-  },
-  searchIcon: {
-    position: 'absolute',
-    left: 16,
-    zIndex: 1,
-  },
-  searchInput: {
-    paddingLeft: 48,
-    paddingRight: 48,
-    paddingVertical: 8,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    fontSize: 16,
-  },
-  clearSearchIcon: {
-    position: 'absolute',
-    right: 16,
-    zIndex: 1,
-  },
-  toggleWrapper: {
+
+  tabList: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: '#fff',
+    borderRadius: 20,
     padding: 4,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#E5E7EB',
   },
-  toggleButton: {
-    padding: 8,
-    borderRadius: 8,
-  },
-  listContentContainer: {
-    paddingBottom: 100,
+
+  tabTrigger: {
+    flex: 1,
+    paddingVertical: 12,
     paddingHorizontal: 16,
+    borderRadius: 16,
   },
+
+  tabTriggerActive: {
+    backgroundColor: '#FFFFFF',
+    elevation: 3,
+  },
+
+  tabText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4B5563',
+    textAlign: 'center',
+  },
+
+  tabTextActive: {
+    color: '#FF6347',
+  },
+
+  overviewGrid: {
+    gap: 16,
+  },
+
+  overviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+
+  overviewCardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  overviewCardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+
+  overviewCardCount: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#374151',
+    marginTop: 8,
+  },
+
+  overviewCardIconWrapper: {
+    padding: 12,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+  },
+
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
-    marginTop: 50,
+    paddingVertical: 80,
   },
-  emptyIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
+
+  emptyIconBackground: {
+    padding: 32,
+    backgroundColor: 'rgba(255, 99, 71, 0.1)',
+    borderRadius: 9999,
   },
+
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: '#1F2937',
     marginBottom: 8,
-    textAlign: 'center',
   },
+
   emptySubtitle: {
     fontSize: 16,
-    color: '#6b7280',
+    color: '#4B5563',
     textAlign: 'center',
+    maxWidth: 350,
   },
-  clearSearchButton: {
+
+  emptyButton: {
+    marginTop: 24,
+    backgroundColor: '#FF6347',
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 9999,
   },
-  clearSearchButtonText: {
+
+  buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyIconContainer: {
+    marginBottom: 24,
   },
 });

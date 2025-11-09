@@ -19,6 +19,8 @@ import { theme } from '../../constants/theme';
 import PostCard from '../screens/post/PostCard';
 import Loading from '../components/Loading';
 import LinearGradient from 'react-native-linear-gradient';
+import { getSocket } from '../../socket/socketClient';
+import { fetchTotalUnreadMessages } from '../api/chat/conversation/route';
 
 var limit = 0;
 const Main = () => {
@@ -29,6 +31,8 @@ const Main = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationLearningCount, setNotificationLearningCount] = useState(0);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   const handlePostEvent = async (payload: any) => {
     if (payload.eventType === 'INSERT' && payload?.new?.id) {
@@ -63,14 +67,10 @@ const Main = () => {
     }
   };
 
-  const handleNewNotification = async (payload: any) => {
-    if (payload.eventType === 'INSERT' && payload.new.id) {
-      setNotificationCount(prevCount => prevCount + 1);
-    }
-  };
-
   // load realtime
   useEffect(() => {
+    if (!user) return;
+
     let postChannel = supabase
       .channel('posts')
       .on(
@@ -85,24 +85,79 @@ const Main = () => {
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*', // cả INSERT và UPDATE
           schema: 'public',
           table: 'notifications',
           filter: `receiverId=eq.${user.id}`,
         },
-        handleNewNotification,
+        payload => {
+          if (payload.eventType === 'INSERT') {
+            setNotificationCount(prev => prev + 1);
+          }
+          if (payload.eventType === 'UPDATE' && payload.new.is_read === true) {
+            setNotificationCount(prev => Math.max(prev - 1, 0));
+          }
+        },
+      )
+      .subscribe();
+
+    let notificationLearningChannel = supabase
+      .channel('notificationsLearning')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // cả INSERT và UPDATE
+          schema: 'public',
+          table: 'notificationsLearning',
+          filter: `userId=eq.${user.id}`,
+        },
+        payload => {
+          if (payload.eventType === 'INSERT') {
+            setNotificationLearningCount(prev => prev + 1);
+          }
+          if (payload.eventType === 'UPDATE' && payload.new.is_read === true) {
+            setNotificationLearningCount(prev => Math.max(prev - 1, 0));
+          }
+        },
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(postChannel);
       supabase.removeChannel(notificationChannel);
+      supabase.removeChannel(notificationLearningChannel);
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     getPosts();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const socket = getSocket();
+
+    const fetchMessagesCount = async () => {
+      const res = await fetchTotalUnreadMessages(user?.id);
+      setUnreadMessageCount(res);
+    };
+
+    socket.on("notificationNewMessage", () => {
+      fetchMessagesCount();
+    });
+
+    socket.on("notificationMessagesRead", () => {
+      fetchMessagesCount();
+    });
+
+    fetchMessagesCount();
+
+    return () => {
+      socket.off("notificationNewMessage");
+      socket.off("notificationMessagesRead");
+    };
+  }, [user]);
+
 
   const getPosts = async () => {
     if (!hasMore) return;
@@ -147,15 +202,16 @@ const Main = () => {
               style={styles.actionButton}
               onPress={() => {
                 setNotificationCount(0);
+                setNotificationLearningCount(0);
                 navigation.navigate('Notification');
               }}
               activeOpacity={0.8}
             >
               <Heart size={20} color="#fff" />
-              {notificationCount > 0 && (
+              {notificationCount + notificationLearningCount > 0 && (
                 <View style={styles.notificationBadge}>
                   <Text style={styles.notificationText}>
-                    {notificationCount}
+                    {notificationCount + notificationLearningCount}
                   </Text>
                 </View>
               )}
@@ -167,6 +223,13 @@ const Main = () => {
               activeOpacity={0.8}
             >
               <MessageCircleMore size={20} color="#fff" />
+              {unreadMessageCount > 0 && (
+                <View style={styles.notificationBadge}>
+                  <Text style={styles.notificationText}>
+                    {unreadMessageCount}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
         </View>

@@ -13,14 +13,9 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native';
 import {
   ArrowLeft,
-  Play,
-  Pause,
-  RotateCcw,
-  Volume2,
   FileText,
   Snowflake,
   CircleEqual,
-  History,
   Menu,
 } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,7 +26,9 @@ import HistoryModal from './components/HistoryModal';
 import ProgressModal from './components/ProgressModal';
 import SubmitModal from './components/SubmitModal';
 import SubmittingModal from "./components/SubmittingModal";
-import { getScoreUserByUserId } from '../../../api/learning/score/route';
+import { deductSnowflakeFromUser, getScoreUserByUserId } from '../../../api/learning/score/route';
+import Video from 'react-native-video';
+import { hp } from '../../../../helpers/common';
 
 export default function ListeningDetail() {
   const route = useRoute();
@@ -39,21 +36,19 @@ export default function ListeningDetail() {
   const navigation = useNavigation<any>();
   const { id } = route.params as { id: string };
 
+  // --- State gốc ---
   const [exercise, setExercise] = useState<any>(null);
   const [score, setScore] = useState<any>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [checkResult, setCheckResult] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resSubmit, setResSubmit] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null)
   const [history, setHistory] = useState<any[]>([]);
-
   const [showTopMenu, setShowTopMenu] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
-
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ correct: number, total: number }>({ correct: 0, total: 0 });
 
@@ -65,12 +60,10 @@ export default function ListeningDetail() {
         setExercise(data);
 
         if (user) {
-          const score = await getScoreUserByUserId(user?.id)
-          setScore(score.data)
-
+          const scoreData = await getScoreUserByUserId(user?.id)
+          setScore(scoreData.data)
           const prog = await listeningService.getUserProgress(user.id, id as string)
           setProgress(prog)
-
           const hist = await listeningService.getSubmissionHistory(user.id, data.id);
           setHistory(hist);
         }
@@ -96,7 +89,6 @@ export default function ListeningDetail() {
     );
   }
 
-  // map vị trí từ bị ẩn
   const hiddenMap: Record<number, string> = {};
   exercise.wordHidden?.forEach((wh: any) => {
     hiddenMap[wh.position] = wh.answer;
@@ -104,8 +96,7 @@ export default function ListeningDetail() {
 
   const words = exercise.text_content.split(/\s+/);
 
-  // Hàm kiểm tra đáp án
-  const handleCheckAnswers = () => {
+  const handleCheckAnswers = async () => {
     const result: Record<number, boolean> = {}
     Object.keys(hiddenMap).forEach((pos) => {
       const position = parseInt(pos)
@@ -114,10 +105,18 @@ export default function ListeningDetail() {
       result[position] = userAns === correct
     })
     setCheckResult(result)
+
+    //  Gọi API trừ 1 bông tuyết
+    await deductSnowflakeFromUser(user!.id, -1);
+
+    //  Cập nhật điểm trong state
+    setScore((prev: any) => ({
+      ...prev,
+      number_snowflake: (prev?.number_snowflake ?? 0) - 1,
+    }));
   }
 
-  // Hàm gợi ý
-  const handleSuggestHint = () => {
+  const handleSuggestHint = async () => {
     const unansweredPositions = Object.keys(hiddenMap).filter((pos) => !answers[parseInt(pos)]);
     if (unansweredPositions.length === 0) return;
 
@@ -126,12 +125,19 @@ export default function ListeningDetail() {
 
     setAnswers(prev => ({ ...prev, [parseInt(randomPos)]: correctWord }));
     setCheckResult(prev => ({ ...prev, [parseInt(randomPos)]: true }));
+
+    // Gọi API trừ bông tuyết
+    await deductSnowflakeFromUser(user!.id, -2);
+
+    // Cập nhật điểm
+    setScore((prev: any) => ({
+      ...prev,
+      number_snowflake: (prev?.number_snowflake ?? 0) - 2,
+    }));
   };
 
-  // Handle submit
   const handleSubmit = async () => {
     setIsSubmitting(true);
-
     const wordAnswers = exercise.wordHidden.map((wh: any) => ({
       word_hidden_id: wh.id,
       position: wh.position,
@@ -149,16 +155,13 @@ export default function ListeningDetail() {
       );
 
       setResSubmit(res)
-
       const correctCount = wordAnswers.filter((a: { is_correct: boolean }) => a.is_correct).length;
       setSubmitResult({ correct: correctCount, total: wordAnswers.length });
-
       const newCheckResult: Record<number, boolean> = {};
       wordAnswers.forEach((ans: { position: number; is_correct: boolean }) => {
         newCheckResult[ans.position] = ans.is_correct;
       });
       setCheckResult(newCheckResult);
-
       setShowSubmitModal(true);
     } catch (error) {
       console.error("Error submitting results:", error);
@@ -168,20 +171,14 @@ export default function ListeningDetail() {
     }
   };
 
-  // Xử lý khi người dùng chọn một mục trong lịch sử
   const handleHistory = (historyItem: any) => {
     if (!historyItem || !historyItem.answers) {
       console.error("Dữ liệu lịch sử không hợp lệ");
       return;
     }
-
-    // 1. Tạo một Map để tra cứu nhanh: { word_hidden_id => position }
-    // `exercise.wordHidden` là mảng chứa thông tin các từ bị ẩn, bao gồm cả id và position
     const wordIdToPositionMap = new Map(
       exercise.wordHidden.map((wh: any) => [wh.id, wh.position])
     );
-
-    // 2. Tạo các object state mới từ dữ liệu lịch sử
     const historicalAnswers: Record<number, string> = {};
     const historicalCheckResult: Record<number, boolean> = {};
 
@@ -192,8 +189,6 @@ export default function ListeningDetail() {
         historicalCheckResult[position] = ans.is_correct;
       }
     }
-
-    // 3. Cập nhật lại state của component để UI thay đổi theo
     setAnswers(historicalAnswers);
     setCheckResult(historicalCheckResult);
     setShowHistoryModal(false)
@@ -201,7 +196,7 @@ export default function ListeningDetail() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header với gradient */}
+      {/* Header */}
       <LinearGradient
         colors={['#4ECDC4', '#6DD5DB']}
         start={{ x: 0, y: 0 }}
@@ -219,11 +214,11 @@ export default function ListeningDetail() {
 
           <View className='flex-row items-center justify-end gap-10'>
             <View className='flex flex-row items-center justify-center gap-2'>
-              <Text className='text-[#0000FF] text-xl'>{score?.practice_score || 0}</Text>
+              <Text className='text-[#0000FF] text-xl'>{score?.number_snowflake || 0}</Text>
               <Snowflake className="h-5 w-5" color={"#0000FF"} />
             </View>
             <View className='flex flex-row items-center justify-center gap-2'>
-              <Text className='text-[#FFFF00] text-xl'>{score?.number_snowflake || 0}</Text>
+              <Text className='text-[#FFFF00] text-xl'>{score?.practice_score || 0}</Text>
               <CircleEqual className="h-5 w-5" color={"#FFFF00"} />
             </View>
           </View>
@@ -237,8 +232,6 @@ export default function ListeningDetail() {
             >
               <Menu size={24} color="#fff" />
             </TouchableOpacity>
-
-            {/* Menu dropdown */}
             {showTopMenu && (
               <View style={styles.dropdownMenu}>
                 <TouchableOpacity
@@ -250,7 +243,6 @@ export default function ListeningDetail() {
                 >
                   <Text style={styles.dropdownText}>📜 History</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                   style={styles.dropdownItem}
                   onPress={() => {
@@ -268,35 +260,15 @@ export default function ListeningDetail() {
 
       {/* Content */}
       <View style={styles.content}>
-        {/* Audio Player cố định */}
-        <View style={styles.audioContainer}>
-          <View style={styles.audioHeader}>
-            <Volume2 size={20} color="#4ECDC4" />
-            <Text style={styles.audioTitle}>Audio Player</Text>
-          </View>
-
-          <View style={styles.audioControls}>
-            <TouchableOpacity
-              style={styles.audioButton}
-              activeOpacity={0.8}
-            >
-              {isPlaying ? (
-                <Pause size={24} color="#fff" />
-              ) : (
-                <Play size={24} color="#fff" />
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.audioButtonSecondary}
-              activeOpacity={0.8}
-            >
-              <RotateCcw size={20} color="#4ECDC4" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Scroll chỉ cho đoạn văn */}
+        {exercise?.audio_url && (
+          <Video
+            source={{ uri: exercise.audio_url }}
+            style={styles.mediaContent}
+            controls={true}
+            paused={true}
+          />
+        )}
+        {/* ScrollView */}
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
@@ -323,7 +295,7 @@ export default function ListeningDetail() {
                         maxLength={correctAnswer.length}
                         placeholder={"_ ".repeat(correctAnswer.length)}
                         className={`text-[16px] border-b-2 text-center bg-white px-1 py-0.5 rounded-sm tracking-widest
-                      ${isCorrect === true
+                      ${isCorrect === true
                             ? "border-green-500 text-green-500"
                             : isCorrect === false
                               ? "border-red-500 text-red-500"
@@ -352,12 +324,14 @@ export default function ListeningDetail() {
       </View>
 
 
+      {/* Floating Menu */}
       <FloatingMenu
         onCheck={handleCheckAnswers}
         onHint={handleSuggestHint}
         onSubmit={handleSubmit}
       />
 
+      {/* Modals */}
       <HistoryModal
         visible={showHistoryModal}
         onClose={() => setShowHistoryModal(false)}
@@ -396,113 +370,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 40,
   },
-  loadingIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#e8fffe',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  spinner: {
-    marginBottom: 16,
-  },
-  loadingTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  loadingDescription: {
-    fontSize: 14,
-    color: '#6b7280',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-  },
-  errorIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#fef2f2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  errorTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#dc2626',
-    marginBottom: 8,
-  },
-  errorDescription: {
-    fontSize: 14,
-    color: '#6b7280',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  backButton: {
-    backgroundColor: '#4ECDC4',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   headerGradient: {
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerBackButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerCenter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#ffffff',
-    opacity: 0.8,
-  },
-  headerRight: {
-    width: 40,
   },
   content: {
     flex: 1,
@@ -516,61 +387,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    paddingTop: 10,
     paddingBottom: 100,
-  },
-  audioContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 20,
-    marginVertical: 20,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-  },
-  audioHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  audioTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
-  },
-  audioControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-  },
-  audioButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#4ECDC4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#4ECDC4',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  audioButtonSecondary: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#f0fdfa',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#a7f3d0',
   },
   textContainer: {
     backgroundColor: '#ffffff',
@@ -586,15 +404,17 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   textHeader: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 16,
+    gap: 4,
   },
   textTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1f2937',
     marginLeft: 8,
+    textAlign: 'center',
   },
   textContent: {
     flexDirection: 'row',
@@ -619,160 +439,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
     borderRadius: 4,
   },
-  resultIcon: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 2,
-  },
-  correctAnswer: {
-    position: 'absolute',
-    top: 30,
-    left: 0,
-    right: 0,
-    fontSize: 12,
-    color: '#ef4444',
-    textAlign: 'center',
-    backgroundColor: '#fef2f2',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
   wordText: {
     fontSize: 16,
     color: '#374151',
     lineHeight: 28,
     marginHorizontal: 2,
   },
-  resultsContainer: {
-    backgroundColor: '#f0f9ff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#bae6fd',
-  },
-  resultsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  resultsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
-  },
-  scoreContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  scoreText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#4ECDC4',
-    marginBottom: 4,
-  },
-  scoreDescription: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  scoreBar: {
-    height: 8,
-    backgroundColor: '#e5e7eb',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  scoreProgress: {
-    height: '100%',
-    backgroundColor: '#4ECDC4',
-    borderRadius: 4,
-  },
   bottomSpacing: {
     height: 32,
   },
-  actionContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#ffffff',
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  submitButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4ECDC4',
-    paddingVertical: 16,
-    borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#4ECDC4',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  submitButtonDisabled: {
-    backgroundColor: '#9ca3af',
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  submitButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    marginLeft: 8,
-    fontSize: 16,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  resetButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f9fafb',
-    paddingVertical: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  resetButtonText: {
-    color: '#6b7280',
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  continueButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4ECDC4',
-    paddingVertical: 16,
-    borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#4ECDC4',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  continueButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   dropdownMenu: {
     position: 'absolute',
-    top: 38,
+    top: 48,
     right: 0,
     backgroundColor: 'white',
     borderRadius: 8,
@@ -785,7 +463,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   dropdownItem: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
@@ -794,5 +472,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#374151',
     fontWeight: '500',
+  },
+  mediaContent: {
+    width: '100%',
+    height: hp(24),
   }
 });

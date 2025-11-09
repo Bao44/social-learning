@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Star,
   Target,
+  ChartSpline,
 } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -74,6 +75,12 @@ const LearningTab = () => {
       label: 'Tiến trình của tôi',
       route: 'Progress',
       color: '#6BCF7F',
+    },
+    {
+      icon: ChartSpline,
+      label: 'Lộ trình học tập',
+      route: 'Roadmap',
+      color: '#d11dce',
     },
   ];
 
@@ -159,14 +166,14 @@ const LearningTab = () => {
         <View style={styles.headerContent}>
           <View>
             <Text style={styles.headerTitle}>Góc học tập</Text>
-            <Text style={styles.headerSubtitle}>
+            {/* <Text style={styles.headerSubtitle}>
               Nâng cao trình độ tiếng Anh
-            </Text>
+            </Text> */}
           </View>
 
-          <View style={styles.headerIcon}>
+          {/* <View style={styles.headerIcon}>
             <Target size={25} color="#fff" />
-          </View>
+          </View> */}
         </View>
       </LinearGradient>
 

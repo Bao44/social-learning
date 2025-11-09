@@ -1,6 +1,6 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
-import { Paperclip, Smile } from "lucide-react";
+import { Info, Paperclip, Phone, Smile, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 import MessageSender from "./components/MessageSender";
 import MessageReceiver from "./components/MessageReceiver";
@@ -15,6 +15,9 @@ import { getSocket } from "@/socket/socketClient";
 import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { checkUserOnline } from "@/app/apiClient/user/user";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ChatDetail() {
   const { t } = useLanguage();
@@ -23,6 +26,9 @@ export default function ChatDetail() {
   const [files, setFiles] = useState<File[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const { selectedConversation } = useConversation();
+  const [onlineStatus, setOnlineStatus] = useState<boolean>(false);
+  const [offlineTime, setOfflineTime] = useState<string | null>(null);
+  const router = useRouter();
 
   // Lắng nghe sự kiện tin nhắn mới từ socket
   useEffect(() => {
@@ -104,15 +110,7 @@ export default function ChatDetail() {
   const handleSendMessage = async () => {
     if (text.trim() === "" && files.length === 0) return;
     if (!user) return;
-    const formData = new FormData();
-    formData.append("conversationId", selectedConversation?.id || "");
-    formData.append("senderId", user.id);
-    if (text) formData.append("text", text);
-    if (files.length > 0) {
-      files.forEach((f) => formData.append("files", f));
-    }
-
-    const res = await sendMessage({
+    await sendMessage({
       conversationId: selectedConversation?.id || "",
       senderId: user.id,
       text,
@@ -121,61 +119,180 @@ export default function ChatDetail() {
     setText("");
   };
 
+  // kiểm tra online status
+  useEffect(() => {
+    const checkOnlineStatus = async () => {
+      if (!selectedConversation?.members || !user) return;
+
+      const otherMembers = selectedConversation.members.filter(
+        (m: any) => m.id !== user?.id
+      ); // Nếu là chat 1-v-1
+
+      if (selectedConversation.type === "private") {
+        if (otherMembers.length > 0) {
+          const otherMember = otherMembers[0];
+          try {
+            const res = await checkUserOnline(otherMember.id);
+            setOnlineStatus(res.data.isOnline); // Chỉ set offlineTime khi user thực sự offline
+            setOfflineTime(res.data.isOnline ? null : res.data.offlineTime);
+          } catch (error) {
+            console.error("Failed to check user online status:", error);
+            setOnlineStatus(false);
+            setOfflineTime(null);
+          }
+        }
+      } // Nếu là chat nhóm
+      else {
+        if (otherMembers.length > 0) {
+          try {
+            // Tạo một mảng các promise để check status của tất cả thành viên
+            const statusPromises = otherMembers.map((member: any) =>
+              checkUserOnline(member.id)
+            ); // Chờ tất cả các API call hoàn thành
+            const statusResults = await Promise.all(statusPromises); // Kiểm tra xem có ai online không
+
+            const isAnyoneOnline = statusResults.some(
+              (res) => res.data.isOnline
+            );
+
+            setOnlineStatus(isAnyoneOnline);
+            setOfflineTime(null);
+          } catch (error) {
+            console.error("Failed to check group online status:", error);
+            setOnlineStatus(false);
+            setOfflineTime(null);
+          }
+        }
+      }
+    };
+
+    checkOnlineStatus();
+  }, [selectedConversation, user?.id]);
+
+  // // Hàm xử lý bắt đầu cuộc gọi
+  const handleStartCall = () => {
+    // Kiểm tra trạng thái online
+    if (!onlineStatus) {
+      const message =
+        selectedConversation?.type === "private"
+          ? `${t("chat.user_noOnline")}`
+          : `${t("chat.users_noOnline")}`;
+      toast.info(message, { autoClose: 1000 });
+      return;
+    }
+
+    // GỬI TÍN HIỆU GỌI
+    const socket = getSocket();
+    const callPayload = {
+      conversationId: selectedConversation?.id,
+      callerId: user?.id,
+      callerName: user?.name,
+      members: selectedConversation?.members,
+    };
+
+    socket.emit("startCall", callPayload); // chuyển đến trang cuộc gọi
+    router.push(`/room/${selectedConversation?.id}`);
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Chat header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div className="flex items-center gap-4">
           {selectedConversation?.type === "private" ? (
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src={getUserImageSrc(
-                  selectedConversation?.members.filter(
-                    (member: { id: string }) => member.id !== user?.id
-                  )[0]?.avatarUrl
-                )}
-                alt={user?.name}
-                className="rounded-full"
-              />
-              <AvatarFallback className="bg-gray-300">
-                {user?.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <>
+              <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={getUserImageSrc(
+                    selectedConversation?.members.filter(
+                      (member: { id: string }) => member.id !== user?.id
+                    )[0]?.avatarUrl
+                  )}
+                  alt={user?.name}
+                  className="rounded-full"
+                />
+                <AvatarFallback className="bg-gray-300">
+                  {user?.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </>
           ) : selectedConversation?.avatar === "" ? (
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src={getUserImageSrc(selectedConversation?.avatar)}
-                alt={selectedConversation?.name}
-                className="rounded-full"
-              />
-              <AvatarFallback className="bg-gray-300">
-                {selectedConversation?.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <>
+              <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={getUserImageSrc(selectedConversation?.avatar)}
+                  alt={selectedConversation?.name}
+                  className="rounded-full"
+                />
+                <AvatarFallback className="bg-gray-300">
+                  {selectedConversation?.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </>
           ) : (
             <AvatarGroup members={selectedConversation?.members || []} />
           )}
           {selectedConversation?.type === "private" ? (
-            <h2 className="text-lg font-semibold">
-              {
-                selectedConversation?.members.filter(
-                  (member: { id: string }) => member.id !== user?.id
-                )[0]?.name
-              }
-            </h2>
+            <>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">
+                  {
+                    selectedConversation?.members.filter(
+                      (member: { id: string }) => member.id !== user?.id
+                    )[0]?.name
+                  }
+                </h2>
+                {onlineStatus ? (
+                  <span className="w-3 h-3 bg-green-500 rounded-full mb-1"></span>
+                ) : (
+                  <span className="w-3 h-3 bg-red-500 rounded-full mb-1"></span>
+                )}
+              </div>
+              <div className="text-gray-500">
+                {onlineStatus ? `${t("chat.isOnline")}` : offlineTime || ""}
+              </div>
+            </>
           ) : selectedConversation?.name ? (
-            <h2 className="text-lg font-semibold">
-              {selectedConversation?.name}
-            </h2>
+            <>
+              <h2 className="text-lg font-semibold">
+                {selectedConversation?.name}
+              </h2>
+              {onlineStatus ? (
+                <span className="w-3 h-3 bg-green-500 rounded-full mb-1"></span>
+              ) : (
+                <span className="w-3 h-3 bg-red-500 rounded-full mb-1"></span>
+              )}
+            </>
           ) : (
-            <h2 className="text-lg font-semibold">
-              Bạn,{" "}
-              {selectedConversation?.members
-                .filter((m: { id: string }) => m.id !== user?.id)
-                .map((m: { name: string }) => m.name)
-                .join(", ")}
-            </h2>
+            <>
+              <h2 className="text-lg font-semibold">
+                Bạn,{" "}
+                {selectedConversation?.members
+                  .filter((m: { id: string }) => m.id !== user?.id)
+                  .map((m: { name: string }) => m.name)
+                  .join(", ")}
+              </h2>
+              {onlineStatus ? (
+                <span className="w-3 h-3 bg-green-500 rounded-full mb-1"></span>
+              ) : (
+                <span className="w-3 h-3 bg-red-500 rounded-full mb-1"></span>
+              )}
+            </>
           )}
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleStartCall()}
+            className="p-2 hover:cursor-pointer hover:bg-gray-200 rounded-full"
+          >
+            <Phone className="w-6 h-6 text-gray-500 hover:text-black" />
+          </button>
+          <button
+            onClick={() => console.log("Options clicked")}
+            className="p-2 hover:cursor-pointer hover:bg-gray-200 rounded-full"
+          >
+            <Info className="w-6 h-6 text-gray-500 hover:text-black" />
+          </button>
         </div>
       </div>
 

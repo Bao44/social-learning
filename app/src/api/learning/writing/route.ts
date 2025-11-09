@@ -42,7 +42,6 @@ export const generateWritingParagraphByAI = async (
             type_paragraph_slug
         });
 
-        console.log("Response from AI generation:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error generating writing paragraph by AI:", error);
@@ -95,10 +94,19 @@ export const feedbackWritingParagraphExercise = async (
                 content_submit
             }
         );
-        console.log("Feedback response data:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching feedback writing paragraph:", error);
+        throw error;
+    }
+};
+
+export const getHistorySubmitWritingParagraphByUserAndParagraph = async (user_id: string, paragraph_id: string) => {
+    try {
+        const response = await api.get(`/api/learning/writing/history-submit/${user_id}/${paragraph_id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching history submit writing paragraph by user and paragraph:", error);
         throw error;
     }
 };

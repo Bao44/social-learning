@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -31,6 +31,14 @@ export default function Speaking() {
 
   const isReady = selectedLevel && selectedTopic;
 
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(false);
+
+      return () => {};
+    }, []),
+  );
+
   const handleStart = async () => {
     if (isReady) {
       // Trước khi navigate đến SpeakingLesson
@@ -45,8 +53,6 @@ export default function Speaking() {
       // Trước khi navigate đến SpeakingLessonAI
       await AsyncStorage.setItem('levelSlug', selectedLevel.slug.toString());
       await AsyncStorage.setItem('topicSlug', selectedTopic.slug.toString());
-      console.log('Selected Level:', selectedLevel.slug);
-      console.log('Selected Topic:', selectedTopic.slug);
       setLoading(true);
       navigation.navigate('LessonSpeakingAI');
     }
@@ -233,7 +239,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 120,
+    paddingBottom: 140,
   },
   descriptionContainer: {
     alignItems: 'center',

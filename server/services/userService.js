@@ -1,3 +1,5 @@
+const { getTimeAgo } = require("../utils/time/getTimeAgo");
+
 const supabase = require("../lib/supabase").supabase;
 
 const userService = {
@@ -67,10 +69,31 @@ const userService = {
       .from("users")
       .select("id, name, nick_name, avatar")
       .or(`name.ilike.%${keyword}%,nick_name.ilike.%${keyword}%`)
-       .neq("id", currentUserId); // loại bỏ chính mình
+      .neq("id", currentUserId); // loại bỏ chính mình
 
     if (error) throw error;
     return { data, error: null };
+  },
+
+  async checkUserOnline(userId) {
+    const { data, error } = await supabase
+      .from("users")
+      .select("last_seen")
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+
+    const isOnline = data?.last_seen
+      ? new Date(data.last_seen) > new Date(Date.now() - 30 * 1000)
+      : false;
+
+    const offlineTime =
+      !isOnline && data?.last_seen
+        ? getTimeAgo(new Date(data.last_seen))
+        : null;
+
+    return { data: { isOnline, offlineTime }, error: null };
   },
 };
 

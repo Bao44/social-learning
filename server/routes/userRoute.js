@@ -9,5 +9,6 @@ router.get("/:userId", authMiddleware, userController.getUserData);
 router.get("/", authMiddleware, userController.getUsersData);
 router.put("/:userId", authMiddleware, userController.updateUser);
 router.get("/nickname/:nick_name", authMiddleware, userController.getUserByNickName);
+router.get("/:userId/online", authMiddleware, userController.checkUserOnline);
 
 module.exports = router;

@@ -41,7 +41,33 @@ const conversationService = {
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) throw new Error("Conversation not found");
         return conversation.members;
+    },
+
+    // Kiểm tra xem cuộc trò chuyện có tồn tại không dựa vào userId1 và userId2 
+    async findConversationBetweenUsers(userId1, userId2) {
+        const conversation = await Conversation.findOne({
+            type: "private",
+            members: {
+                $all: [
+                    { $elemMatch: { userId: userId1 } },
+                    { $elemMatch: { userId: userId2 } }
+                ]
+            }
+        });
+        return conversation;
+    },
+
+    // Đếm tổng số tin nhắn chưa đọc của người dùng trong tất cả cuộc trò chuyện
+    async countTotalUnreadMessages(userId) {
+        const conversations = await this.getUserConversations(userId);
+        let totalUnread = 0;
+        for (const convo of conversations) {
+            const unreadCount = await this.countUnreadMessages(convo._id, userId);
+            totalUnread += unreadCount;
+        }
+        return totalUnread;
     }
+
 };
 
 module.exports = conversationService;

@@ -106,6 +106,28 @@ const userController = {
       return res.status(500).json({ success: false, message: error.message });
     }
   },
+
+  async checkUserOnline(req, res) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ success: false, message: "User ID is required" });
+      }
+
+      const { data, error } = await userService.checkUserOnline(userId);
+
+      if (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+
+      return res.status(200).json({ success: true, data });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
 };
 
 module.exports = userController;

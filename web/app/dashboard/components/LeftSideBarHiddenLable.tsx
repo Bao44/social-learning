@@ -41,6 +41,8 @@ import { useConversation } from "@/components/contexts/ConversationContext";
 import { NotificationsPanel } from "./Notifications";
 import useAuth from "@/hooks/useAuth";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { fetchTotalUnreadMessages } from "@/app/apiClient/chat/conversation/conversation";
+import { getSocket } from "@/socket/socketClient";
 
 export function LeftSideBarHiddenLabel() {
   const { user } = useAuth();
@@ -52,6 +54,7 @@ export function LeftSideBarHiddenLabel() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { selectedConversation, setSelectedConversation } = useConversation();
   const [notificationCount, setNotificationCount] = useState(0);
+  const [messagesCount, setMessagesCount] = useState(0);
 
   // Lắng nghe realtime Supabase
   useEffect(() => {
@@ -112,13 +115,11 @@ export function LeftSideBarHiddenLabel() {
       icon: MessageCircle,
       path: "/dashboard/chat",
       label: "Tin nhắn",
-      badge: 3,
     },
     {
       icon: Heart,
       path: "/dashboard/notifications",
       label: "Thông báo",
-      badge: 5,
     },
     { icon: PlusSquare, path: "/dashboard/create", label: "Tạo" },
     { icon: User, path: "/dashboard/profile", label: "Trang cá nhân" },
@@ -144,27 +145,47 @@ export function LeftSideBarHiddenLabel() {
       label: "Tiến trình của tôi",
     },
     {
-    icon: ChartSpline,
-    path: "/dashboard/roadmap",
-    label: "Lộ trình học tập",
-  }
+      icon: ChartSpline,
+      path: "/dashboard/roadmap",
+      label: "Lộ trình học tập",
+    },
   ];
 
   const adminNavItems = [
-    { icon: LayoutDashboard, path: "/dashboard", label: "Dashboard" },
-    { icon: Users, path: "/admin/dashboard/users", label: "Users" },
-    { icon: FileText, path: "/admin/dashboard/content", label: "Content" },
-    { icon: Globe, path: "/admin/dashboard/social", label: "Social" },
+    {
+      icon: LayoutDashboard,
+      path: "/dashboard",
+      label: t("dashboard.dashboard"),
+    },
+    {
+      icon: Users,
+      path: "/dashboard/admin/users",
+      label: t("dashboard.users"),
+    },
+    {
+      icon: FileText,
+      path: "/dashboard/admin/content",
+      label: t("dashboard.content"),
+    },
+    {
+      icon: Globe,
+      path: "/dashboard/admin/social",
+      label: t("dashboard.social"),
+    },
     {
       icon: BookOpen,
-      path: "/admin/dashboard/vocabulary",
-      label: "Vocabulary",
+      path: "/dashboard/admin/vocabulary",
+      label: t("dashboard.vocabularys"),
     },
-    { icon: BarChart, path: "/admin/dashboard/analytics", label: "Analytics" },
+    {
+      icon: BarChart,
+      path: "/dashboard/admin/analytics",
+      label: t("dashboard.analytics"),
+    },
     {
       icon: Trophy,
-      path: "/admin/dashboard/achievements",
-      label: "Achievements",
+      path: "/dashboard/admin/achievements",
+      label: t("dashboard.achievements"),
     },
     { icon: User, path: "/dashboard/profile", label: t("dashboard.profile") },
   ];
@@ -179,6 +200,7 @@ export function LeftSideBarHiddenLabel() {
     if (path === "/dashboard/chat") {
       if (selectedConversation) {
         router.push(`/dashboard/chat/${selectedConversation.id}`);
+        setMessagesCount(0);
         return;
       }
     }
@@ -217,6 +239,32 @@ export function LeftSideBarHiddenLabel() {
   const toggleLanguage = () => {
     setLanguage(language === "vi" ? "en" : "vi");
   };
+
+  useEffect(() => {
+    if (!user) return;
+    const socket = getSocket();
+
+    const fetchMessagesCount = async () => {
+      const res = await fetchTotalUnreadMessages(user?.id);
+      console.log("Total unread messages:", res);
+      setMessagesCount(res);
+    };
+
+    socket.on("notificationNewMessage", () => {
+      fetchMessagesCount();
+    });
+
+    socket.on("notificationMessagesRead", () => {
+      fetchMessagesCount();
+    });
+
+    fetchMessagesCount();
+
+    return () => {
+      socket.off("notificationNewMessage");
+      socket.off("notificationMessagesRead");
+    };
+  }, [user]);
 
   return (
     <>
@@ -264,11 +312,15 @@ export function LeftSideBarHiddenLabel() {
                 {mainNavItems.map((item) => {
                   const isNotification =
                     item.path === "/dashboard/notifications";
+                  const isMessages = item.path === "/dashboard/chat";
                   const isActive = pathname === item.path;
                   const badge =
                     isNotification && notificationCount > 0
                       ? notificationCount
                       : null;
+
+                  const badgeMessages =
+                    isMessages && messagesCount > 0 ? messagesCount : null;
 
                   return (
                     <Button
@@ -288,8 +340,13 @@ export function LeftSideBarHiddenLabel() {
                       {/* FIX 3: Giảm kích thước icon về 24 (chuẩn) */}
                       <item.icon size={24} />
                       {badge && (
-                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-white text-xs">
+                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs">
                           {badge}
+                        </span>
+                      )}
+                      {badgeMessages && (
+                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs">
+                          {badgeMessages}
                         </span>
                       )}
                     </Button>
