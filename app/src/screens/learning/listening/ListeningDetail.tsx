@@ -26,7 +26,7 @@ import HistoryModal from './components/HistoryModal';
 import ProgressModal from './components/ProgressModal';
 import SubmitModal from './components/SubmitModal';
 import SubmittingModal from "./components/SubmittingModal";
-import { getScoreUserByUserId } from '../../../api/learning/score/route';
+import { deductSnowflakeFromUser, getScoreUserByUserId } from '../../../api/learning/score/route';
 import Video from 'react-native-video';
 import { hp } from '../../../../helpers/common';
 
@@ -96,7 +96,7 @@ export default function ListeningDetail() {
 
   const words = exercise.text_content.split(/\s+/);
 
-  const handleCheckAnswers = () => {
+  const handleCheckAnswers = async () => {
     const result: Record<number, boolean> = {}
     Object.keys(hiddenMap).forEach((pos) => {
       const position = parseInt(pos)
@@ -105,9 +105,18 @@ export default function ListeningDetail() {
       result[position] = userAns === correct
     })
     setCheckResult(result)
+
+    //  Gọi API trừ 1 bông tuyết
+    await deductSnowflakeFromUser(user!.id, -1);
+
+    //  Cập nhật điểm trong state
+    setScore((prev: any) => ({
+      ...prev,
+      number_snowflake: (prev?.number_snowflake ?? 0) - 1,
+    }));
   }
 
-  const handleSuggestHint = () => {
+  const handleSuggestHint = async () => {
     const unansweredPositions = Object.keys(hiddenMap).filter((pos) => !answers[parseInt(pos)]);
     if (unansweredPositions.length === 0) return;
 
@@ -116,6 +125,15 @@ export default function ListeningDetail() {
 
     setAnswers(prev => ({ ...prev, [parseInt(randomPos)]: correctWord }));
     setCheckResult(prev => ({ ...prev, [parseInt(randomPos)]: true }));
+
+    // Gọi API trừ bông tuyết
+    await deductSnowflakeFromUser(user!.id, -2);
+
+    // Cập nhật điểm
+    setScore((prev: any) => ({
+      ...prev,
+      number_snowflake: (prev?.number_snowflake ?? 0) - 2,
+    }));
   };
 
   const handleSubmit = async () => {
