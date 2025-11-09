@@ -44,6 +44,7 @@ import WritingDetail from '../screens/learning/writing/WritingDetail';
 import ListExerciseWriting from '../screens/learning/writing/ListExerciseWriting';
 import RoadMap from '../screens/learning/roadmap/RoadMap';
 import VocabularyTopicDetail from '../screens/learning/vocabulary/VocabularyTopicDetail';
+import RoadmapDetailScreen from '../screens/learning/roadmap/RoadmapDetail';
 
 const Tab = createBottomTabNavigator();
 
@@ -265,6 +266,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Roadmap"
           component={RoadMap}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RoadmapDetail"
+          component={RoadmapDetailScreen}
           options={{ headerShown: false }}
         />
 
