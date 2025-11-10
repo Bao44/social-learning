@@ -2,12 +2,17 @@ import React, { createContext, useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { getUserData } from '../../src/api/user/route';
 import { getSocket } from '../../socket/socketClient';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const navigation = useNavigation();
 
   const getUser = async userId => {
     try {
@@ -60,10 +65,54 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const socket = getSocket();
+
     if (user?.id) {
       socket.emit('user-online', { userId: user.id });
+
+      // ✅ Chấp nhận cuộc gọi
+      const handleAcceptCall = conversationId => {
+        Toast.hide();
+        navigation.navigate('ConferenceCall', {
+          userID: user?.id,
+          conferenceID: conversationId,
+        });
+      };
+
+      // ✅ Từ chối cuộc gọi
+      const handleDeclineCall = conversationId => {
+        Toast.hide();
+        socket.emit('declineCall', {
+          conversationId,
+          declinerId: user.id,
+        });
+      };
+
+      const onIncomingCall = ({ callerName, conversationId }) => {
+        Alert.alert(
+          `${callerName} đang gọi bạn...`,
+          'Bạn có muốn chấp nhận cuộc gọi không?',
+          [
+            {
+              text: 'Từ chối',
+              onPress: () => handleDeclineCall(conversationId),
+              style: 'cancel',
+            },
+            {
+              text: 'Đồng ý',
+              onPress: () => handleAcceptCall(conversationId),
+            },
+          ],
+          { cancelable: false },
+        );
+      };
+
+      socket.on('incomingCall', onIncomingCall);
+
+      return () => {
+        socket.off('incomingCall', onIncomingCall);
+      };
     }
-  }, [user]);
+  }, [user, navigation]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
@@ -71,3 +120,40 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  toastContainer: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  callerText: {
+    fontWeight: '600',
+    marginBottom: 10,
+    fontSize: 16,
+    color: '#333',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  acceptButton: {
+    backgroundColor: '#22c55e',
+  },
+  declineButton: {
+    backgroundColor: '#ef4444',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
