@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { supabase } from './supabase';
-import { base_url_api } from '../constants';
+import { BASE_URL_API } from '@env';
 
 const api = axios.create({
-  baseURL: base_url_api,
+  baseURL: BASE_URL_API,
   headers: {
     'Content-Type': 'application/json',
   },
