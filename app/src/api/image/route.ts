@@ -1,4 +1,4 @@
-import { supabaseUrl } from '../../../constants';
+import { SUPABASE_URL } from '@env';
 import RNFS from 'react-native-fs';
 import { PermissionsAndroid, Platform } from 'react-native';
 import api from '../../../lib/api';
@@ -6,7 +6,7 @@ import api from '../../../lib/api';
 export const getUserImageSrc = (imagePath: any) => {
   if (imagePath) {
     if (typeof imagePath === 'string') {
-      return `${supabaseUrl}/storage/v1/object/public/uploads/${imagePath}`; // Trả về string URL trực tiếp
+      return `${SUPABASE_URL}/storage/v1/object/public/uploads/${imagePath}`; // Trả về string URL trực tiếp
     }
     return imagePath;
   }
@@ -15,7 +15,7 @@ export const getUserImageSrc = (imagePath: any) => {
 
 export const getSupabaseFileUrl = (filePath: any) => {
   if (filePath) {
-    return `${supabaseUrl}/storage/v1/object/public/uploads/${filePath}`;
+    return `${SUPABASE_URL}/storage/v1/object/public/uploads/${filePath}`;
   }
   return null;
 };

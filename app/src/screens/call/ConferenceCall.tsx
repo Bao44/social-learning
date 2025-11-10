@@ -1,27 +1,51 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
 import ZegoUIKitPrebuiltVideoConference from '@zegocloud/zego-uikit-prebuilt-video-conference-rn';
+import Toast from 'react-native-toast-message';
+import useAuth from '../../../hooks/useAuth';
+import { getSocket } from '../../../socket/socketClient';
+import { ZEGOCLOUD_APP_ID, ZEGOCLOUD_SERVER_SECRET } from '@env';
 
-export default function ConferenceCall(props:any) {
-  const {route} = props;
-  const {params} = route;
-  const {userID, conferenceID} = params;
+export default function ConferenceCall(props: any) {
+  const { route, navigation } = props;
+  const { params } = route;
+  const { userID, conferenceID } = params;
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.emit('joinCallRoom', conferenceID);
+
+    const onCallDeclined = ({ declinerId }: { declinerId: string }) => {
+      Toast.show({
+        type: 'error',
+        text1: 'Người dùng đã từ chối cuộc gọi.',
+      });
+      navigation.goBack();
+    };
+
+    socket.on('callDeclined', onCallDeclined);
+
+    // Hàm cleanup
+    return () => {
+      socket.off('callDeclined', onCallDeclined);
+      socket.emit('leaveCallRoom', conferenceID);
+    };
+  }, [conferenceID, navigation]);
+
   return (
     <View style={styles.container}>
       <ZegoUIKitPrebuiltVideoConference
-        appID={61625383}
-        appSign={
-          '9eb188e8e7db1255fa6e9b27cf333d3bb294b4611da4ca0e49bece77099e69fe'
-        }
-        userID={userID} // userID can be something like a phone number or the user id on your own user system.
-        userName={'Joe'}
-        conferenceID={conferenceID} // conferenceID can be any unique string.
+        appID={Number(ZEGOCLOUD_APP_ID)}
+        appSign={ZEGOCLOUD_SERVER_SECRET}
+        userID={userID}
+        userName={user?.name || userID}
+        conferenceID={conferenceID}
         config={{
           onLeave: () => {
-            // props.navigation.navigate('CallHome');
-            props.navigation.navigate('Main', {
-              screen: 'CallHome',
-            });
+            navigation.goBack();
           },
         }}
       />
@@ -32,8 +56,5 @@ export default function ConferenceCall(props:any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

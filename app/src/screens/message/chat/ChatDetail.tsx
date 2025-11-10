@@ -182,34 +182,28 @@ const ChatDetail = () => {
     setText('');
   };
 
-  const handleStartCall = (callType: 'voice' | 'video') => {
+  const handleStartCall = () => {
     if (!onlineStatus) {
       const message =
         conversation?.type === 'private'
-          ? 'Người dùng không online' 
+          ? 'Người dùng không online'
           : 'Thành viên không online';
-
-      Toast.show({
-        type: 'info',
-        text1: message,
-      });
+      Toast.show({ type: 'info', text1: message });
       return;
     }
-    
     const socket = getSocket();
     const callPayload = {
       conversationId: conversation?.id,
       callerId: user?.id,
       callerName: user?.name,
       members: conversation?.members,
-      callType: callType,
     };
 
     socket.emit('startCall', callPayload);
-
-    navigation.navigate('RoomCall', {
-      roomId: conversation?.id,
-      callType: callType,
+    
+    navigation.navigate('ConferenceCall', {
+      userID: user?.id,
+      conferenceID: conversation?.id,
     });
   };
 
@@ -289,17 +283,10 @@ const ChatDetail = () => {
           <View style={styles.headerActions}>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => handleStartCall('voice')} // Gọi thoại
+              onPress={handleStartCall}
               activeOpacity={0.8}
             >
               <Phone size={20} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => handleStartCall('video')} // Gọi video
-              activeOpacity={0.8}
-            >
-              <Video size={20} color="#fff" />
             </TouchableOpacity>
 
             <TouchableOpacity
