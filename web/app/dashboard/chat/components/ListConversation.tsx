@@ -10,6 +10,8 @@ import { fetchConversations } from "@/app/apiClient/chat/conversation/conversati
 import { getSocket } from "@/socket/socketClient";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ModalSearchNewChat from "./ModalSearchNewChat";
 
 export default function ListConversation() {
     const { t } = useLanguage();
@@ -20,6 +22,8 @@ export default function ListConversation() {
     const [loadingConversations, setLoadingConversations] = useState(true);
     const { setSelectedConversation } = useConversation();
     const [searchTerm, setSearchTerm] = useState("");
+    const [openNewChat, setOpenNewChat] = useState(false)
+    const [openCreateGroup, setOpenCreateGroup] = useState(false)
 
     // Lấy danh sách cuộc trò chuyện của người dùng từ API hoặc context
     useEffect(() => {
@@ -90,7 +94,24 @@ export default function ListConversation() {
                     <h2 className="text-lg font-semibold">{user?.nick_name}</h2>
                     <ChevronDown className="w-5 h-5 text-gray-500" />
                 </div>
-                <SquarePen className="w-6 h-6 text-gray-500" />
+
+                {/* Dropdown menu cho icon SquarePen */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="p-2 rounded-full hover:bg-gray-100 transition">
+                            <SquarePen className="w-6 h-6 text-gray-500" />
+                        </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem onClick={() => setOpenNewChat(true)}>
+                            💬 Tin nhắn mới
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenCreateGroup(true)}>
+                            👥 Tạo nhóm
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
             {/* Search Bar */}
@@ -156,6 +177,9 @@ export default function ListConversation() {
                     )}
                 </div>
             )}
+
+            {/* Modal khi chọn "Tin nhắn mới" */}
+            <ModalSearchNewChat open={openNewChat} setOpen={setOpenNewChat} />
         </div>
     );
 }
