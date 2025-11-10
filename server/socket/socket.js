@@ -24,9 +24,18 @@ function socketInit(server) {
     });
 
     // XỬ LÝ TÍN HIỆU GỌI
-    socket.on(
-      "startCall",
-      ({ conversationId, callerId, callerName, members }) => {
+    socket.on("startCall", (payload) => {
+      try {
+        const { conversationId, callerId, callerName, members } = payload;
+
+        if (!conversationId || !callerId || !callerName || !members) {
+          console.error(
+            "[Socket] Lỗi startCall: Payload thiếu dữ liệu.",
+            payload
+          );
+          return;
+        }
+
         console.log(
           `[Socket] Cuộc gọi bắt đầu từ ${callerName} (ID: ${callerId}) trong phòng ${conversationId}`
         );
@@ -46,8 +55,14 @@ function socketInit(server) {
             console.log(`[Socket] User ${member.name} không online.`);
           }
         });
+      } catch (err) {
+        console.error(
+          "[Socket] LỖI TRONG KHI XỬ LÝ 'startCall':",
+          err.message,
+          payload
+        );
       }
-    );
+    });
 
     // LOGIC PHÒNG CHỜ
     socket.on("joinCallRoom", (conversationId) => {
@@ -74,9 +89,21 @@ function socketInit(server) {
 
     socket.on("disconnect", () => {
       console.log("🔴 User disconnected:", socket.id);
+
       if (socket.userId) {
-        userSockets.delete(socket.userId);
-        console.log(`[Socket] Đã xóa ${socket.userId} khỏi userSockets.`);
+        const storedSocket = userSockets.get(socket.userId);
+
+        // Chỉ xóa nếu socket bị disconnect LÀ socket đang được lưu
+        if (storedSocket && storedSocket.id === socket.id) {
+          userSockets.delete(socket.userId);
+          console.log(
+            `[Socket] Đã xóa ${socket.userId} (socket ${socket.id}) khỏi userSockets.`
+          );
+        } else {
+          console.log(
+            `[Socket] Bỏ qua disconnect cho ${socket.userId} (socket ${socket.id}), socket mới đang hoạt động.`
+          );
+        }
       }
     });
   });
