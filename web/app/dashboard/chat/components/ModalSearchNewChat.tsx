@@ -1,37 +1,27 @@
-"use client";
+"use client"
 
-import { useLanguage } from "@/components/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/components/contexts/LanguageContext"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useState } from "react";
+} from "@/components/ui/dialog"
+import { useState } from "react"
 
-export default function ModalSearchNewChat() {
-  const { t } = useLanguage();
-  const [searchFocus, setSearchFocus] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
+interface ModalSearchNewChatProps {
+  open: boolean
+  setOpen: (open: boolean) => void
+}
+
+export default function ModalSearchNewChat({ open, setOpen }: ModalSearchNewChatProps) {
+  const { t } = useLanguage()
+  const [searchFocus, setSearchFocus] = useState(false)
 
   return (
-    <Dialog>
-      {/* Nút mở modal */}
-      <DialogTrigger asChild>
-        <Button
-          variant={"default"}
-          className="bg-gradient-to-r from-orange-500 to-pink-500 hover:scale-105 transition-transform hover:cursor-pointer"
-        >
-            {t("dashboard.newMessage")}
-        </Button>
-      </DialogTrigger>
-
-      {/* Nội dung modal */}
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-center">
@@ -49,17 +39,20 @@ export default function ModalSearchNewChat() {
           </div>
         </DialogHeader>
 
-        {/* Suggestion */}
-        {searchFocus ? (
-          <DialogDescription className="mt-2 min-h-96">
-            {/* List query */}
-          </DialogDescription>
-        ) : (
-          <DialogDescription className="mt-2 min-h-96">
-            <span className="font-semibold text-black">{t("dashboard.recommendations")}</span>
-            {/* List suggestion */}
-          </DialogDescription>
-        )}
+        {/* 🔧 Thay DialogDescription bằng div */}
+        <div className="mt-2 min-h-96 text-sm text-muted-foreground">
+          {searchFocus ? (
+            <div>{/* List query */}</div>
+          ) : (
+            <>
+              <span className="font-semibold text-black">
+                {t("dashboard.recommendations")}
+              </span>
+              {/* List suggestion */}
+            </>
+          )}
+        </div>
+
         <div className="flex justify-center items-center">
           <Button variant="default" className="w-fit">
             {t("dashboard.sendMessage")}
@@ -67,5 +60,5 @@ export default function ModalSearchNewChat() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

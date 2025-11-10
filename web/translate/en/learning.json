@@ -101,7 +101,7 @@
   "complete": "Complete",
   "vocab": "Vocabulary",
 
-  "recommendation": "Recommendation",
+  "recommendation": "Hint",
   "check": "Check",
   "submit": "Submit",
 
@@ -254,5 +254,7 @@
   "achiev": "achievements",
 
   "roadmapTitle": "Personalized Learning Roadmap",
-  "roadmapDescription": "Create your personalized learning roadmap to achieve your English goals effectively"
+  "roadmapDescription": "Create your personalized learning roadmap to achieve your English goals effectively",
+
+  "functionUnderDevelopment": "Function under development"
 }
