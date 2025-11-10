@@ -3,8 +3,6 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, PenBox, PlusSquare, Search, User } from 'lucide-react-native';
-import ConferenceCall from '../screens/call/ConferenceCall';
-import CallHome from '../screens/call/CallHome';
 import ScreenWrapper from '../components/ScreenWrapper';
 import SearchTab from '../(tabs)/Search';
 import CreateTab from '../(tabs)/Create';
@@ -46,6 +44,7 @@ import RoadMap from '../screens/learning/roadmap/RoadMap';
 import VocabularyTopicDetail from '../screens/learning/vocabulary/VocabularyTopicDetail';
 import RoadmapDetailScreen from '../screens/learning/roadmap/RoadmapDetail';
 import VocabularyPracticeAI from '../screens/learning/vocabulary/VocabularyPracticeAI';
+import RoomCall from '../screens/call/RoomCall';
 
 const Tab = createBottomTabNavigator();
 
@@ -174,7 +173,11 @@ const AppNavigation = () => {
           component={ChatDetail}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name="RoomCall"
+          component={RoomCall}
+          options={{ headerShown: false }}
+        />
         {/* Search */}
         <Stack.Screen
           name="RecommendFriend"
