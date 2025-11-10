@@ -4,6 +4,7 @@ import ZegoUIKitPrebuiltVideoConference from '@zegocloud/zego-uikit-prebuilt-vid
 import Toast from 'react-native-toast-message';
 import useAuth from '../../../hooks/useAuth';
 import { getSocket } from '../../../socket/socketClient';
+import { ZEGOCLOUD_APP_ID, ZEGOCLOUD_SERVER_SECRET } from '@env';
 
 export default function ConferenceCall(props: any) {
   const { route, navigation } = props;
@@ -37,8 +38,8 @@ export default function ConferenceCall(props: any) {
   return (
     <View style={styles.container}>
       <ZegoUIKitPrebuiltVideoConference
-        appID={process.env.ZEGOCLOUD_APP_ID}
-        appSign={process.env.ZEGOCLOUD_SERVER_SECRET}
+        appID={Number(ZEGOCLOUD_APP_ID)}
+        appSign={ZEGOCLOUD_SERVER_SECRET}
         userID={userID}
         userName={user?.name || userID}
         conferenceID={conferenceID}
