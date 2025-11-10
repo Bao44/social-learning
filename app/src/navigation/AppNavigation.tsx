@@ -44,7 +44,7 @@ import RoadMap from '../screens/learning/roadmap/RoadMap';
 import VocabularyTopicDetail from '../screens/learning/vocabulary/VocabularyTopicDetail';
 import RoadmapDetailScreen from '../screens/learning/roadmap/RoadmapDetail';
 import VocabularyPracticeAI from '../screens/learning/vocabulary/VocabularyPracticeAI';
-import RoomCall from '../screens/call/RoomCall';
+import ConferenceCall from '../screens/call/ConferenceCall';
 
 const Tab = createBottomTabNavigator();
 
@@ -174,8 +174,8 @@ const AppNavigation = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="RoomCall"
-          component={RoomCall}
+          name="ConferenceCall"
+          component={ConferenceCall}
           options={{ headerShown: false }}
         />
         {/* Search */}

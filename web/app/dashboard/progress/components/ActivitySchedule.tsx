@@ -19,21 +19,53 @@ export default function ActivityHeatmap({ user, t }: ActivityHeatmapProps) {
     fetchData();
   }, [user, year]); // <== Lắng nghe năm thay đổi
 
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   const res = await getActivityHeatmap(user?.id);
+  //   // giả sử API trả về tất cả các năm, có thể lọc theo year hiện tại
+  //   const filtered = res.filter(
+  //     (item: any) => new Date(item.date).getFullYear() === year
+  //   );
+
+  //   const processedData = filtered.map((item: any) => ({
+  //     date: item.date,
+  //     count: item.count,
+  //     level: Math.min(Math.ceil(item.count / 3), 4),
+  //   }));
+
+  //   setData(processedData);
+  //   setLoading(false);
+  // };
+
   const fetchData = async () => {
     setLoading(true);
     const res = await getActivityHeatmap(user?.id);
-    // giả sử API trả về tất cả các năm, có thể lọc theo year hiện tại
+
+    // Lọc dữ liệu theo năm được chọn
     const filtered = res.filter(
       (item: any) => new Date(item.date).getFullYear() === year
     );
 
-    const processedData = filtered.map((item: any) => ({
-      date: item.date,
-      count: item.count,
-      level: Math.min(Math.ceil(item.count / 3), 4),
-    }));
+    // Tạo danh sách đầy đủ các ngày trong năm
+    const startDate = new Date(`${year}-01-01`);
+    const endDate = new Date(`${year}-12-31`);
+    const allDays: any[] = [];
 
-    setData(processedData);
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const dateStr = d.toISOString().split("T")[0];
+      const found = filtered.find((item: any) => item.date === dateStr);
+      allDays.push({
+        date: dateStr,
+        count: found ? found.count : 0,
+        level: found ? Math.min(Math.ceil(found.count / 3), 4) : 0,
+      });
+    }
+
+    setData(allDays);
     setLoading(false);
   };
 
@@ -64,6 +96,9 @@ export default function ActivityHeatmap({ user, t }: ActivityHeatmapProps) {
         <div className="m-auto">
           <ActivityCalendar
             data={data}
+            blockSize={16} // ✅ tăng kích thước ô (mặc định là 10)
+            blockMargin={4} // ✅ khoảng cách giữa các ô
+            fontSize={14} // ✅ tăng font nếu có text hiển thị
             labels={{
               legend: { less: t("learning.less"), more: t("learning.more") },
               months: [

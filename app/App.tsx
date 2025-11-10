@@ -11,15 +11,15 @@ import OnlineStatusProvider from './components/contexts/OnlineStatusProvider';
 export default function App() {
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <NavigationContainer>
+      <NavigationContainer>
+        <AuthProvider>
           <OnlineStatusProvider>
             <AppNavigation />
             <Toast />
             {/* <ChatBotAI /> */}
           </OnlineStatusProvider>
-        </NavigationContainer>
-      </AuthProvider>
+        </AuthProvider>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
