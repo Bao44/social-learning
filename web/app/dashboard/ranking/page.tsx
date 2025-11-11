@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import { getLeaderBoardByType } from "@/app/apiClient/learning/ranking/ranking";
 import { getUserImageSrc } from "@/app/apiClient/image/image";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { useRouter } from "next/navigation";
 
 interface LeaderboardEntry {
   score?: number;
@@ -27,6 +28,7 @@ interface LeaderboardEntry {
 const Leaderboard = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"practice" | "test">("practice");
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
@@ -168,12 +170,12 @@ const Leaderboard = () => {
                 <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 p-1 shadow-lg">
-                      <Avatar className="w-full h-full">
+                      <Avatar
+                        onClick={() => router.push("profile")}
+                        className="w-full h-full cursor-pointer"
+                      >
                         <AvatarImage
-                          src={
-                            getUserImageSrc(userRank.users?.avatar) ||
-                            "/placeholder.svg"
-                          }
+                          src={getUserImageSrc(userRank.users?.avatar)}
                         />
                       </Avatar>
                     </div>
@@ -210,7 +212,9 @@ const Leaderboard = () => {
                       : "bg-white/80 text-gray-700 hover:bg-gradient-to-r hover:from-orange-400 hover:to-pink-400 hover:text-white border-2 border-orange-200"
                   }`}
                 >
-                  {tab === "practice" ? `${t("learning.practice")}` : `${t("learning.test")}`}
+                  {tab === "practice"
+                    ? `${t("learning.practice")}`
+                    : `${t("learning.test")}`}
                 </button>
               ))}
             </div>
@@ -243,12 +247,16 @@ const Leaderboard = () => {
                                 entry.rank!
                               )} p-[3px] shadow-xl`}
                             >
-                              <Avatar className="w-full h-full">
+                              <Avatar
+                                onClick={() =>
+                                  router.push(
+                                    `profile/${entry.users?.nick_name}`
+                                  )
+                                }
+                                className="w-full h-full  cursor-pointer"
+                              >
                                 <AvatarImage
-                                  src={
-                                    getUserImageSrc(entry.users?.avatar) ||
-                                    "/placeholder.svg"
-                                  }
+                                  src={getUserImageSrc(entry.users?.avatar)}
                                 />
                               </Avatar>
                             </div>
@@ -257,7 +265,7 @@ const Leaderboard = () => {
                             </div>
                           </div>
                           <h3 className="text-gray-900 font-bold text-center mb-1 text-sm sm:text-base line-clamp-1">
-                            {entry.users?.name || "Ẩn danh"}
+                            {entry.users?.name}
                           </h3>
                           <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-1">
                             {entry.users?.nick_name}
@@ -317,12 +325,12 @@ const Leaderboard = () => {
                         </div>
                         <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 p-0.5 mr-2 sm:mr-4 shadow-md">
                           <img
-                            src={
-                              getUserImageSrc(entry.users?.avatar) ||
-                              "/placeholder.svg"
-                            }
+                            src={getUserImageSrc(entry.users?.avatar)}
                             alt={entry.users?.name}
-                            className="w-full h-full rounded-full bg-white object-cover"
+                            onClick={() =>
+                              router.push(`profile/${entry.users?.nick_name}`)
+                            }
+                            className="w-full h-full rounded-full bg-white object-cover cursor-pointer"
                           />
                         </div>
                         <div className="flex-1 min-w-0">

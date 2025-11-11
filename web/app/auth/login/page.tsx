@@ -19,7 +19,6 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { login } from "@/app/apiClient/auth/auth";
 import { supabase } from "@/lib/supabase";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function LoginPage() {
@@ -37,6 +36,24 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
+      if (!email || !password) {
+        toast.error(t("auth.fillAllFields"), { autoClose: 1000 });
+        return;
+      }
+
+      const emailRegex =
+        /^(?=.*[A-Za-z])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      if (!emailRegex.test(email)) {
+        toast.error(t("auth.invalidEmail"), { autoClose: 1000 });
+        return;
+      }
+
+      if (password.length < 8) {
+        toast.error(t("auth.passwordMinLength"), { autoClose: 1000 });
+        return;
+      }
+
       setIsLoading(true);
       const res = await login({ email, password }); // API login của bạn
 

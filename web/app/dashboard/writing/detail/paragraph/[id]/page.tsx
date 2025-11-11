@@ -8,7 +8,7 @@ import {
 } from "@/app/apiClient/learning/writing/writing";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
-import { CircleEqual, Lightbulb, Snowflake } from "lucide-react";
+import { CircleEqual, Lightbulb, Loader2, Snowflake } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -215,8 +215,88 @@ export default function PageExerciseDetail() {
     }
   };
 
+  if (submitLoading)
+    return (
+      <AnimatePresence>
+        {submitLoading && (
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999] px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="flex flex-col items-center gap-4 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl max-w-sm w-full"
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
+              >
+                <Loader2 className="w-10 h-10 md:w-12 md:h-12 text-orange-600" />
+              </motion.div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
+                  {t("learning.submittingExercise")}
+                </span>
+                <span className="text-gray-500 text-xs md:text-sm text-center">
+                  {t("learning.pleaseWait")}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+
   return (
     <div className="w-full grid grid-cols-1 gap-6 mt-6">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [90, 0, 90],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -right-20 w-96 h-96 bg-gradient-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [90, 0, 90],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+      </div>
       {/* heading */}
       <div
         className="flex items-center justify-between h-18 border p-4 
@@ -319,8 +399,8 @@ export default function PageExerciseDetail() {
                 <span className="font-bold float-right">
                   {history && history.length > 0
                     ? Math.max(
-                      ...history.map((item) => item.feedback?.score ?? 0)
-                    )
+                        ...history.map((item) => item.feedback?.score ?? 0)
+                      )
                     : 0}
                 </span>
               </div>
@@ -329,8 +409,8 @@ export default function PageExerciseDetail() {
                 <span className="font-bold float-right">
                   {history && history.length > 0
                     ? Math.max(
-                      ...history.map((item) => item.feedback?.accuracy ?? 0)
-                    )
+                        ...history.map((item) => item.feedback?.accuracy ?? 0)
+                      )
                     : 0}
                   %
                 </span>
@@ -375,10 +455,11 @@ export default function PageExerciseDetail() {
             className="bg-white p-6 rounded-xl shadow-sm border min-h-1/3 max-h-[calc(100vh-150px)] overflow-y-auto"
           >
             {submitLoading ? (
-              <div className="flex flex-col items-center justify-center h-full">
-                <Lightbulb className="animate-pulse h-6 w-6 text-yellow-400 mb-2" />
-                <p className="text-gray-500">{t("learning.submitting")}</p>
-              </div>
+              // <div className="flex flex-col items-center justify-center h-full">
+              //   <Lightbulb className="animate-pulse h-6 w-6 text-yellow-400 mb-2" />
+              //   <p className="text-gray-500">{t("learning.submitting")}</p>
+              // </div>
+              <></>
             ) : feedback ? (
               <div className="space-y-4">
                 {/* Tổng quan */}

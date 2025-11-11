@@ -63,7 +63,6 @@ function ConversationPracticeContent() {
 
   const [isClient, setIsClient] = useState(false);
   const [browserSupports, setBrowserSupports] = useState(false);
-  const [sentenceComplete, setSentenceComplete] = useState(false);
   const wasListeningRef = useRef(false);
   const { width, height } = useWindowSize();
 
@@ -327,24 +326,47 @@ function ConversationPracticeContent() {
     }
   }, [dialogue, currentIndex, speak]);
 
-  if (!isClient || loading) {
+  if (!isClient || loading)
     return (
-      <div className="flex-1 items-center justify-center">
-        <div className="text-center">
+      <AnimatePresence>
+        {loading && (
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{
-              duration: 1,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
-            className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto"
-          />
-          <p className="mt-4 text-gray-600">{t("learning.loadingSpeaking")}</p>
-        </div>
-      </div>
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999] px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="flex flex-col items-center gap-4 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl max-w-sm w-full"
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
+              >
+                <Loader2 className="w-10 h-10 md:w-12 md:h-12 text-orange-600" />
+              </motion.div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
+                  {t("learning.loadingSpeaking")}
+                </span>
+                <span className="text-gray-500 text-xs md:text-sm text-center">
+                  {t("learning.pleaseWait")}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
-  }
   if (!browserSupports) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
@@ -376,6 +398,34 @@ function ConversationPracticeContent() {
           tweenDuration={5000}
         />
       )}
+
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [90, 0, 90],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+      </div>
+
       <div className="max-w-5xl mx-auto relative z-10 flex flex-col h-[calc(100vh-100px)]">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
