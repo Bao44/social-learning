@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 import { register, resendOtp, verifyOtp } from "@/app/apiClient/auth/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function RegisterPage() {
@@ -41,8 +40,11 @@ export default function RegisterPage() {
   const [showOtpForm, setShowOtpForm] = useState(false);
   const { t } = useLanguage();
 
-  const nameRegex = /^[a-zA-Z0-9\s]{1,30}$/; // chỉ chữ và số, khoảng trắng, tối đa 30 ký tự
-  const emailRegex = /^[^\s@]+@[^\s@]+\.com$/; // kết thúc bằng đuôi .com
+  const nameRegex =
+    /^(?!.*\s{2,})(?!\s)([A-Za-zÀ-ỹ0-9]+(?:\s[A-Za-zÀ-ỹ0-9]+)*)$/u;
+  // chỉ chữ và số, khoảng trắng, tối đa 30 ký tự
+  const emailRegex =
+    /^(?=.*[A-Za-z])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   const passwordRegex = /^.{8,}$/;
 
   useEffect(() => {
@@ -114,6 +116,10 @@ export default function RegisterPage() {
   const handleVerifyOtp = async () => {
     if (!otp) {
       toast.warning(t("auth.enterOtp"), { autoClose: 1000 });
+      return;
+    }
+    if (/\D/.test(otp)) {
+      toast.warning(t("auth.otpDigitsOnly"), { autoClose: 1000 });
       return;
     }
 

@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 
 export default function ForgotPasswordPage() {
@@ -32,6 +31,19 @@ export default function ForgotPasswordPage() {
   }, []);
 
   const handleSendOtp = async () => {
+    if (!email) {
+      toast.error(t("auth.fillAllFields"), { autoClose: 1000 });
+      return;
+    }
+
+    const emailRegex =
+      /^(?=.*[A-Za-z])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error(t("auth.invalidEmail"), { autoClose: 1000 });
+      return;
+    }
+    
     setLoading(true);
     try {
       const res = await sendResetOtp({ email });
@@ -74,9 +86,6 @@ export default function ForgotPasswordPage() {
         <span className="text-3xl ml-2 mt-1 font-bold text-gray-900 hover:text-orange-600 transition-colors duration-300">
           <Link href="/">SocialLearning</Link>
         </span>
-        <div className="ml-auto">
-          <LanguageSwitcher />
-        </div>
       </div>
 
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4 relative overflow-hidden">
