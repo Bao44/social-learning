@@ -186,7 +186,7 @@ export default function ExerciseSpeaking({
     <div className="space-y-4 text-center">
       <h2 className="text-lg font-semibold">{exercise.question}</h2>
 
-      <div className="flex items-center justify-center gap-2 bg-gray-50 p-4 rounded-lg">
+      <div className="flex items-center justify-center gap-2 p-4 rounded-lg">
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={speak}
@@ -223,7 +223,7 @@ export default function ExerciseSpeaking({
           )}
         </motion.button>
       </div>
-      <div className="min-h-[100px] p-4 bg-gray-50 rounded-lg shadow-inner">
+      <div className="min-h-[100px] p-4 rounded-lg shadow-inner">
         <h3 className="text-sm font-bold text-gray-500 mb-2">{t("learning.yourSpeech")}:</h3>
         {result ? (
           result
