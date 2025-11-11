@@ -281,14 +281,14 @@ export default function SpeakingPage() {
                         <Sparkles className="w-4 h-4 mr-2" />
                         Generate AI
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={handleConversationPractice}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
                       >
                         {t("learning.start")}
                         <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </motion.div>
