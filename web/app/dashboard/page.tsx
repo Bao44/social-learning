@@ -36,7 +36,7 @@ function UserDashboard() {
   return (
     <>
       {/* Main content */}
-      <div className="flex-1 lg:pl-12 lg:pr-3 md:pl-24 md:pr-4 py-6">
+      <div className="flex-1 lg:pl-14 lg:pr-3 md:pl-24 md:pr-4 py-6">
         <StreakStatusCard />
         <MainContentArea />
       </div>

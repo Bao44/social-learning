@@ -188,7 +188,7 @@ export function PostModal({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="xl:max-w-6xl xl:h-[80vh] lg:max-w-5xl lg:h-[70vh] md:max-w-4xl md:h-[60vh] sm:max-w-2xl sm:h-[60vh] max-w-xl h-[60vh] p-0 overflow-hidden">
+        <DialogContent className="xl:max-w-6xl xl:h-[80vh] lg:max-w-5xl lg:h-[70vh] md:max-w-3xl md:h-[60vh] sm:max-w-xl sm:h-[60vh] max-w-sm h-[60vh] p-0 overflow-hidden">
           <DialogHeader className="hidden">
             <DialogTitle className="hidden">
               {t("dashboard.detail")}
@@ -249,7 +249,7 @@ export function PostModal({
             </div>
 
             {/* Comments */}
-            <div className="w-[450px] border-l flex flex-col">
+            <div className="lg:w-[450px] md:w-[400px] xl:h-[725px] lg:h-[630px] md:h-[540px] h-[530px] border-l flex flex-col">
               {/* Header */}
               <DialogHeader className="p-4 border-b">
                 <div className="flex items-center justify-between">
