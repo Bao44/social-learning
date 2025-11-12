@@ -7,7 +7,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -56,6 +56,9 @@ function LessonContent() {
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const levelId = searchParams.get("level");
+  const topicId = searchParams.get("topic");
 
   const [currentSentence, setCurrentSentence] = useState<string>("");
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -234,8 +237,6 @@ function LessonContent() {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener("resize", handleResize);
-    const levelId = localStorage.getItem("levelId");
-    const topicId = localStorage.getItem("topicId");
     if (levelId && topicId) {
       getLessons(Number(levelId), Number(topicId));
     }
@@ -292,6 +293,9 @@ function LessonContent() {
                   </motion.div>
                 );
               });
+
+              // update roadmap
+              // await updateLessonCompletedCount(user.id, Number(levelId), Number(topicId));
             }
           }
         }, 1500);

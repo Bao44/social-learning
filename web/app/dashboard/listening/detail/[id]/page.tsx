@@ -466,11 +466,11 @@ export default function ListeningDetailPage() {
         </div>
 
         {/* Nút nộp bài + kiểm tra */}
-        <div
-          onClick={() => router.back()}
-          className="flex justify-between items-center gap-4 mt-6"
-        >
-          <button className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 cursor-pointer">
+        <div className="flex justify-between items-center gap-4 mt-6">
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 cursor-pointer"
+          >
             {t("learning.buttonExit")}
           </button>
           <div className="flex gap-4">

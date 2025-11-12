@@ -266,7 +266,6 @@ export function LeftSidebarMobile() {
 
     const fetchMessagesCount = async () => {
       const res = await fetchTotalUnreadMessages(user?.id);
-      console.log("Total unread messages:", res);
       setMessagesCount(res);
     };
 

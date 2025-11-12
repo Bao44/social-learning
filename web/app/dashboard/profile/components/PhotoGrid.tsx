@@ -97,7 +97,7 @@ export default function PhotoGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-1 sm:gap-2 mb-8 mt-2">
+      <div className="grid grid-cols-3 gap-1 sm:gap-2 mb-8 mt-2 md:pl-5">
         {posts.map((post, index) => {
           const fileUrl = post.file ? getSupabaseFileUrl(post.file) : null;
           const ext = post.file?.split(".").pop()?.toLowerCase();

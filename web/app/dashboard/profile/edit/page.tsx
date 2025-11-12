@@ -295,7 +295,9 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md pt-6 sm:max-w-2xl lg:max-w-3xl max-xl:ml-10 max-lg:mx-auto max-md:ml-5 max-sm:ml-5 px-4">
+    // <div className="mx-auto w-full max-w-md pt-6 sm:max-w-2xl lg:max-w-3xl max-xl:ml-10 max-lg:mx-auto max-md:ml-5 max-sm:ml-5 px-4">
+    <div className="mx-auto w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-3xl pr-5 sm:pl-10">
+
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
@@ -322,7 +324,7 @@ export default function ProfileEditPage() {
           }}
         />
       </div>
-      <div className="flex align-items-center justify-between">
+      <div className="flex align-items-center justify-between max-sm:mt-15">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
