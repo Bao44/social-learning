@@ -175,7 +175,7 @@ export default function ListeningDetailPage() {
 
     const randomPos =
       unansweredPositions[
-        Math.floor(Math.random() * unansweredPositions.length)
+      Math.floor(Math.random() * unansweredPositions.length)
       ];
     const correctWord = hiddenMap[parseInt(randomPos)];
 
@@ -439,16 +439,14 @@ export default function ListeningDetailPage() {
                     width: `${length}rem`,
                   }}
                   className={`border-b-2 text-center bg-white px-1 py-0.5 rounded-sm tracking-widest
-                                    ${
-                                      isCorrect === true
-                                        ? "border-green-500"
-                                        : ""
-                                    }
-                                    ${
-                                      isCorrect === false
-                                        ? "border-red-500"
-                                        : "border-gray-400"
-                                    }`}
+                                    ${isCorrect === true
+                      ? "border-green-500"
+                      : ""
+                    }
+                                    ${isCorrect === false
+                      ? "border-red-500"
+                      : "border-gray-400"
+                    }`}
                   value={answers[position] || ""}
                   onChange={(e) =>
                     setAnswers({ ...answers, [position]: e.target.value })
