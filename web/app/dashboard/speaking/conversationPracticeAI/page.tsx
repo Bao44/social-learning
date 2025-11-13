@@ -29,6 +29,8 @@ import RoleSelector from "./components/RoleSelector";
 import ConversationPreview from "./components/ConversationPreview";
 import ChatHistory from "./components/ChatHistory";
 import ConversationControls from "./components/ConversationControls";
+import { getLevelBySlug, getTopicBySlug } from "@/app/apiClient/learning/learning";
+import { updateLessonCompletedCount } from "@/app/apiClient/learning/roadmap/roadmap";
 
 interface Line {
   id: "A" | "B";
@@ -190,9 +192,8 @@ function ConversationPracticeContent() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`mt-2 font-bold text-lg flex items-center justify-center gap-2 ${
-          canPass ? "text-green-600" : "text-orange-600"
-        }`}
+        className={`mt-2 font-bold text-lg flex items-center justify-center gap-2 ${canPass ? "text-green-600" : "text-orange-600"
+          }`}
         aria-live="assertive"
       >
         <Trophy className="w-5 h-5" /> {t("learning.accuracy")} {score}%
@@ -288,7 +289,7 @@ function ConversationPracticeContent() {
     }
   }, [listening, loading, showCelebration, buildResultAndCheck]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     const isLastSentence = currentIndex + 1 >= dialogue.length;
     setIsAISpeaking(false);
     setIsAITyping(false);
@@ -297,9 +298,9 @@ function ConversationPracticeContent() {
       setShowCelebration(true);
       if (user?.id) addSkillScore(user.id, "speaking", 10);
       // update roadmap
-      // const level = await getLevelBySlug(String(levelSlug));
-      // const topic = await getTopicBySlug(String(topicSlug));
-      // await updateLessonCompletedCount(user.id, Number(level.id), Number(topic.id));
+      const level = await getLevelBySlug(String(levelSlug));
+      const topic = await getTopicBySlug(String(topicSlug));
+      await updateLessonCompletedCount(user.id, String(level.id), String(topic.id), "Speaking");
     } else {
       resetTranscript();
       setAccuracyScore(null);

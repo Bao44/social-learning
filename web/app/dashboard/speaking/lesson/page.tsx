@@ -46,6 +46,7 @@ import {
   updateMasteryScoreRPC,
 } from "@/app/apiClient/learning/vocabulary/vocabulary";
 import ClickToSpeak from "../../vocabulary/components/ClickToSpeak";
+import { updateLessonCompletedCount } from "@/app/apiClient/learning/roadmap/roadmap";
 
 interface Lesson {
   id: number;
@@ -265,7 +266,7 @@ function LessonContent() {
         setSentenceComplete(true);
         setCompletedSentences((prev) => prev + 1);
         setCompletedLessons((prev) => new Set(prev).add(currentLessonIndex));
-        setTimeout(() => {
+        setTimeout(async () => {
           if (currentLessonIndex < lessons.length - 1) {
             setCurrentLessonIndex((idx) => idx + 1);
           } else {
@@ -295,7 +296,7 @@ function LessonContent() {
               });
 
               // update roadmap
-              // await updateLessonCompletedCount(user.id, Number(levelId), Number(topicId));
+              await updateLessonCompletedCount(user.id, String(levelId), String(topicId), "Speaking");
             }
           }
         }, 1500);
