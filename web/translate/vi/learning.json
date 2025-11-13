@@ -79,7 +79,6 @@
   "selectListeningMode": "Chọn chế độ luyện nghe",
   "personalListening": "Luyện nghe cá nhân",
   "sentenceListening": "Luyện nghe theo hội thoại mẫu",
-
   "score": "Điểm",
   "accuracy": "Độ chính xác",
   "suggest": "Gợi ý",
@@ -106,22 +105,18 @@
   "learningProgress": "Hãy làm bài và kiểm tra để xem tiến trình 🎯",
   "complete": "Hoàn thành",
   "vocab": "Từ vựng",
-
   "recommendation": "Gợi ý",
   "check": "Kiểm tra",
   "submit": "Nộp bài",
-
   "loadingSpeaking": "Đang tải hội thoại...",
   "loadingWriting": "Đang tải bài viết...",
   "loadingListening": "Đang tải bài nghe...",
-
   "roleSelection": "Chọn vai trò của bạn",
   "role": "Bạn muốn đóng vai người A hay người B trong cuộc hội thoại?",
   "roleA": "Người A",
   "roleB": "Người B",
   "startConversation": "Bắt đầu cuộc hội thoại",
   "replyConversation": "Phản hồi cuộc hội thoại",
-
   "roleSelected": "Bạn đã chọn vai trò:",
   "person": "Người",
   "preview": "Xem trước bối cảnh cuộc hội thoại và nhấn \"Bắt đầu\" khi sẵn sàng.",
@@ -129,7 +124,6 @@
   "and": "và",
   "you": "Bạn",
   "moreSentences": "câu nữa",
-
   "aiTyping": " AI đang chuẩn bị...",
   "aiSpeak": "AI đang nói...",
   "aiTurn": "Đến lượt AI",
@@ -137,7 +131,6 @@
   "pressMic": "Nhấn nút mic để nói",
   "reTry": "Thử lại",
   "replay": "Nghe lại",
-
   "urgentReview": "Cần ôn gấp",
   "inProgress": "Đang tiến bộ",
   "wellMastered": "Sắp thành thạo",
@@ -152,7 +145,6 @@
   "times": "lần",
   "ipaTable": "Bảng IPA",
   "relatedWords": "Từ liên quan",
-
   "myVocabulary": "Từ vựng của tôi",
   "myVocabularyDescription": "Làm chủ bộ sưu tập từ vựng cá nhân của bạn và theo dõi tiến trình học tập",
   "totalWords": "Tổng số từ",
@@ -168,10 +160,8 @@
   "clearSearch": "Xóa tìm kiếm",
   "noVocabulary": "Chưa có từ vựng",
   "startLearning": "Bắt đầu học và thêm từ mới vào bộ sưu tập từ vựng cá nhân của bạn",
-
   "listeningTitle": "Luyện nghe",
   "descriptionListening": "Không ngừng cải thiện kỹ năng nghe của bạn để giao tiếp hiệu quả hơn",
-
   "breadcrumbListening": "Luyện nghe",
   "sloganListening": "Luyện nghe để nâng cao kỹ năng",
   "overview": "Tổng quan",
@@ -179,7 +169,6 @@
   "byTopic": "Theo chủ đề",
   "prePage": "Trước",
   "nextPage": "Tiếp",
-
   "creatingExercise": "Đang tạo bài tập...",
   "submittingExercise": "Đang nộp bài...",
   "noExercise": "Không có bài tập nào.",
@@ -195,12 +184,10 @@
   "loading": "Đang tải...",
   "startSpeaking": "Bắt đầu nói",
   "createExerciseError": "Không thể tạo bài tập. Vui lòng thử lại!",
-
   "leaderboardTitle": "Bảng Xếp Hạng",
   "leaderboardDescription": "Thể hiện kỹ năng của bạn",
   "leaderboardUserRank": "Xếp hạng của bạn",
   "test": "Kiểm tra",
-
   "progressLearning": "Tiến trình học tập",
   "progressLearningDescription": "Theo dõi sự tiến bộ của bạn qua các kỹ năng khác nhau",
   "comparisonChart": "Biểu đồ so sánh",
@@ -214,7 +201,6 @@
   "progressIn": "Hiển thị tiến trình học tập trong",
   "growth": "Tăng trưởng",
   "average": "Điểm trung bình",
-
   "totalLessons": "Tổng số bài học",
   "averageScore": "Điểm trung bình",
   "streak": "Chuỗi ngày học",
@@ -249,22 +235,27 @@
   "activity": "hoạt động trong",
   "noDataInYear": "Không có dữ liệu cho năm",
   "activityHistory": "Lịch sử hoạt động",
-
   "skillGoals": "Mục tiêu kỹ năng",
   "skillGoalsDescription": "Tiến độ đạt mục tiêu 1000 điểm cho mỗi kỹ năng",
-
   "skillComparison": "So sánh kỹ năng",
   "skillComparisonDescription": "Xem sự tiến bộ của tất cả các kỹ năng trên cùng một biểu đồ",
   "skillSpeaking": "Kỹ năng Nói",
   "skillWriting": "Kỹ năng Viết",
   "skillListening": "Kỹ năng Nghe",
-
   "achievement": "Thành tích",
   "achievementUnlocked": "Đã mở khóa",
   "achiev": "thành tích",
-
   "roadmapTitle": "Lộ trình học tập cá nhân",
   "roadmapDescription": "Tạo lộ trình học tập cá nhân để đạt được mục tiêu tiếng Anh của bạn một cách hiệu quả",
-
-  "functionUnderDevelopment": "Chức năng đang được phát triển"
+  "functionUnderDevelopment": "Chức năng đang được phát triển",
+  "roadmap": {
+    "target": "Mục tiêu",
+    "field": "Lĩnh vực",
+    "skill": "Kỹ năng chính",
+    "week": "Tuần",
+    "roadMap": "Lộ trình",
+    "completed": "Đã hoàn thành",
+    "current": "Đang học",
+    "upcoming": "Sắp tới"
+  }
 }

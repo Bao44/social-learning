@@ -6,12 +6,16 @@ import { useParams } from "next/navigation"
 import { getRoadmapAndLessonsById } from "@/app/apiClient/learning/roadmap/roadmap"
 import WeekCard from "../components/WeekCard"
 import WeekNode from "../components/WeekNode"
+import { useLanguage } from "@/components/contexts/LanguageContext"
 
 type Lesson = {
     type: string
-    level: string
-    topic: string
-    description: string
+    level_vi: string
+    level_en: string
+    topic_vi: string
+    topic_en: string
+    description_vi: string
+    description_en: string
     quantity: number
     completedCount: number
     typeParagraph?: string
@@ -20,12 +24,15 @@ type Lesson = {
 
 type Week = {
     week: number
-    focus: string
+    focus_vi: string
+    focus_en: string
     lessons: Lesson[]
 }
 
 type Roadmap = {
-    totalWeeks: number
+    totalWeeks: number,
+    pathName_en: string,
+    pathName_vi: string,
     weeks: Week[],
 }
 
@@ -41,11 +48,12 @@ export default function RoadmapZigzagPage() {
     const { id } = useParams()
     const [hoveredLesson, setHoveredLesson] = useState<{ week: number; lessonIdx: number } | null>(null)
     const [loading, setLoading] = useState(false)
+    const { t, language } = useLanguage();
 
     useEffect(() => {
         const fetchRoadmap = async () => {
             try {
-                const response = await getRoadmapAndLessonsById(id as string)
+                const response = await getRoadmapAndLessonsById(id as string);
                 setRoadmap(response)
             } catch (err) {
                 console.error("Lỗi khi fetch roadmap:", err)
@@ -74,7 +82,7 @@ export default function RoadmapZigzagPage() {
     return (
         <div className="relative max-w-7xl mx-auto py-16 px-6 bg-gradient-to-br from-emerald-50 to-sky-50 min-h-screen">
             <h1 className="text-4xl font-bold text-center mb-16 text-emerald-700 drop-shadow-sm">
-                🌱 Lộ trình học cá nhân hóa ({roadmap.totalWeeks} tuần)
+                🌱 {roadmap[`pathName_${language}`]} ({roadmap.totalWeeks} {t("learning.roadmap.week")})
             </h1>
 
             <div className="relative flex flex-col gap-20">

@@ -1,14 +1,16 @@
 "use client"
 
+import { useLanguage } from "@/components/contexts/LanguageContext";
 import { CheckCircle, Flag } from "lucide-react";
 
 const WeekTimeline = ({ totalWeeks, currentWeek }: { totalWeeks: number; currentWeek: number }) => {
+    const {t} = useLanguage();
     return (
         <div className="mt-6 mb-4">
             <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-600">Tiến độ học tập</span>
+                <span className="text-sm font-medium text-gray-600">{t("learning.progress")}</span>
                 <span className="text-sm text-gray-500">
-                    Tuần {currentWeek} / {totalWeeks}
+                    {t("learning.roadmap.week")} {currentWeek} / {totalWeeks}
                 </span>
             </div>
 
@@ -69,15 +71,15 @@ const WeekTimeline = ({ totalWeeks, currentWeek }: { totalWeeks: number; current
             <div className="flex items-center justify-center gap-6 mt-4 text-xs">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="text-gray-600">Hoàn thành</span>
+                    <span className="text-gray-600">{t("learning.roadmap.completed")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Flag className="w-3 h-3 text-purple-500" />
-                    <span className="text-gray-600">Đang học</span>
+                    <span className="text-gray-600">{t("learning.roadmap.current")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-white border-2 border-gray-300" />
-                    <span className="text-gray-600">Sắp tới</span>
+                    <span className="text-gray-600">{t("learning.roadmap.upcoming")}</span>
                 </div>
             </div>
         </div>
