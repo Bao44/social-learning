@@ -79,10 +79,13 @@
   "selectListeningMode": "Select Listening Mode",
   "personalListening": "Personal Listening Practice",
   "sentenceListening": "Sentence Listening Practice",
+<<<<<<< HEAD
   "graduatedTitle": "Congratulations on mastering this vocabulary!",
   "graduatedDesc": "You have fully mastered this vocabulary. It will be moved to the review list!",
 
 
+=======
+>>>>>>> 5b9ddcdd7f464e48079dd9badf2a991559134723
   "score": "Score",
   "accuracy": "Accuracy",
   "suggest": "Suggestions",
@@ -109,22 +112,18 @@
   "learningProgress": "Do the exercises and check to see your progress 🎯",
   "complete": "Complete",
   "vocab": "Vocabulary",
-
   "recommendation": "Hint",
   "check": "Check",
   "submit": "Submit",
-
   "loadingSpeaking": "Loading conversation...",
   "loadingWriting": "Loading writing exercise...",
   "loadingListening": "Loading listening exercise...",
-
   "roleSelection": "Role Selection",
   "role": "Do you want to play as Person A or Person B in the conversation?",
   "roleA": "Person A",
   "roleB": "Person B",
   "startConversation": "Start Conversation",
   "replyConversation": "Conversation Response",
-
   "roleSelected": "Role Selected:",
   "person": "Person",
   "preview": "Preview the context of the conversation and click \"Start\" when ready.",
@@ -132,7 +131,6 @@
   "and": "and",
   "you": "You",
   "moreSentences": "more sentences",
-
   "aiTyping": " AI is typing...",
   "aiSpeak": "AI is speaking...",
   "aiTurn": "AI's turn",
@@ -140,7 +138,6 @@
   "pressMic": "Press the mic button to speak",
   "reTry": "Try again",
   "replay": "Listen again",
-
   "urgentReview": "Urgent Review",
   "inProgress": "In Progress",
   "wellMastered": "Well Mastered",
@@ -155,8 +152,11 @@
   "times": "times",
   "ipaTable": "IPA Table",
   "relatedWords": "Related Words",
+<<<<<<< HEAD
   "relatedWordsNote": "Note: For effective practice, please also review the related words below.",
 
+=======
+>>>>>>> 5b9ddcdd7f464e48079dd9badf2a991559134723
   "myVocabulary": "My Vocabulary",
   "myVocabularyDescription": "Master your personal vocabulary collection and track your learning progress",
   "totalWords": "Total Words",
@@ -172,10 +172,8 @@
   "clearSearch": "Clear Search",
   "noVocabulary": "No vocabulary yet",
   "startLearning": "Start learning and add new words to your personal vocabulary collection",
-
   "listeningTitle": "Listening Practice",
   "descriptionListening": "Continuously improve your listening skills to communicate more effectively",
-
   "breadcrumbListening": "Listening",
   "sloganListening": "Practice listening to improve skills",
   "overview": "Overview",
@@ -183,11 +181,14 @@
   "byTopic": "By Topic",
   "prePage": "Previous",
   "nextPage": "Next",
+<<<<<<< HEAD
   "practiceAll": "Practice All",
   "practiceSelected": "Practice Selected",
   "selectAll": "Select All",
   "clearSelection": "Clear Selection",
 
+=======
+>>>>>>> 5b9ddcdd7f464e48079dd9badf2a991559134723
   "creatingExercise": "Creating exercise...",
   "submittingExercise": "Submitting exercise...",
   "noExercise": "No exercise available.",
@@ -203,12 +204,10 @@
   "loading": "Loading...",
   "startSpeaking": "Start Speaking",
   "createExerciseError": "Unable to create exercise. Please try again!",
-
   "leaderboardTitle": "Leaderboard",
   "leaderboardDescription": "Showcase your skills",
   "leaderboardUserRank": "Your Rank",
   "test": "Test",
-
   "progressLearning": "Learning Progress",
   "progressLearningDescription": "Track your progress across different skills",
   "comparisonChart": "Comparison Chart",
@@ -222,7 +221,6 @@
   "progressIn": "Show progress in",
   "growth": "Growth",
   "average": "Average",
-
   "totalLessons": "Total Lessons",
   "averageScore": "Average Score",
   "streak": "Learning Streak",
@@ -257,7 +255,6 @@
   "activity": "activity in",
   "noDataInYear": "No data available for the year",
   "activityHistory": "Activity History",
-
   "skillGoals": "Skill Goals",
   "skillGoalsDescription": "Progress towards the goal of 1000 points for each skill",
   "skillComparison": "Skill Comparison",
@@ -265,13 +262,20 @@
   "skillSpeaking": "Speaking",
   "skillWriting": "Writing",
   "skillListening": "Listening",
-
   "achievement": "Achievement",
   "achievementUnlocked": "Unlocked",
   "achiev": "achievements",
-
   "roadmapTitle": "Personalized Learning Roadmap",
   "roadmapDescription": "Create your personalized learning roadmap to achieve your English goals effectively",
-
-  "functionUnderDevelopment": "Function under development"
+  "functionUnderDevelopment": "Function under development",
+  "roadmap": {
+    "target": "Target",
+    "field": "Field",
+    "skill": "Skill",
+    "week": "Week",
+    "roadMap": "Roadmap",
+    "completed": "Completed",
+    "current": "Current",
+    "upcoming": "Upcoming"
+  }
 }

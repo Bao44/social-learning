@@ -11,4 +11,7 @@ router.get("/getRoadmapAndLessonsById/:roadmapId", roadMapController.getRoadmapA
 // Route to create a new roadmap for a user
 router.post("/createRoadMapForUser", roadMapController.createRoadMapForUser);
 
+// Update completedCount of lessonRoadmap
+router.post("/updateLessonCompletedCount", roadMapController.updateLessonCompletedCount);
+
 module.exports = router;

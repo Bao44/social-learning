@@ -2,20 +2,25 @@
 
 import { getLevelsByNameVi, getTopicsByNameVi, getTypeParagraphsByNameVi } from "@/app/apiClient/learning/learning"
 import { listeningService } from "@/app/apiClient/learning/listening/listening"
+import { useLanguage } from "@/components/contexts/LanguageContext"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
 
 type Week = {
     week: number
-    focus: string
+    focus_vi: string
+    focus_en: string
     lessons: Lesson[]
 }
 
 type Lesson = {
     type: string
-    level: string
-    topic: string
-    description: string
+    level_vi: string
+    level_en: string
+    topic_vi: string
+    topic_en: string
+    description_vi: string
+    description_en: string
     quantity: number
     completedCount: number
     typeParagraph?: string
@@ -43,6 +48,7 @@ const WeekCard = ({
 }) => {
     const isOpen = expandedWeeks.includes(week.week)
     const router = useRouter();
+    const { t, language } = useLanguage();
 
     const getProgressColor = (percent: number) => {
         if (percent < 25) return "from-red-500 to-orange-400"
@@ -53,14 +59,14 @@ const WeekCard = ({
 
     // Handle click options inside lesson card
     const handleLessonClickSystemExercise = async (lesson: Lesson) => {
-        const resLevels = await getLevelsByNameVi(lesson.level);
+        const resLevels = await getLevelsByNameVi(lesson.level_vi);
         if (lesson.type === "Listening") {
             // Handle Listening lesson click
-            const resTopics = await getTopicsByNameVi(lesson.topic);
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             router.push(`/dashboard/listening/list?level=${resLevels[0].slug}&topic=${resTopics[0].slug}`);
         } else if (lesson.type === "Speaking") {
             // Handle Speaking lesson click
-            const resTopics = await getTopicsByNameVi(lesson.topic);
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             localStorage.setItem("levelSlug", JSON.stringify(resLevels[0].slug));
             localStorage.setItem("topicSlug", JSON.stringify(resTopics[0].slug));
             router.push(
@@ -68,7 +74,7 @@ const WeekCard = ({
             );
         } else if (lesson.type === "Writing") {
             // Handle Writing lesson click
-            const resTypeParagraph = await getTypeParagraphsByNameVi(lesson.topic);
+            const resTypeParagraph = await getTypeParagraphsByNameVi(lesson.topic_vi);
             router.push(`/dashboard/writing/writing-paragraph/${resLevels[0].slug}/paragraph/${resTypeParagraph[0].slug}`);
         }
     }
@@ -76,8 +82,8 @@ const WeekCard = ({
     // Handle Generate AI
     const handleGenerateAIForLesson = async (lesson: Lesson) => {
         setPageLoading(true);
-        const resLevels = await getLevelsByNameVi(lesson.level);
-        const resTopics = await getTopicsByNameVi(lesson.topic);
+        const resLevels = await getLevelsByNameVi(lesson.level_vi);
+        const resTopics = await getTopicsByNameVi(lesson.topic_vi);
         if (lesson.type === "Listening") {
             // Handle Listening AI generation
             const response = await listeningService.generateListeningExerciseByAI(resLevels[0].slug, resTopics[0].slug);
@@ -104,7 +110,7 @@ const WeekCard = ({
             onClick={() => toggleWeek(week.week)}
         >
             <h2 className="font-semibold text-xl text-emerald-800 mb-3">
-                Tuần {week.week}: <span className="text-sky-700">{week.focus}</span>
+                {t("learning.roadmap.week")} {week.week}: <span className="text-sky-700">{week[`focus_${language}`]}</span>
             </h2>
 
             <AnimatePresence>
@@ -137,10 +143,10 @@ const WeekCard = ({
                                             <div>
                                                 <p className="font-semibold text-gray-800">
                                                     {lesson.type}{" "}
-                                                    <span className="text-sm text-gray-500">({lesson.level})</span>
+                                                    <span className="text-sm text-gray-500">({lesson[`level_${language}`]})</span>
                                                 </p>
                                                 <p className="text-sm text-gray-700 mt-1 font-medium">
-                                                    {lesson.topic}
+                                                    {lesson[`topic_${language}`]}
                                                 </p>
                                             </div>
                                         </div>
@@ -156,7 +162,7 @@ const WeekCard = ({
                                     </div>
 
                                     <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                                        {lesson.description}
+                                        {lesson[`description_${language}`]}
                                     </p>
 
                                     <div className="flex items-center gap-3 mt-3">

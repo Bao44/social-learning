@@ -36,12 +36,11 @@ const roadMapController = {
     createRoadMapForUser: async (req, res) => {
         try {
             const { userId, input } = req.body;
-
             if (!userId || !input) {
                 return res.status(400).json({ error: "Missing userId or input" });
             }
 
-            // 🧠 Lấy thông tin người dùng để customize roadmap
+            // Lấy thông tin profile & exercise list
             const profileUser = {
                 writingScore: await scoreUserService.getScoreStatisticsBySkill(userId, "writing"),
                 listeningScore: await scoreUserService.getScoreStatisticsBySkill(userId, "listening"),
@@ -49,7 +48,6 @@ const roadMapController = {
                 achievements: await scoreUserService.getUserAchievements(userId),
             };
 
-            // 🧩 Lấy danh sách bài tập
             const exerciseList = {
                 writing: {
                     levels: await learningService.getAllLevels(),
@@ -66,15 +64,13 @@ const roadMapController = {
                 },
             };
 
-            // 🪄 Sinh prompt AI
+            // Sinh prompt mới
             const prompt = generateRoadMap(input, profileUser, exerciseList);
 
-            // 🚀 Gọi Gemini sinh roadmap
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             const result = await model.generateContent(prompt);
             const text = result.response.text();
 
-            // 🧹 Parse JSON
             const match = text.match(/\{[\s\S]*\}/);
             if (!match) {
                 return res.status(500).json({ error: "Gemini không trả JSON hợp lệ", raw: text });
@@ -82,43 +78,65 @@ const roadMapController = {
 
             const json = JSON.parse(match[0]);
 
-            // TODO: lưu json xuống DB
+            // Lưu roadmap tổng thể (song ngữ)
             const savedRoadmap = await roadmapService.createRoadmapForUser(userId, {
                 totalWeeks: json.totalWeeks,
-                field: input.field,
-                goal: input.goal,
+                field_vi: json.field_vi,
+                field_en: json.field_en,
+                goal_vi: json.goal_vi,
+                goal_en: json.goal_en,
+                pathName_vi: json.pathName_vi,
+                pathName_en: json.pathName_en,
                 targetSkills: input.targetSkills,
-                pathName: input.pathName,
-                studyPlan: input.studyPlan.minutesPerDay
+                studyPlan: input.studyPlan.minutesPerDay,
             });
 
-            // Lưu weeks
+            const roadmapId = savedRoadmap[0].id;
+
+            // Lưu từng tuần và bài học
             for (const week of json.weeks) {
-                const savedWeek = await roadmapService.createWeekRoadmaps(savedRoadmap[0].id, {
+                const savedWeek = await roadmapService.createWeekRoadmaps(roadmapId, {
                     week: week.week,
-                    focus: week.focus,
+                    focus_vi: week.focus_vi,
+                    focus_en: week.focus_en,
                 });
+
+                const weekId = savedWeek[0].id;
 
                 // Lưu lessons
                 for (const lesson of week.lessons) {
-                    await roadmapService.createLessonRoadmap(savedWeek[0].id, {
+                    await roadmapService.createLessonRoadmap(weekId, {
                         type: lesson.type,
-                        level: lesson.level,
-                        topic: lesson.topic,
-                        description: lesson.description,
+                        level_vi: lesson.level_vi,
+                        level_en: lesson.level_en,
+                        topic_vi: lesson.topic_vi,
+                        topic_en: lesson.topic_en,
+                        description_vi: lesson.description_vi,
+                        description_en: lesson.description_en,
                         quantity: lesson.quantity,
                     });
                 }
             }
 
-
-            return res.json({ message: "Tạo lộ trình thành công", roadmap: json });
+            return res.json({ message: "✅ Tạo lộ trình thành công", roadmap: json });
 
         } catch (error) {
             console.error("❌ Lỗi khi tạo lộ trình:", error);
             return res.status(500).json({ error: "Lỗi khi tạo lộ trình" });
         }
-    }
+    },
+
+    // update completedCount of lessonRoadmap
+    updateLessonCompletedCount: async (req, res) => {
+        try {
+            const { userId, levelId, topicId, typeExercise } = req.body;
+            await roadmapService.updateLessonCompletedCount(userId, levelId, topicId, typeExercise);
+            return res.json({ message: "Cập nhật completedCount thành công" });
+        } catch (error) {
+            console.error("❌ Lỗi khi cập nhật completedCount:", error);
+            return res.status(500).json({ error: "Lỗi khi cập nhật completedCount" });
+        }
+    },
 };
 
 module.exports = roadMapController;
