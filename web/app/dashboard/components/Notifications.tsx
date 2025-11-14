@@ -193,8 +193,6 @@ export function NotificationsPanel({
             JSON.stringify(notif.personalVocabId)
           );
           sessionStorage.setItem("notifiId", JSON.stringify(notif.id));
-          console.log("notifiId lưu trong sessionStorage:", sessionStorage.getItem("notifiId"));
-          console.log("reviewGraduationId lưu trong sessionStorage:", sessionStorage.getItem("reviewGraduationId"));
 
           // Chuyển đến trang Luyện tập
           route.push("/dashboard/vocabulary/wordPracticesAI");

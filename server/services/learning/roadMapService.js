@@ -229,8 +229,6 @@ const roadmapService = {
                 .eq('id', lesson.id);
 
             if (updateError) throw updateError;
-
-            console.log(`✅ LessonRoadmap ${lesson.id} cập nhật completedCount = ${newCount}`);
         } catch (error) {
             console.error("❌ Error updating completedCount:", error);
         }
