@@ -295,7 +295,7 @@ function LessonContent() {
                 );
               });
 
-              // update roadmap
+              // update roadmapz
               await updateLessonCompletedCount(user.id, String(levelId), String(topicId), "Speaking");
             }
           }
