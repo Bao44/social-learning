@@ -21,3 +21,14 @@ export const createRoadMapForUser = async (userId: string, input: any) => {
     });
     return response.data;
 };
+
+// Update completedCount of lessonRoadmap
+export const updateLessonCompletedCount = async (userId: string, levelId: string, topicId: string, typeExercise: string) => {
+    const response = await api.post(`/api/learning/roadmap/updateLessonCompletedCount`, {
+        userId,
+        levelId,
+        topicId,
+        typeExercise
+    });
+    return response.data;
+};

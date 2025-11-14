@@ -46,6 +46,7 @@ import {
 import ClickToSpeak from "../../vocabulary/components/ClickToSpeak";
 import { generateSpeakingExerciseByAI } from "@/app/apiClient/learning/speaking/speaking";
 import { getLevelBySlug, getTopicBySlug } from "@/app/apiClient/learning/learning";
+import { updateLessonCompletedCount } from "@/app/apiClient/learning/roadmap/roadmap";
 
 interface Lesson {
   id: number;
@@ -298,9 +299,9 @@ function LessonAIContent() {
                 );
               });
               // update roadmap
-              // const level = await getLevelBySlug(String(levelSlug));
-              // const topic = await getTopicBySlug(String(topicSlug));
-              // await updateLessonCompletedCount(user.id, Number(level.id), Number(topic.id));
+              const level = await getLevelBySlug(String(levelSlug));
+              const topic = await getTopicBySlug(String(topicSlug));
+              await updateLessonCompletedCount(user.id, String(level.id), String(topic.id), "Speaking");
             }
           }
         }, 1500);

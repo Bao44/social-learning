@@ -17,8 +17,10 @@ export default function LearningPathPage() {
     const [paths, setPaths] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [openModal, setOpenModal] = useState(false)
-    const { t } = useLanguage()
+    const { t, language } = useLanguage()
     const router = useRouter()
+
+    console.log("Paths state:", paths);
 
     useEffect(() => {
         if (!user?.id) return
@@ -72,7 +74,7 @@ export default function LearningPathPage() {
                                 onClick={() => handleRouteClick(path.id)}
                                 className="shadow-md hover:shadow-lg transition cursor-pointer relative"
                             >
-                                {/* ✅ Dấu mộc tròn kiểu thật */}
+                                {/* Dấu mộc tròn kiểu thật */}
                                 {(path?.isCompleted || path?.currentweek >= path?.totalweeks) && (
                                     <div
                                         className="absolute top-4 right-8 w-32 h-32 flex items-center justify-center rounded-full text-green-700 font-extrabold uppercase text-[10px] tracking-wider select-none"
@@ -109,7 +111,7 @@ export default function LearningPathPage() {
 
                                 <CardTitle
                                     className="ml-6 text-3xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-green-500 via-emerald-600 to-green-700 bg-clip-text text-transparent font-[Poppins]">
-                                    {path?.pathName || "Chưa có tên"}
+                                    {path[`pathName_${language}`] || "Chưa có tên"}
                                 </CardTitle>
 
                                 <CardContent className="space-y-8 mt-2">
@@ -118,12 +120,12 @@ export default function LearningPathPage() {
                                         {/* Mục tiêu */}
                                         <div className="flex flex-col items-center">
                                             <span className="text-green-600 font-semibold mb-2 text-sm tracking-wide">
-                                                🎯 Mục tiêu
+                                                🎯 {t("learning.roadmap.target")}
                                             </span>
                                             <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-green-100 to-green-50 border border-green-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
                                                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                 <span className="text-gray-800 font-bold text-sm px-4">
-                                                    {path?.goal || "—"}
+                                                    {path[`goal_${language}`] || "—"}
                                                 </span>
                                             </div>
                                         </div>
@@ -131,12 +133,12 @@ export default function LearningPathPage() {
                                         {/* Lĩnh vực */}
                                         <div className="flex flex-col items-center">
                                             <span className="text-blue-600 font-semibold mb-2 text-sm tracking-wide">
-                                                📘 Lĩnh vực
+                                                📘 {t("learning.roadmap.field")}
                                             </span>
                                             <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
                                                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                 <span className="text-gray-800 font-bold text-sm px-4">
-                                                    {path?.field || "—"}
+                                                    {path[`field_${language}`] || "—"}
                                                 </span>
                                             </div>
                                         </div>
@@ -144,7 +146,7 @@ export default function LearningPathPage() {
                                         {/* Kỹ năng */}
                                         <div className="flex flex-col items-center">
                                             <span className="text-yellow-600 font-semibold mb-2 text-sm tracking-wide">
-                                                💡 Kỹ năng chính
+                                                💡 {t("learning.roadmap.skill")}
                                             </span>
                                             <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-50 border border-yellow-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
                                                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
