@@ -5,6 +5,7 @@ type Week = {
     focus_vi: string
     focus_en: string
     lessons: Lesson[]
+    isCompleted?: boolean
 }
 
 type Lesson = {

@@ -9,15 +9,18 @@ import { motion } from "framer-motion"
 import { createRoadMapForUser } from "@/app/apiClient/learning/roadmap/roadmap"
 import useAuth from "@/hooks/useAuth"
 import parseTimeToMinutes from "@/utils/parseTimeToMinutes"
+import { useLanguage } from "@/components/contexts/LanguageContext"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
 interface Props {
     open: boolean
     onClose: () => void
+    onCreated: () => void
 }
 
 const skillsList = ["Writing", "Listening", "Speaking", "Vocabulary"]
 
-const goalList = [
+const goalList_vi = [
     "Đọc hiểu tài liệu chuyên ngành",
     "Giao tiếp lưu loát trong công việc",
     "Viết email chuyên nghiệp",
@@ -26,18 +29,36 @@ const goalList = [
     "Thi chứng chỉ (IELTS, TOEIC, ...)",
 ]
 
-const fields = ["Business", "Academic", "Travel", "IT", "General"]
+const goalList_en = [
+    "Understand professional documents",
+    "Communicate fluently at work",
+    "Write professional emails",
+    "Comprehend natural conversations",
+    "Present in English",
+    "Take certification exams (IELTS, TOEIC, ...)",
+]
 
-const studyTimeOptions = [
+const fields_en = ["Business", "Academic", "Travel", "IT", "General"]
+const fields_vi = ["Kinh doanh", "Học thuật", "Du lịch", "Công nghệ thông tin", "Tiếng Anh tổng quát"]
+
+const studyTimeOptions_vi = [
     "15 phút/ngày",
     "30 phút/ngày",
     "1 giờ/ngày",
     "2 giờ/ngày",
     "Hơn 2 giờ/ngày",
 ]
+const studyTimeOptions_en = [
+    "15 minutes/day",
+    "30 minutes/day",
+    "1 hour/day",
+    "2 hours/day",
+    "More than 2 hours/day",
+]
 
-export default function CreatePathModal({ open, onClose }: Props) {
+export default function CreatePathModal({ open, onClose, onCreated }: Props) {
     const { user } = useAuth()
+    const { t, language } = useLanguage()
     const [step, setStep] = useState(1)
     const [pathName, setPathName] = useState("")
     const [skills, setSkills] = useState<string[]>([])
@@ -47,33 +68,41 @@ export default function CreatePathModal({ open, onClose }: Props) {
     const [customField, setCustomField] = useState("")
     const [studyTime, setStudyTime] = useState("")
     const [customStudyTime, setCustomStudyTime] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const nextStep = () => setStep((s) => s + 1)
     const prevStep = () => setStep((s) => s - 1)
 
     const handleCreate = async () => {
-        const finalGoal = customGoal.trim() || goal
-        const finalField = customField.trim() || field
-        const finalStudyTime = customStudyTime.trim() || studyTime
+        try {
+            setLoading(true)
 
-        // Quy đổi thời gian học thành phút
-        const minutesPerDay = parseTimeToMinutes(customStudyTime.trim() || studyTime)
+            const finalGoal = customGoal.trim() || goal
+            const finalField = customField.trim() || field
+            const finalStudyTime = customStudyTime.trim() || studyTime
 
-        const inputUser = {
-            userId: user!.id,
-            pathName,
-            targetSkills: skills,
-            goal: finalGoal,
-            field: finalField,
-            studyPlan: {
-                minutesPerDay,
-                rawInput: finalStudyTime,
-            },
+            const minutesPerDay = parseTimeToMinutes(finalStudyTime)
+
+            const inputUser = {
+                userId: user!.id,
+                pathName,
+                targetSkills: skills,
+                goal: finalGoal,
+                field: finalField,
+                studyPlan: {
+                    minutesPerDay,
+                    rawInput: finalStudyTime,
+                },
+            }
+
+            await createRoadMapForUser(user!.id, inputUser)
+
+            onCreated()
+            onClose()
+        } finally {
+            setLoading(false)
         }
-        await createRoadMapForUser(user!.id, inputUser)
-        onClose()
     }
-
 
 
     return (
@@ -81,10 +110,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
             <DialogContent className="sm:max-w-lg bg-gradient-to-br from-white via-blue-50 to-indigo-100 rounded-2xl shadow-xl p-6">
                 <DialogHeader className="text-center">
                     <DialogTitle className="text-2xl font-semibold text-indigo-700">
-                        ✨ Tạo lộ trình học mới
+                        ✨ {t("learning.roadmap.createRoadmapTitle")}
                     </DialogTitle>
                     <p className="text-sm text-gray-500 mt-1">
-                        Bước {step}/5 — Cá nhân hóa lộ trình học của bạn
+                        {t("learning.roadmap.step")} {step}/5 — {t("learning.roadmap.personalizeYourLearningPath")}
                     </p>
                 </DialogHeader>
 
@@ -99,11 +128,11 @@ export default function CreatePathModal({ open, onClose }: Props) {
                     {step === 1 && (
                         <div>
                             <label className="block text-sm font-medium mb-2 text-gray-700">
-                                Đặt tên lộ trình
+                                {t("learning.roadmap.pathNameTitle")}
                             </label>
                             <Input
                                 className="border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="VD: Lộ trình giao tiếp công sở"
+                                placeholder={t("learning.roadmap.pathNamePlaceholder")}
                                 value={pathName}
                                 onChange={(e) => setPathName(e.target.value)}
                             />
@@ -114,7 +143,7 @@ export default function CreatePathModal({ open, onClose }: Props) {
                     {step === 2 && (
                         <div>
                             <label className="block text-sm font-medium mb-3 text-gray-700">
-                                Chọn kỹ năng muốn cải thiện
+                                {t("learning.roadmap.selectSkillsTitle")}
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 {skillsList.map((skill) => (
@@ -145,10 +174,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
                     {step === 3 && (
                         <div>
                             <label className="block text-sm font-medium mb-3 text-gray-700">
-                                Chọn mục tiêu sử dụng tiếng Anh
+                                {t("learning.roadmap.selectGoalTitle")}
                             </label>
                             <div className="flex flex-col gap-2">
-                                {goalList.map((g) => (
+                                {(language === "vi" ? goalList_vi : goalList_en).map((g) => (
                                     <Button
                                         key={g}
                                         variant={goal === g ? "default" : "outline"}
@@ -168,10 +197,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
 
                             <div className="mt-4">
                                 <label className="block text-sm text-gray-600 mb-1">
-                                    Hoặc nhập mục tiêu khác
+                                    {t("learning.roadmap.orEnterCustomGoal")}
                                 </label>
                                 <Input
-                                    placeholder="VD: Chuẩn bị phỏng vấn bằng tiếng Anh"
+                                    placeholder={t("learning.roadmap.customGoalPlaceholder")}
                                     value={customGoal}
                                     onChange={(e) => {
                                         setCustomGoal(e.target.value)
@@ -186,10 +215,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
                     {step === 4 && (
                         <div>
                             <label className="block text-sm font-medium mb-3 text-gray-700">
-                                Chọn lĩnh vực áp dụng
+                                {t("learning.roadmap.selectFieldTitle")}
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {fields.map((f) => (
+                                {(language === "vi" ? fields_vi : fields_en).map((f) => (
                                     <Button
                                         key={f}
                                         variant={field === f ? "default" : "outline"}
@@ -209,10 +238,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
 
                             <div className="mt-4">
                                 <label className="block text-sm text-gray-600 mb-1">
-                                    Hoặc nhập lĩnh vực khác
+                                    {t("learning.roadmap.orEnterCustomField")}
                                 </label>
                                 <Input
-                                    placeholder="VD: Marketing, Giáo dục, Y tế..."
+                                    placeholder={t("learning.roadmap.customFieldPlaceholder")}
                                     value={customField}
                                     onChange={(e) => {
                                         setCustomField(e.target.value)
@@ -227,10 +256,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
                     {step === 5 && (
                         <div>
                             <label className="block text-sm font-medium mb-3 text-gray-700">
-                                Bạn có thể dành bao nhiêu thời gian học mỗi ngày?
+                                {t("learning.roadmap.selectStudyTimeTitle")}
                             </label>
                             <div className="flex flex-col gap-2">
-                                {studyTimeOptions.map((t) => (
+                                {(language === "vi" ? studyTimeOptions_vi : studyTimeOptions_en).map((t) => (
                                     <Button
                                         key={t}
                                         variant={studyTime === t ? "default" : "outline"}
@@ -250,10 +279,10 @@ export default function CreatePathModal({ open, onClose }: Props) {
 
                             <div className="mt-4">
                                 <label className="block text-sm text-gray-600 mb-1">
-                                    Hoặc nhập thời gian khác
+                                    {t("learning.roadmap.orEnterCustomStudyTime")}
                                 </label>
                                 <Input
-                                    placeholder="VD: 45 phút/ngày"
+                                    placeholder={t("learning.roadmap.customStudyTimePlaceholder")}
                                     value={customStudyTime}
                                     onChange={(e) => {
                                         setCustomStudyTime(e.target.value)
@@ -273,7 +302,7 @@ export default function CreatePathModal({ open, onClose }: Props) {
                             onClick={prevStep}
                             className="rounded-full border-indigo-300 text-indigo-600 hover:bg-indigo-50"
                         >
-                            ← Quay lại
+                            <ArrowLeft className="mr-2 h-4 w-4" /> {t("learning.roadmap.back")}
                         </Button>
                     )}
 
@@ -286,17 +315,24 @@ export default function CreatePathModal({ open, onClose }: Props) {
                             }
                             className="ml-auto rounded-full bg-indigo-600 hover:bg-indigo-700 text-white px-5"
                         >
-                            Tiếp theo →
+                            {t("learning.roadmap.next")} <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     ) : (
                         <Button
                             onClick={handleCreate}
                             className="ml-auto rounded-full bg-green-600 hover:bg-green-700 text-white px-5"
                         >
-                            ✅ Hoàn tất
+                            {t("learning.roadmap.createPath")}
                         </Button>
                     )}
                 </div>
+
+                {loading && (
+                    <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-50 rounded-2xl">
+                        <div className="animate-spin h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+                        <p className="mt-4 text-indigo-700 font-medium">{t("learning.roadmap.creatingPathPleaseWait")}</p>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     )

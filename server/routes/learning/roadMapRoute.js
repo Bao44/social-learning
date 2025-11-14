@@ -14,4 +14,7 @@ router.post("/createRoadMapForUser", roadMapController.createRoadMapForUser);
 // Update completedCount of lessonRoadmap
 router.post("/updateLessonCompletedCount", roadMapController.updateLessonCompletedCount);
 
+// Apply roadmap for user
+router.post("/applyRoadmapForUser", roadMapController.applyRoadmapForUser);
+
 module.exports = router;

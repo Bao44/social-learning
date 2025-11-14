@@ -27,6 +27,7 @@ type Week = {
     focus_vi: string
     focus_en: string
     lessons: Lesson[]
+    isCompleted?: boolean
 }
 
 type Roadmap = {
@@ -34,6 +35,8 @@ type Roadmap = {
     pathName_en: string,
     pathName_vi: string,
     weeks: Week[],
+    isUsed: boolean,
+    date_used: string | null,
 }
 
 const iconMap: Record<string, any> = {
@@ -49,6 +52,10 @@ export default function RoadmapZigzagPage() {
     const [hoveredLesson, setHoveredLesson] = useState<{ week: number; lessonIdx: number } | null>(null)
     const [loading, setLoading] = useState(false)
     const { t, language } = useLanguage();
+
+    const currentWeek = roadmap?.isUsed && roadmap?.date_used
+        ? Math.floor((Date.now() - new Date(roadmap?.date_used).getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1
+        : 999;
 
     useEffect(() => {
         const fetchRoadmap = async () => {
@@ -105,6 +112,8 @@ export default function RoadmapZigzagPage() {
                                             hoveredLessonId={hoveredLessonIdx}
                                             weekNumber={week.week}
                                             setPageLoading={setLoading}
+                                            isPathUsed={roadmap.isUsed}
+                                            currentWeek={currentWeek}
                                         />
                                     </div>
 
@@ -123,7 +132,7 @@ export default function RoadmapZigzagPage() {
                                 <>
                                     <div /> {/* empty */}
 
-                                    {/* 🟢 Tuần chẵn cũng thêm pointer-events-none */}
+                                    {/* Tuần chẵn cũng thêm pointer-events-none */}
                                     <div className="flex justify-center z-10 pointer-events-none">
                                         <WeekNode
                                             week={week}
@@ -142,6 +151,8 @@ export default function RoadmapZigzagPage() {
                                             hoveredLessonId={hoveredLessonIdx}
                                             weekNumber={week.week}
                                             setPageLoading={setLoading}
+                                            isPathUsed={roadmap.isUsed}
+                                            currentWeek={currentWeek}
                                         />
                                     </div>
                                 </>

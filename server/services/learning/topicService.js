@@ -28,7 +28,7 @@ module.exports = {
 
     // 3️⃣ Gọi Gemini
     const prompt = promptGenerateTopicVocab(words, existingTopics);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(prompt);
 
     const text = result.response.text();

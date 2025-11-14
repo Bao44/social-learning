@@ -23,6 +23,8 @@ const roadmapService = {
             goal_en,
             pathName_vi,
             pathName_en,
+            isUsed,
+            date_used,
             weekRoadMaps (
                 id,
                 week,
@@ -40,7 +42,8 @@ const roadmapService = {
                     quantity,
                     completedCount,
                     isCompleted
-                )
+                ),
+                isCompleted
             )
         `)
             .eq("id", roadmapId)
@@ -65,11 +68,14 @@ const roadmapService = {
             goal_en: roadmap.goal_en,
             pathName_vi: roadmap.pathName_vi,
             pathName_en: roadmap.pathName_en,
+            isUsed: roadmap.isUsed,
+            date_used: roadmap.date_used,
             weeks: roadmap.weekRoadMaps.map((week) => ({
                 id: week.id,
                 week: week.week,
                 focus_vi: week.focus_vi,
                 focus_en: week.focus_en,
+                isCompleted: week.isCompleted,
                 lessons: week.lessonRoadmap.map((lesson) => ({
                     id: lesson.id,
                     type: lesson.type,
@@ -89,7 +95,6 @@ const roadmapService = {
         return formattedData;
     },
 
-
     // Tạo mới lộ trình học tập cho userId
     createRoadmapForUser: async (userId, roadmapData) => {
         const { data, error } = await supabase
@@ -103,6 +108,8 @@ const roadmapService = {
                 goal_en: roadmapData.goal_en,
                 pathName_vi: roadmapData.pathName_vi,
                 pathName_en: roadmapData.pathName_en,
+                isUsed: false,
+                date_used: null,
                 targetSkills: roadmapData.targetSkills,
                 studyPlan: roadmapData.studyPlan,
             })
@@ -202,8 +209,8 @@ const roadmapService = {
                 .from('lessonRoadmap')
                 .select('id, quantity, completedCount')
                 .eq('type', type_exercise)
-                .eq('topic', topic_name)
-                .eq('level', level_name)
+                .eq('topic_vi', topic_name)
+                .eq('level_vi', level_name)
                 .in('week_roadmap_id', weekIds);
 
             if (lessonError) throw lessonError;
@@ -228,6 +235,54 @@ const roadmapService = {
             console.error("❌ Error updating completedCount:", error);
         }
     },
+
+    // Update roadmap isUsed and date_used
+    applyRoadmapForUser: async (roadmapApplyId, roadmapOldId) => {
+        const { data, error } = await supabase
+            .from("roadmap")
+            .update({
+                isUsed: true,
+                date_used: new Date().toISOString(),
+            })
+            .eq("id", roadmapApplyId);
+        if (error) throw new Error("Lỗi khi áp dụng lộ trình học tập: " + error.message);
+        // Set old roadmap isUsed to false
+        if (roadmapOldId) {
+            const { data: oldData, error: oldError } = await supabase
+                .from("roadmap")
+                .update({
+                    isUsed: false,
+                })
+                .eq("id", roadmapOldId);
+            if (oldError) throw new Error("Lỗi khi cập nhật lộ trình học tập cũ: " + oldError.message);
+            // reset icCompleted of old roadmap weeks and lessons
+            const { data: oldWeeks, error: oldWeeksError } = await supabase
+                .from("weekRoadMaps")
+                .select("id")
+                .eq("roadmap_id", roadmapOldId);
+            if (oldWeeksError) throw new Error("Lỗi khi lấy tuần lộ trình học tập cũ: " + oldWeeksError.message);
+            for (const week of oldWeeks) {
+                // reset lessons
+                const { data: lessonData, error: lessonError } = await supabase
+                    .from("lessonRoadmap")
+                    .update({
+                        isCompleted: false,
+                        completedCount: 0,
+                    })
+                    .eq("week_roadmap_id", week.id);
+                if (lessonError) throw new Error("Lỗi khi cập nhật bài học lộ trình học tập cũ: " + lessonError.message);
+
+                // reset tuần
+                const { data: weekData, error: weekError } = await supabase
+                    .from("weekRoadMaps")
+                    .update({
+                        isCompleted: false,
+                    })
+                    .eq("id", week.id);
+                if (weekError) throw new Error("Lỗi khi cập nhật tuần lộ trình học tập cũ: " + weekError.message);
+            }
+        }
+    }
 };
 
 module.exports = roadmapService;

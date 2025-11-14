@@ -102,7 +102,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -166,7 +166,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateListening(level.name_vi, topic.name_vi);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash"});
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -280,7 +280,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       // Lọc JSON thuần từ Gemini
@@ -325,7 +325,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateSpeaking(level.name_vi, topic.name_vi);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -372,7 +372,7 @@ const botCoverLearningController = {
     const prompt = promptGeneratePersonalWord(word);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -456,7 +456,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -502,7 +502,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateWordsPractice(words);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
