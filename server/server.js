@@ -40,7 +40,7 @@ const analyticsRoute = require("./routes/admin/analyticsRoute");
 
 // --- API USER --- //
 
-    console.log(`Server running on port ${PORT}`);
+console.log(`Server running on port ${PORT}`);
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/images", imageRoute);
