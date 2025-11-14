@@ -32,3 +32,13 @@ export const updateLessonCompletedCount = async (userId: string, levelId: string
     });
     return response.data;
 };
+
+// Apply roadmap for user
+export const applyRoadmapForUser = async (userId: string, roadmapId: string, roadmapOldId: string) => {
+    const response = await api.post(`/api/learning/roadmap/applyRoadmapForUser`, {
+        userId,
+        roadmapId,
+        roadmapOldId
+    });
+    return response.data;
+};

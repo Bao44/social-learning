@@ -50,6 +50,7 @@ ${JSON.stringify(exerciseList, null, 2)}
    - Với 'Listening' & 'Speaking': chọn topic trong 'exerciseList.< skill >.topics'. ví dụ Listening thì chọn trong 'exerciseList.listening.topics'.
    - 'level_en' / 'level_vi' lấy đúng tên trong 'exerciseList.< skill >.levels'.
    - Mỗi bài học phải phù hợp với **targetSkills** trong inputUser: ${inputUser.targetSkills.join(", ")}.
+   - Với mỗi bài học, topic phải đa dạng mà liên quan đến mục tiêu học viên.
 
 5. **description_vi / en** phải tóm tắt ngắn gọn mục tiêu học bài đó, ví dụ:
    - Listening – Daily Conversations → "Practice listening to common conversations to improve comprehension."

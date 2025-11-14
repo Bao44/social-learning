@@ -67,7 +67,7 @@ const roadMapController = {
             // Sinh prompt mới
             const prompt = generateRoadMap(input, profileUser, exerciseList);
 
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
             const result = await model.generateContent(prompt);
             const text = result.response.text();
 
@@ -137,6 +137,21 @@ const roadMapController = {
             return res.status(500).json({ error: "Lỗi khi cập nhật completedCount" });
         }
     },
+
+    applyRoadmapForUser: async (req, res) => {
+        try {
+            const { userId, roadmapId, roadmapOldId } = req.body;
+            if (!userId || !roadmapId || !roadmapOldId) {
+                return res.status(400).json({ error: "Thiếu userId hoặc roadmapId hoặc roadmapOldId" });
+            }
+            await roadmapService.applyRoadmapForUser(roadmapId, roadmapOldId);
+            return res.json({ message: "Áp dụng lộ trình thành công" });
+        } catch (error) {
+            console.error("❌ Lỗi khi áp dụng lộ trình:", error);
+            return res.status(500).json({ error: "Lỗi khi áp dụng lộ trình" });
+        }
+    },
+
 };
 
 module.exports = roadMapController;
