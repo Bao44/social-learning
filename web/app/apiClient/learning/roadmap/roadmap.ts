@@ -21,3 +21,24 @@ export const createRoadMapForUser = async (userId: string, input: any) => {
     });
     return response.data;
 };
+
+// Update completedCount of lessonRoadmap
+export const updateLessonCompletedCount = async (userId: string, levelId: string, topicId: string, typeExercise: string) => {
+    const response = await api.post(`/api/learning/roadmap/updateLessonCompletedCount`, {
+        userId,
+        levelId,
+        topicId,
+        typeExercise
+    });
+    return response.data;
+};
+
+// Apply roadmap for user
+export const applyRoadmapForUser = async (userId: string, roadmapId: string, roadmapOldId: string) => {
+    const response = await api.post(`/api/learning/roadmap/applyRoadmapForUser`, {
+        userId,
+        roadmapId,
+        roadmapOldId
+    });
+    return response.data;
+};

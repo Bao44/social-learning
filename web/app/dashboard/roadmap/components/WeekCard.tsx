@@ -1,21 +1,30 @@
 "use client"
 
-import { getLevelsByNameVi, getTopicsByNameVi } from "@/app/apiClient/learning/learning"
+import { getLevelsByNameVi, getTopicsByNameVi, getTypeParagraphsByNameVi } from "@/app/apiClient/learning/learning"
 import { listeningService } from "@/app/apiClient/learning/listening/listening"
+import { generateWritingParagraphByAI } from "@/app/apiClient/learning/writing/writing"
+import { useLanguage } from "@/components/contexts/LanguageContext"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
+import path from "path"
 
 type Week = {
     week: number
-    focus: string
+    focus_vi: string
+    focus_en: string
     lessons: Lesson[]
+    isCompleted?: boolean
+    isUsed?: boolean
 }
 
 type Lesson = {
     type: string
-    level: string
-    topic: string
-    description: string
+    level_vi: string
+    level_en: string
+    topic_vi: string
+    topic_en: string
+    description_vi: string
+    description_en: string
     quantity: number
     completedCount: number
     typeParagraph?: string
@@ -31,6 +40,8 @@ const WeekCard = ({
     hoveredLessonId,  // ID lesson đang hover (dùng để so sánh)
     weekNumber,       // Thêm để biết tuần lẻ/chẵn
     setPageLoading,
+    isPathUsed,
+    currentWeek
 }: {
     week: Week
     expandedWeeks: number[]
@@ -40,9 +51,13 @@ const WeekCard = ({
     hoveredLessonId: number | null
     weekNumber: number
     setPageLoading: (loading: boolean) => void
+    isPathUsed: boolean
+    currentWeek: number
 }) => {
     const isOpen = expandedWeeks.includes(week.week)
     const router = useRouter();
+    const { t, language } = useLanguage();
+    const isLocked = week.week > currentWeek
 
     const getProgressColor = (percent: number) => {
         if (percent < 25) return "from-red-500 to-orange-400"
@@ -53,28 +68,35 @@ const WeekCard = ({
 
     // Handle click options inside lesson card
     const handleLessonClickSystemExercise = async (lesson: Lesson) => {
-        const resLevels = await getLevelsByNameVi(lesson.level);
-        const resTopics = await getTopicsByNameVi(lesson.topic);
+        if (isLocked) return;
+        const resLevels = await getLevelsByNameVi(lesson.level_vi);
         if (lesson.type === "Listening") {
             // Handle Listening lesson click
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             router.push(`/dashboard/listening/list?level=${resLevels[0].slug}&topic=${resTopics[0].slug}`);
         } else if (lesson.type === "Speaking") {
             // Handle Speaking lesson click
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             localStorage.setItem("levelSlug", JSON.stringify(resLevels[0].slug));
             localStorage.setItem("topicSlug", JSON.stringify(resTopics[0].slug));
             router.push(
                 `/dashboard/speaking/lesson?level=${resLevels[0].id}&topic=${resTopics[0].id}`
             );
+        } else if (lesson.type === "Writing") {
+            // Handle Writing lesson click
+            const resTypeParagraph = await getTypeParagraphsByNameVi(lesson.topic_vi);
+            router.push(`/dashboard/writing/writing-paragraph/${resLevels[0].slug}/paragraph/${resTypeParagraph[0].slug}`);
         }
     }
 
     // Handle Generate AI
     const handleGenerateAIForLesson = async (lesson: Lesson) => {
+        if (isLocked) return;
         setPageLoading(true);
-        const resLevels = await getLevelsByNameVi(lesson.level);
-        const resTopics = await getTopicsByNameVi(lesson.topic);
+        const resLevels = await getLevelsByNameVi(lesson.level_vi);
         if (lesson.type === "Listening") {
             // Handle Listening AI generation
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             const response = await listeningService.generateListeningExerciseByAI(resLevels[0].slug, resTopics[0].slug);
             if (response && response.data && response.data.id) {
                 const listeningExerciseId = response.data.id;
@@ -84,22 +106,42 @@ const WeekCard = ({
             }
         } else if (lesson.type === "Speaking") {
             // Handle Speaking AI generation
+            const resTopics = await getTopicsByNameVi(lesson.topic_vi);
             localStorage.setItem("levelSlug", JSON.stringify(resLevels[0].slug));
             localStorage.setItem("topicSlug", JSON.stringify(resTopics[0].slug));
             router.push(
                 `/dashboard/speaking/lessonAI?level=${resLevels[0].id}&topic=${resTopics[0].id}`
             );
+        } else if (lesson.type === "Writing") {
+            // Handle Writing AI generation
+            const resTypeParagraph = await getTypeParagraphsByNameVi(lesson.topic_vi);
+            const reponse = await generateWritingParagraphByAI(
+                resLevels[0].slug,
+                resTypeParagraph[0].slug
+            );
+            if (reponse && reponse.data && reponse.data.id) {
+                const writingParagraphId = reponse.data.id;
+                router.push(
+                    `/dashboard/writing/detail/paragraph/${writingParagraphId}`
+                );
+            } else {
+                console.error("Invalid response from AI generation:", reponse);
+            }
         }
         setPageLoading(false);
     }
 
     return (
         <div
-            className={`transition-transform duration-300 cursor-pointer ${isOpen ? "scale-[1.02]" : "hover:scale-[1.01]"}`}
-            onClick={() => toggleWeek(week.week)}
+            className={`transition-transform duration-300 cursor-pointer 
+    ${isOpen && !isLocked ? "scale-[1.02]" : ""}
+    ${isLocked ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.01]"}`}
+            onClick={() => {
+                if (!isLocked) toggleWeek(week.week)
+            }}
         >
             <h2 className="font-semibold text-xl text-emerald-800 mb-3">
-                Tuần {week.week}: <span className="text-sky-700">{week.focus}</span>
+                {week.isCompleted ? "✅" : isLocked ? "🔒" : ""} {t("learning.roadmap.week")} {week.week}: <span className="text-sky-700">{week[`focus_${language}`]}</span>
             </h2>
 
             <AnimatePresence>
@@ -132,10 +174,10 @@ const WeekCard = ({
                                             <div>
                                                 <p className="font-semibold text-gray-800">
                                                     {lesson.type}{" "}
-                                                    <span className="text-sm text-gray-500">({lesson.level})</span>
+                                                    <span className="text-sm text-gray-500">({lesson[`level_${language}`]})</span>
                                                 </p>
                                                 <p className="text-sm text-gray-700 mt-1 font-medium">
-                                                    {lesson.topic}
+                                                    {lesson[`topic_${language}`]}
                                                 </p>
                                             </div>
                                         </div>
@@ -151,7 +193,7 @@ const WeekCard = ({
                                     </div>
 
                                     <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                                        {lesson.description}
+                                        {lesson[`description_${language}`]}
                                     </p>
 
                                     <div className="flex items-center gap-3 mt-3">
@@ -170,7 +212,7 @@ const WeekCard = ({
 
                                     {/* Nút hành động hiện khi hover */}
                                     <AnimatePresence>
-                                        {isLessonHovered && (
+                                        {isLessonHovered && !week.isCompleted && isPathUsed && !isLocked && (
                                             <motion.div
                                                 initial={{ opacity: 0, x: weekNumber % 2 !== 0 ? 20 : -20, scale: 0.8 }}
                                                 animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -186,13 +228,13 @@ const WeekCard = ({
                                                     onClick={() => handleGenerateAIForLesson(lesson)}
                                                     className="bg-emerald-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-emerald-600 transition text-sm font-medium whitespace-nowrap hover:cursor-pointer"
                                                 >
-                                                    Generate AI
+                                                    {t("learning.roadmap.generateWithAI")}
                                                 </button>
                                                 <button
                                                     onClick={() => handleLessonClickSystemExercise(lesson)}
                                                     className="bg-sky-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-sky-600 transition text-sm font-medium whitespace-nowrap hover:cursor-pointer"
                                                 >
-                                                    Bài tập hệ thống
+                                                    {t("learning.roadmap.startLesson")}
                                                 </button>
                                             </motion.div>
                                         )}

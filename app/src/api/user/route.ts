@@ -25,3 +25,8 @@ export const getUserByNickName = async (nickname: string) => {
   const response = await api.get(`/api/users/nickname/${nickname}`);
   return response.data;
 };
+
+export const checkUserOnline = async (userId: string) => {
+  const response = await api.get(`/api/users/${userId}/online`);
+  return response.data;
+};

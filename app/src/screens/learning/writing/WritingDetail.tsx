@@ -164,7 +164,6 @@ export default function ExerciseDetailScreen() {
 
     // (handleHistorySelect function giữ nguyên)
     const handleHistorySelect = (historyItem: any) => {
-        console.log('Selected history item:', historyItem);
         if (!historyItem) return;
         let parsedFeedback = null;
         try {

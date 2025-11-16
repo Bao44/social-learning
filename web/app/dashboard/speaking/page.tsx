@@ -34,8 +34,6 @@ export default function SpeakingPage() {
   const handleSoloPractice = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
-      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
-      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
       router.push(
         `/dashboard/speaking/lesson?level=${selectedLevel.id}&topic=${selectedTopic.id}`
       );
@@ -46,34 +44,28 @@ export default function SpeakingPage() {
   const handleSoloPracticeAI = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
-      localStorage.setItem("levelSlug", JSON.stringify(selectedLevel.slug));
-      localStorage.setItem("topicSlug", JSON.stringify(selectedTopic.slug));
       router.push(
-        `/dashboard/speaking/lessonAI?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+        `/dashboard/speaking/lessonAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
       );
     }
     setLoading(false);
   };
 
-  const handleConversationPractice = () => {
-    setLoading(true);
-    if (selectedLevel && selectedTopic) {
-      localStorage.setItem("levelId", JSON.stringify(selectedLevel.id));
-      localStorage.setItem("topicId", JSON.stringify(selectedTopic.id));
-      router.push(
-        `/dashboard/speaking/conversationPractice?level=${selectedLevel.id}&topic=${selectedTopic.id}`
-      );
-    }
-    setLoading(false);
-  };
+  // const handleConversationPractice = () => {
+  //   setLoading(true);
+  //   if (selectedLevel && selectedTopic) {
+  //     router.push(
+  //       `/dashboard/speaking/conversationPractice?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+  //     );
+  //   }
+  //   setLoading(false);
+  // };
 
   const handleConversationPracticeAI = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
-      localStorage.setItem("levelSlug", JSON.stringify(selectedLevel.slug));
-      localStorage.setItem("topicSlug", JSON.stringify(selectedTopic.slug));
       router.push(
-        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.id}&topic=${selectedTopic.id}`
+        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
       );
     }
     setLoading(false);
@@ -84,9 +76,52 @@ export default function SpeakingPage() {
     setSelectedTopic(null);
   };
 
+  if (loading) {
+    return (
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999] px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="flex flex-col items-center gap-4 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl max-w-sm w-full"
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
+              >
+                <Loader2 className="w-10 h-10 md:w-12 md:h-12 text-orange-600" />
+              </motion.div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
+                  {t("learning.creatingLesson")}
+                </span>
+                <span className="text-gray-500 text-xs md:text-sm text-center">
+                  {t("learning.pleaseWait")}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
   return (
     <>
-      <div className="flex-1 px-6 py-6 pb-36 sm:ml-10">
+      <div className="mx-auto w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-3xl xl:max-w-6xl pr-5 sm:pl-10">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <motion.div
             className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
@@ -281,59 +316,19 @@ export default function SpeakingPage() {
                         <Sparkles className="w-4 h-4 mr-2" />
                         Generate AI
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={handleConversationPractice}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
                       >
                         {t("learning.start")}
                         <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </motion.div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Loading Overlay */}
-      <AnimatePresence>
-        {loading && (
-          <motion.div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999] px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className="flex flex-col items-center gap-4 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl max-w-sm w-full"
-              initial={{ scale: 0.8, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
-                }}
-              >
-                <Loader2 className="w-10 h-10 md:w-12 md:h-12 text-orange-600" />
-              </motion.div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
-                  {t("learning.creatingLesson")}
-                </span>
-                <span className="text-gray-500 text-xs md:text-sm text-center">
-                  {t("learning.pleaseWait")}
-                </span>
-              </div>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

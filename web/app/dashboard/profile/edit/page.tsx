@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { motion } from "framer-motion";
 import useAuth from "@/hooks/useAuth";
 import { updateUserData } from "@/app/apiClient/user/user";
 import { toast } from "react-toastify";
@@ -28,6 +29,7 @@ import { useRouter } from "next/navigation";
 import { convertToDateTime } from "@/utils/formatTime";
 import { getUserImageSrc, uploadFile } from "@/app/apiClient/image/image";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { ArrowLeft } from "lucide-react";
 
 const getGenderDisplay = (gender: boolean | null | undefined): string => {
   if (gender === true) return "Nam";
@@ -150,9 +152,37 @@ export default function ProfileEditPage() {
 
       if (isLoading) return;
 
-      // Validate phone
-      if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
+      // Validate độ dài trước
+      if (formData.phone.length > 10) {
+        toast.error(t("dashboard.phoneTooLong"), { autoClose: 1500 });
+        return;
+      }
+
+      // Validate số điện thoại Việt Nam
+      // Chỉ nhận 10 chữ số và bắt đầu bằng 03, 05, 07, 08, 09
+      const vnPhoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
+
+      if (formData.phone && !vnPhoneRegex.test(formData.phone)) {
         toast.error(t("dashboard.invalidPhoneNumber"), { autoClose: 1500 });
+        return;
+      }
+
+      // Validate địa chỉ
+      if (!formData.address || formData.address.trim().length < 5) {
+        toast.error(t("dashboard.addressTooShort"), { autoClose: 1500 });
+        return;
+      }
+
+      // Regex:
+      //  - Ít nhất 1 chữ cái (A-Z hoặc có dấu tiếng Việt)
+      //  - Ít nhất 1 khoảng trắng (đảm bảo có nhiều từ)
+      //  - Chỉ chứa ký tự hợp lệ (chữ, số, khoảng trắng, ,.-/)
+      //  - Tổng thể phải "giống" một địa chỉ
+      const addressRegex =
+        /^(?=.*[A-Za-zÀ-ỹ])(?=.*\s)[A-Za-zÀ-ỹ0-9\s,.\-\/]+$/u;
+
+      if (!addressRegex.test(formData.address)) {
+        toast.error(t("dashboard.invalidAddress"), { autoClose: 1500 });
         return;
       }
 
@@ -165,8 +195,29 @@ export default function ProfileEditPage() {
       // Validate dob
       if (formData.dob) {
         const dobDate = new Date(formData.dob);
+
+        // Kiểm tra định dạng hợp lệ
         if (isNaN(dobDate.getTime())) {
           toast.error(t("dashboard.invalidDateOfBirth"), { autoClose: 1500 });
+          return;
+        }
+
+        // Tính tuổi
+        const today = new Date();
+        let age = today.getFullYear() - dobDate.getFullYear();
+        const monthDiff = today.getMonth() - dobDate.getMonth();
+        const dayDiff = today.getDate() - dobDate.getDate();
+
+        // Nếu chưa đến sinh nhật trong năm nay → trừ 1 tuổi
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          age--;
+        }
+
+        // Validate tuổi tối thiểu
+        if (age < 6) {
+          toast.error(t("dashboard.mustBeAtLeast6YearsOld"), {
+            autoClose: 1500,
+          });
           return;
         }
       }
@@ -244,10 +295,48 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md pt-6 sm:max-w-2xl lg:max-w-3xl max-xl:ml-10 max-lg:mx-auto max-md:ml-5 max-sm:ml-5 px-4">
-      <h1 className="text-xl font-bold mb-6">
-        {t("dashboard.editProfileTitle")}
-      </h1>
+    <div className="mx-auto w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-3xl pr-5 sm:pl-10">
+
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [90, 0, 90],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+      </div>
+      <div className="flex align-items-center justify-between max-sm:mt-15">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => router.back()}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-gray-700 hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl font-semibold border border-gray-200 mb-4 cursor-pointer"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          {t("dashboard.back")}
+        </motion.button>
+        <h1 className="text-xl font-bold mt-3">
+          {t("dashboard.editProfileTitle")}
+        </h1>
+      </div>
 
       {/* Avatar */}
       <div className="bg-gray-200 rounded-3xl">

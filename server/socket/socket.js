@@ -24,12 +24,17 @@ function socketInit(server) {
     });
 
     // XỬ LÝ TÍN HIỆU GỌI
-    socket.on(
-      "startCall",
-      ({ conversationId, callerId, callerName, members }) => {
-        console.log(
-          `[Socket] Cuộc gọi bắt đầu từ ${callerName} (ID: ${callerId}) trong phòng ${conversationId}`
-        );
+    socket.on("startCall", (payload) => {
+      try {
+        const { conversationId, callerId, callerName, members } = payload;
+
+        if (!conversationId || !callerId || !callerName || !members) {
+          console.error(
+            "[Socket] Lỗi startCall: Payload thiếu dữ liệu.",
+            payload
+          );
+          return;
+        }
 
         const otherMembers = members.filter((member) => member.id !== callerId);
 
@@ -41,42 +46,45 @@ function socketInit(server) {
               callerName,
               conversationId,
             });
-            console.log(`[Socket] Đã gửi incomingCall đến ${member.name}`);
           } else {
             console.log(`[Socket] User ${member.name} không online.`);
           }
         });
+      } catch (err) {
+        console.error(
+          "[Socket] LỖI TRONG KHI XỬ LÝ 'startCall':",
+          err.message,
+          payload
+        );
       }
-    );
+    });
 
     // LOGIC PHÒNG CHỜ
     socket.on("joinCallRoom", (conversationId) => {
       socket.join(`call_${conversationId}`);
-      console.log(
-        `[Socket] User ${socket.userId} đã vào phòng chờ call_${conversationId}`
-      );
     });
 
     socket.on("leaveCallRoom", (conversationId) => {
       socket.leave(`call_${conversationId}`);
-      console.log(
-        `[Socket] User ${socket.userId} đã rời phòng chờ call_${conversationId}`
-      );
     });
 
     // XỬ LÝ TỪ CHỐI CUỘC GỌI
     socket.on("declineCall", ({ conversationId, declinerId }) => {
       io.to(`call_${conversationId}`).emit("callDeclined", { declinerId });
-      console.log(
-        `[Socket] User ${declinerId} đã từ chối cuộc gọi phòng ${conversationId}`
-      );
     });
 
     socket.on("disconnect", () => {
-      console.log("🔴 User disconnected:", socket.id);
       if (socket.userId) {
-        userSockets.delete(socket.userId);
-        console.log(`[Socket] Đã xóa ${socket.userId} khỏi userSockets.`);
+        const storedSocket = userSockets.get(socket.userId);
+
+        // Chỉ xóa nếu socket bị disconnect LÀ socket đang được lưu
+        if (storedSocket && storedSocket.id === socket.id) {
+          userSockets.delete(socket.userId);
+        } else {
+          console.log(
+            `[Socket] Bỏ qua disconnect cho ${socket.userId} (socket ${socket.id}), socket mới đang hoạt động.`
+          );
+        }
       }
     });
   });

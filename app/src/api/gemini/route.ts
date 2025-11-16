@@ -1,3 +1,5 @@
+import { GOOGLE_API_KEY } from '@env';
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -15,9 +17,7 @@ interface GeminiResponse {
   }>;
 }
 
-// Thay đổi API key của bạn ở đây
-const GEMINI_API_KEY = 'AIzaSyDmtc6bXNbSkroa3NmuDOEsWJB8Qxe9pPI';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
 
 const formatMessagesForGemini = (messages: Message[]) => {
   // System prompt với hướng dẫn sử dụng markdown
@@ -36,9 +36,7 @@ const formatMessagesForGemini = (messages: Message[]) => {
 - Nếu không chắc chắn về thông tin, hãy thành thật nói rằng bạn không biết`;
 
   const conversationHistory = messages
-    .map(
-      msg => `${msg.role === 'user' ? 'Người dùng' : 'AI'}: ${msg.content}`,
-    )
+    .map(msg => `${msg.role === 'user' ? 'Người dùng' : 'AI'}: ${msg.content}`)
     .join('\n');
 
   const fullPrompt =
@@ -81,10 +79,14 @@ const formatMessagesForGemini = (messages: Message[]) => {
   };
 };
 
-export const sendMessageToGemini = async (messages: Message[]): Promise<string> => {
+export const sendMessageToGemini = async (
+  messages: Message[],
+): Promise<string> => {
   // Kiểm tra API key
-  if (!GEMINI_API_KEY) {
-    throw new Error('Thiếu API Key. Vui lòng thêm Gemini API key vào file route.ts');
+  if (!GOOGLE_API_KEY) {
+    throw new Error(
+      'Thiếu API Key. Vui lòng thêm Gemini API key vào file route.ts',
+    );
   }
 
   try {
@@ -108,7 +110,7 @@ export const sendMessageToGemini = async (messages: Message[]): Promise<string> 
 
     if (data.candidates && data.candidates[0] && data.candidates[0].content) {
       const assistantContent = data.candidates[0].content.parts?.[0]?.text;
-      
+
       if (assistantContent) {
         return assistantContent.trim();
       } else {
@@ -120,7 +122,7 @@ export const sendMessageToGemini = async (messages: Message[]): Promise<string> 
     }
   } catch (error) {
     console.error('Error in sendMessageToGemini:', error);
-    
+
     if (error instanceof Error) {
       // Ném lại lỗi để component có thể xử lý
       throw error;
@@ -132,11 +134,11 @@ export const sendMessageToGemini = async (messages: Message[]): Promise<string> 
 
 // Export thêm các hàm utility nếu cần
 export const validateApiKey = (): boolean => {
-  return GEMINI_API_KEY && GEMINI_API_KEY !== 'AIzaSyDmtc6bXNbSkroa3NmuDOEsWJB8Qxe9pPI';
+  return !!GOOGLE_API_KEY;
 };
 
 export const getApiKeyStatus = (): string => {
-  if (!GEMINI_API_KEY) {
+  if (!GOOGLE_API_KEY) {
     return 'API key chưa được thiết lập';
   }
   return 'API key đã được thiết lập';

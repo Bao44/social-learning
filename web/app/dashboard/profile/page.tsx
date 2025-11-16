@@ -8,7 +8,7 @@ import StoryHighlights from "./components/Story";
 
 export default function ProfilePage() {
   return (
-    <div className="mx-auto w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-4xl px-5">
+    <div className="mx-auto w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-3xl xl:max-w-5xl pr-5 sm:pl-10">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"

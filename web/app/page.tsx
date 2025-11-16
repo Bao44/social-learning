@@ -108,7 +108,7 @@ export default function Page() {
       setUser(null);
       localStorage.removeItem("selectedConversation");
       setSelectedConversation(null);
-      toast.success(t("logoutSuccess"), { autoClose: 1000 });
+      toast.success(t("dashboard.logoutSuccess"), { autoClose: 1000 });
     } catch (error) {
       console.error("Logout error:", error);
     }

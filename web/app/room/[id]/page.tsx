@@ -92,12 +92,10 @@ function Page() {
         },
         maxUsers: 10,
         onJoinRoom: () => {
-          console.log("[ZEGO] Đã vào phòng!");
           // Ẩn nút "Back" của bạn
           setIsInRoom(true);
         },
         onLeaveRoom: () => {
-          console.log("[ZEGO] Left room");
           setIsInRoom(false);
           setTimeout(() => {
             router.back();

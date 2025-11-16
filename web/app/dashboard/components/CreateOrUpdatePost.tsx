@@ -218,7 +218,7 @@ export function CreateOrUpdatePostModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="xl:max-w-6xl xl:h-[80vh] lg:max-w-5xl lg:h-[70vh] md:max-w-4xl md:h-[70vh] sm:max-w-2xl sm:h-[70vh] max-w-xl h-[70vh] p-0 overflow-hidden">
+      <DialogContent className="xl:max-w-6xl xl:h-[80vh] lg:max-w-5xl lg:h-[70vh] md:max-w-3xl md:h-[70vh] sm:max-w-xl sm:h-[70vh] max-w-sm h-[70vh] p-0 overflow-hidden">
         <DialogHeader className="flex flex-row items-center justify-between p-4 border-b">
           <div className="flex items-center space-x-4">
             {step === 2 && (

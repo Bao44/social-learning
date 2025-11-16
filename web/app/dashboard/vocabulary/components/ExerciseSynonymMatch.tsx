@@ -43,7 +43,21 @@ export default function ExerciseSynonymMatch({
     setMatched([]);
   }, [exercise.id]);
 
+  // Tự động submit KHI ĐÚNG
+  useEffect(() => {
+    const isCompleted = matched.length === pairs.length * 2;
+
+    // Nếu hoàn thành (đủ số cặp) VÀ chưa bị checking (tức là chưa chọn sai)
+    if (isCompleted && !isChecking) {
+      // Nếu đến được đây, nghĩa là người dùng đã ghép đúng hết
+      // mà không sai lần nào.
+      onCheck(true, "Hoàn thành ghép cặp");
+    }
+  }, [matched, pairs.length, onCheck, isChecking]);
+
   const handleSelect = (side: "a" | "b", value: string) => {
+    // Nếu đang checking (ví dụ: vừa chọn sai và đang chờ chuyển câu),
+    // hoặc từ này đã được ghép, thì không làm gì cả
     if (isChecking || matched.includes(value)) return;
 
     if (!selected) {
@@ -52,7 +66,7 @@ export default function ExerciseSynonymMatch({
     }
 
     if (selected.side === side) {
-      setSelected({ side, value }); // Đổi lựa chọn
+      setSelected({ side, value });
       return;
     }
 
@@ -62,17 +76,28 @@ export default function ExerciseSynonymMatch({
     const isMatch = pairs.some((p) => p.a === pairA && p.b === pairB);
 
     if (isMatch) {
+      // ĐÚNG: Thêm vào danh sách đã match
       setMatched([...matched, pairA, pairB]);
       setSelected(null);
     } else {
-      // Sai, kích hoạt "lắc"
+      // SAI
+      // Kích hoạt 'lắc'
       setShake(true);
-      setTimeout(() => setShake(false), 500); // Tắt lắc sau 0.5s
+      setTimeout(() => setShake(false), 500);
       setSelected(null);
+
+      // Tìm đáp án đúng để hiển thị cho người dùng
+      // Ví dụ người dùng chọn (A: "Hello", B: "Tạm biệt")
+      // pairA sẽ là "Hello". Chúng ta cần tìm cặp đúng của "Hello"
+      const correctPair = pairs.find((p) => p.a === pairA);
+      const correctAnswer = correctPair
+        ? `"${correctPair.a}" phải đi với "${correctPair.b}"`
+        : "Ghép cặp sai"; // Fallback
+
+      // Gọi onCheck(false) NGAY LẬP TỨC.
+      onCheck(false, correctAnswer);
     }
   };
-
-  const isCompleted = matched.length === pairs.length * 2;
 
   const getButtonClass = (side: "a" | "b", value: string) => {
     if (matched.includes(value)) {
@@ -82,11 +107,6 @@ export default function ExerciseSynonymMatch({
       return "bg-blue-100 border-blue-400";
     }
     return "hover:bg-gray-50 border-gray-300";
-  };
-
-  const handleCheck = () => {
-    // Trong dạng bài này, isCompleted nghĩa là đã làm đúng
-    onCheck(true, "Hoàn thành ghép cặp");
   };
 
   return (
@@ -103,7 +123,7 @@ export default function ExerciseSynonymMatch({
             <button
               key={i}
               onClick={() => handleSelect("a", value)}
-              disabled={isChecking || matched.includes(value)}
+              disabled={isChecking || matched.includes(value)} // Vẫn disable
               className={`w-full py-3 rounded-lg border-2 transition-all ${getButtonClass(
                 "a",
                 value
@@ -118,7 +138,7 @@ export default function ExerciseSynonymMatch({
             <button
               key={i}
               onClick={() => handleSelect("b", value)}
-              disabled={isChecking || matched.includes(value)}
+              disabled={isChecking || matched.includes(value)} // Vẫn disable
               className={`w-full py-3 rounded-lg border-2 transition-all ${getButtonClass(
                 "b",
                 value
@@ -129,16 +149,6 @@ export default function ExerciseSynonymMatch({
           ))}
         </div>
       </motion.div>
-
-      <div className="mt-10">
-        <button
-          onClick={handleCheck}
-          disabled={!isCompleted || isChecking}
-          className="w-full bg-green-500 text-white py-3 rounded-xl hover:bg-green-600 font-bold text-lg disabled:bg-gray-300 cursor-pointer"
-        >
-          {t("learning.check")}
-        </button>
-      </div>
     </div>
   );
 }

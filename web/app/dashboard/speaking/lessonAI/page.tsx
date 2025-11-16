@@ -7,7 +7,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -39,9 +39,14 @@ import {
   getScoreUserByUserId,
 } from "@/app/apiClient/learning/score/score";
 import useAuth from "@/hooks/useAuth";
-import { insertOrUpdateVocabularyErrors, updateMasteryScoreRPC } from "@/app/apiClient/learning/vocabulary/vocabulary";
+import {
+  insertOrUpdateVocabularyErrors,
+  updateMasteryScoreRPC,
+} from "@/app/apiClient/learning/vocabulary/vocabulary";
 import ClickToSpeak from "../../vocabulary/components/ClickToSpeak";
 import { generateSpeakingExerciseByAI } from "@/app/apiClient/learning/speaking/speaking";
+import { getLevelBySlug, getTopicBySlug } from "@/app/apiClient/learning/learning";
+import { updateLessonCompletedCount } from "@/app/apiClient/learning/roadmap/roadmap";
 
 interface Lesson {
   id: number;
@@ -52,6 +57,9 @@ function LessonAIContent() {
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const levelSlug = searchParams.get("level");
+  const topicSlug = searchParams.get("topic");
 
   const [currentSentence, setCurrentSentence] = useState<string>("");
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -74,6 +82,7 @@ function LessonAIContent() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [voiceForSentence, setVoiceForSentence] =
     useState<SpeechSynthesisVoice | null>(null);
+  const hasFetchedRef = useRef(false);
 
   const normalize = useCallback(
     (s: string) =>
@@ -223,6 +232,9 @@ function LessonAIContent() {
   }, [voices]); // Chạy lại khi voices thay đổi
 
   useEffect(() => {
+    if (hasFetchedRef.current) return; // Đã gọi rồi thì không gọi lại
+    hasFetchedRef.current = true;
+
     setIsClient(true);
     setBrowserSupports(SpeechRecognition.browserSupportsSpeechRecognition());
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -230,8 +242,6 @@ function LessonAIContent() {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener("resize", handleResize);
-    const levelSlug = JSON.parse(localStorage.getItem("levelSlug") || "null");
-    const topicSlug = JSON.parse(localStorage.getItem("topicSlug") || "null");
     if (levelSlug && topicSlug) {
       getLessonsAI(String(levelSlug), String(topicSlug));
     }
@@ -260,7 +270,7 @@ function LessonAIContent() {
         setSentenceComplete(true);
         setCompletedSentences((prev) => prev + 1);
         setCompletedLessons((prev) => new Set(prev).add(currentLessonIndex));
-        setTimeout(() => {
+        setTimeout(async () => {
           if (currentLessonIndex < lessons.length - 1) {
             setCurrentLessonIndex((idx) => idx + 1);
           } else {
@@ -288,6 +298,10 @@ function LessonAIContent() {
                   </motion.div>
                 );
               });
+              // update roadmap
+              const level = await getLevelBySlug(String(levelSlug));
+              const topic = await getTopicBySlug(String(topicSlug));
+              await updateLessonCompletedCount(user.id, String(level.id), String(topic.id), "Speaking");
             }
           }
         }, 1500);
@@ -371,6 +385,33 @@ function LessonAIContent() {
           gravity={0.3}
         />
       )}
+
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [90, 0, 90],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        />
+      </div>
 
       <motion.button
         whileHover={{ scale: 1.05 }}
@@ -799,7 +840,7 @@ function LessonAIContent() {
               setShowCelebration(false);
               router.back();
             }}
-            className="mx-auto mt-4 px-10 py-4 rounded-xl bg-white text-purple-600 hover:bg-gray-50 transition-all font-bold text-xl shadow-2xl border-2 border-purple-200"
+            className="mx-auto mt-4 px-10 py-4 rounded-xl bg-white text-purple-600 hover:bg-gray-50 transition-all font-bold text-xl shadow-2xl border-2 border-purple-200 cursor-pointer"
           >
             {t("learning.tryAnother")}
           </motion.button>

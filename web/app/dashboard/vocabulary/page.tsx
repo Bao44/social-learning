@@ -12,6 +12,7 @@ import { useLanguage } from "@/components/contexts/LanguageContext";
 import OverviewRangeView from "./components/RangeView";
 import TopicsTab from "./components/TopicsTab";
 import MasteredTab from "./components/MasteredTab";
+import { RightSidebar } from "../components/RightSidebar";
 
 export default function VocabularyPage() {
   const { t } = useLanguage();
@@ -167,236 +168,248 @@ export default function VocabularyPage() {
   };
 
   return (
-    <div className="flex-1 px-6 py-6 pb-20 sm:ml-10">
-      {/* Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div
-          className="absolute -bottom-30 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
+    <>
+      <div className="mx-auto w-full max-w-md pt-4 pb-8 sm:max-w-2xl lg:max-w-3xl xl:max-w-6xl pr-5 sm:pl-10">
+        {/* Background */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div
+            className="absolute -bottom-30 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+            animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-4 mb-4">
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Header Section */}
+          <motion.div
+            className="flex flex-col items-center justify-center text-center gap-3 md:gap-4 mt-4 md:mt-8 relative z-10 mb-6"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <motion.div
-              className="p-4 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl shadow-lg"
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 400 }}
+              className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl md:rounded-3xl shadow-lg"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ duration: 0.3 }}
             >
-              <BookOpen className="w-8 h-8 text-white" />
+              <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </motion.div>
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                {t("learning.myVocabulary")}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                {t("learning.myVocabularyDescription")}
-              </p>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Stats Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
-        >
-          <motion.div
-            whileHover={{ scale: 1.02, y: -4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-orange-100"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  {t("learning.totalWords")}
-                </p>
-                <p className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                  {totalWords}
-                </p>
-              </div>
-              <div className="p-3 bg-gradient-to-br from-orange-500/20 to-pink-500/20 rounded-xl">
-                <BookOpen className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
+            <motion.h1
+              className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              {t("learning.myVocabulary")}
+            </motion.h1>
+
+            <motion.p
+              className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl px-4 leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              {t("learning.myVocabularyDescription")}
+            </motion.p>
           </motion.div>
 
+          {/* Stats Cards */}
           <motion.div
-            whileHover={{ scale: 1.02, y: -4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-green-100"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  {t("learning.averageMastery")}
-                </p>
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  {averageMastery}%
-                </p>
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-orange-100"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {t("learning.totalWords")}
+                  </p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                    {totalWords}
+                  </p>
+                </div>
+                <div className="p-3 bg-gradient-to-br from-orange-500/20 to-pink-500/20 rounded-xl">
+                  <BookOpen className="w-6 h-6 text-orange-600" />
+                </div>
               </div>
-              <div className="p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-green-100"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {t("learning.averageMastery")}
+                  </p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    {averageMastery}%
+                  </p>
+                </div>
+                <div className="p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                </div>
               </div>
-            </div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-yellow-100"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {t("learning.needReview")}
+                  </p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                    {wordsToReview}
+                  </p>
+                </div>
+                <div className="p-3 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl">
+                  <AlertCircle className="w-6 h-6 text-yellow-600" />
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02, y: -4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-yellow-100"
+          {/* Tabs */}
+
+          <Tabs
+            defaultValue="overview"
+            className="relative z-10"
+            onValueChange={(v) => {
+              setActiveTab(v);
+              if (v !== "topics") setSelectedTopic(null);
+            }}
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  {t("learning.needReview")}
-                </p>
-                <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                  {wordsToReview}
-                </p>
-              </div>
-              <div className="p-3 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl">
-                <AlertCircle className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+            <TabsList className="bg-white/80 backdrop-blur-sm rounded-4xl p-6 border border-gray-200 mb-4 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto flex justify-center gap-4 shadow-md">
+              <TabsTrigger
+                value="overview"
+                className="cursor-pointer text-sm sm:text-lg p-4 rounded-2xl"
+              >
+                {t("learning.overview")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="mastered"
+                className="cursor-pointer text-sm sm:text-lg p-4 rounded-2xl"
+              >
+                {t("learning.mastered")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="topics"
+                className="cursor-pointer text-sm sm:text-lg p-4 rounded-2xl"
+              >
+                {t("learning.byTopic")}
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Tabs */}
-        <Tabs
-          defaultValue="overview"
-          className="relative z-10"
-          onValueChange={(v) => {
-            setActiveTab(v);
-            if (v !== "topics") setSelectedTopic(null);
-          }}
-        >
-          <TabsList className="bg-white/80 backdrop-blur-sm rounded-4xl p-6 border border-gray-200 mb-4">
-            <TabsTrigger
-              value="overview"
-              className="cursor-pointer text-lg p-4 rounded-2xl"
-            >
-              {t("learning.overview")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="mastered"
-              className="cursor-pointer text-lg p-4 rounded-2xl"
-            >
-              {t("learning.mastered")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="topics"
-              className="cursor-pointer text-lg p-4 rounded-2xl"
-            >
-              {t("learning.byTopic")}
-            </TabsTrigger>
-          </TabsList>
+            {/* TAB 1: Overview */}
+            <TabsContent value="overview">
+              {selectedTopic ? (
+                <OverviewRangeView
+                  t={t}
+                  topicKey={selectedTopic}
+                  listPersonalVocab={listPersonalVocab}
+                  speakWord={speakWord}
+                  onBack={() => setSelectedTopic(null)}
+                  onSelectWord={(id) =>
+                    window.open(`/dashboard/vocabulary/${id}`, "_blank")
+                  }
+                />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      key: "low",
+                      title: `${t("learning.urgentReview")}`,
+                      count: lowCount,
+                      bg: "from-red-500/20 to-pink-500/20",
+                      icon: AlertCircle,
+                    },
+                    {
+                      key: "mid",
+                      title: `${t("learning.inProgress")}`,
+                      count: midCount,
+                      bg: "from-yellow-500/20 to-orange-500/20",
+                      icon: TrendingUp,
+                    },
+                    {
+                      key: "high",
+                      title: `${t("learning.wellMastered")}`,
+                      count: highCount,
+                      bg: "from-green-500/20 to-emerald-500/20",
+                      icon: BookOpen,
+                    },
+                  ].map((card) => {
+                    const Icon = card.icon;
+                    return (
+                      <motion.div
+                        key={card.key}
+                        whileHover={{ scale: 1.03, y: -6 }}
+                        onClick={() => setSelectedTopic(card.key)}
+                        className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group"
+                      >
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${card.bg} opacity-0 group-hover:opacity-100 transition-opacity`}
+                        />
+                        <div className="relative z-10 flex items-center justify-between">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-800">
+                              {card.title}
+                            </h3>
+                            <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
+                              {loading ? "…" : card.count}
+                            </p>
+                          </div>
+                          <div className="p-3 bg-white/50 rounded-xl">
+                            <Icon className="w-7 h-7 text-gray-700" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
 
-          {/* TAB 1: Overview */}
-          <TabsContent value="overview">
-            {selectedTopic ? (
-              <OverviewRangeView
-                t={t}
-                topicKey={selectedTopic}
+            {/* TAB 2: Mastered */}
+            <TabsContent value="mastered">
+              <MasteredTab
+                user={user}
                 listPersonalVocab={listPersonalVocab}
+                loading={loading}
+                t={t}
                 speakWord={speakWord}
-                onBack={() => setSelectedTopic(null)}
-                onSelectWord={(id) =>
-                  window.open(`/dashboard/vocabulary/${id}`, "_blank")
-                }
+                renderLoadingSkeleton={renderLoadingSkeleton}
+                renderEmptyState={renderEmptyState}
               />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    key: "low",
-                    title: `${t("learning.urgentReview")}`,
-                    count: lowCount,
-                    bg: "from-red-500/20 to-pink-500/20",
-                    icon: AlertCircle,
-                  },
-                  {
-                    key: "mid",
-                    title: `${t("learning.inProgress")}`,
-                    count: midCount,
-                    bg: "from-yellow-500/20 to-orange-500/20",
-                    icon: TrendingUp,
-                  },
-                  {
-                    key: "high",
-                    title: `${t("learning.wellMastered")}`,
-                    count: highCount,
-                    bg: "from-green-500/20 to-emerald-500/20",
-                    icon: BookOpen,
-                  },
-                ].map((card) => {
-                  const Icon = card.icon;
-                  return (
-                    <motion.div
-                      key={card.key}
-                      whileHover={{ scale: 1.03, y: -6 }}
-                      onClick={() => setSelectedTopic(card.key)}
-                      className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group"
-                    >
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-br ${card.bg} opacity-0 group-hover:opacity-100 transition-opacity`}
-                      />
-                      <div className="relative z-10 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-800">
-                            {card.title}
-                          </h3>
-                          <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
-                            {loading ? "…" : card.count}
-                          </p>
-                        </div>
-                        <div className="p-3 bg-white/50 rounded-xl">
-                          <Icon className="w-7 h-7 text-gray-700" />
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            )}
-          </TabsContent>
+            </TabsContent>
 
-          {/* TAB 2: Mastered */}
-          <TabsContent value="mastered">
-            <MasteredTab
-              user={user}
-              listPersonalVocab={listPersonalVocab}
-              loading={loading}
-              t={t}
-              speakWord={speakWord}
-              renderLoadingSkeleton={renderLoadingSkeleton}
-              renderEmptyState={renderEmptyState}
-            />
-          </TabsContent>
-
-          {/* TAB 3: Topics */}
-          <TabsContent value="topics">
-            <TopicsTab
-              loading={loading}
-              user={user}
-              t={t}
-              renderLoadingSkeleton={renderLoadingSkeleton}
-              renderEmptyState={renderEmptyState}
-            />
-          </TabsContent>
-        </Tabs>
+            {/* TAB 3: Topics */}
+            <TabsContent value="topics">
+              <TopicsTab
+                loading={loading}
+                user={user}
+                t={t}
+                renderLoadingSkeleton={renderLoadingSkeleton}
+                renderEmptyState={renderEmptyState}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,21 +1,28 @@
 module.exports = (level, topic) => `
-Bạn là một chuyên gia ngôn ngữ Anh. Hãy giúp tôi tạo một bài tập nghe(một đoạn văn hoặc một đoạn hội thoại) bằng tiếng Anh.
+Bạn là một chuyên gia ngôn ngữ Anh. Hãy giúp tôi tạo một bài tập nghe (một đoạn văn hoặc một đoạn hội thoại) bằng tiếng Anh.
+
 Yêu cầu:
-1. Bài tập nghe phải phù hợp với trình độ ${level}). Với level càng cao thì mật độ từ vựng ẩn càng nhiều và độ khó nghe càng cao.
+1. Bài tập nghe phải phù hợp với trình độ ${level}.
 2. Bài tập nghe phải liên quan đến chủ đề ${topic}.
-3. Bài tập nghe nên theo dạng của toeic, ielts, cambridge.
-4. Bài tập nghe nên có nhiều từ đục lỗ hơn. Bao gồm cả danh từ, động từ, tính từ, trạng từ, giới từ, liên từ, động từ to be, động từ khiếm khuyết và những từ phổ biến khác.
-Trả lời bằng định dạng JSON với cấu trúc sau:
+3. Bài tập nghe nên theo dạng của TOEIC, IELTS hoặc Cambridge.
+
+YÊU CẦU QUAN TRỌNG VỀ ĐỊNH DẠNG:
+Bạn PHẢI trả lời bằng một đối tượng JSON duy nhất, không có bất kỳ văn bản nào khác.
+
+Cấu trúc JSON bắt buộc phải như sau:
 {
-"title_en": "Tiêu đề ngắn gọn cho bài tập nghe bằng tiếng Anh",
-"title_vi": "Tiêu đề ngắn gọn cho bài tập nghe bằng tiếng Việt",
-"description": "Mô tả ngắn gọn về bài tập nghe bằng tiếng Việt",
-"text_content": "Nội dung bài tập nghe bằng tiếng Anh(bản gốc, không đánh dấu chỗ trống đục lỗ)",
-"word_hiddens": ["Danh sách các từ bị ẩn(chỗ trống đục lỗ) trong bài tập nghe"],
+  "title_en": "Tiêu đề ngắn gọn cho bài tập nghe bằng tiếng Anh",
+  "title_vi": "Tiêu đề ngắn gọn cho bài tập nghe bằng tiếng Việt",
+  "description": "Mô tả ngắn gọn về bài tập nghe bằng tiếng Việt",
+  "text_content": "NỘI DUNG GỐC của bài nghe. Đây PHẢI LÀ một đoạn văn bản sạch, đầy đủ, không có lỗi chính tả, không dính chữ và TUYỆT ĐỐI KHÔNG được chứa bất kỳ ký tự đục lỗ nào (như __1__ hay [...]). Toàn bộ nội dung bài nghe phải nằm ở đây để tôi có thể tạo file audio.",
+  "word_hiddens": [
+    "Danh sách các từ sẽ bị ẩn. Bạn phải chọn nhiều từ từ 'text_content' để đưa vào đây.",
+    "Hãy chọn đa dạng các loại từ: danh từ, động từ, tính từ, trạng từ, giới từ, liên từ, to be, động từ khiếm khuyết, v.v.",
+    "Mật độ từ ẩn (số lượng từ trong mảng này) phải phù hợp với trình độ ${level}."
+  ]
 }
 
-Đây là một ví dụ hoàn hảo về kết quả tôi mong muốn:
-
+VÍ DỤ HOÀN HẢO:
 {
   "title_en": "Planning a Weekend Trip",
   "title_vi": "Lên kế hoạch cho chuyến đi cuối tuần",
@@ -24,5 +31,10 @@ Trả lời bằng định dạng JSON với cấu trúc sau:
   "word_hiddens": ["plan", "next", "weekend", "break", "work", "wonderful", "idea", "have", "mind", "considering", "mountains", "beach", "options", "appealing", "forecast", "sunny", "perfect", "destination", "prefer", "relax", "sand", "swim", "ocean"]
 }
 
-Bây giờ, hãy tạo một bài tập mới dựa trên yêu cầu và ví dụ trên.
+LƯU Ý CUỐI CÙNG (RẤT QUAN TRỌNG):
+- KHÔNG được chèn các ký tự như '__1__', '__2__' vào trường 'text_content'.
+- Trường 'text_content' phải là văn bản gốc, đầy đủ để tôi có thể dùng nó tạo file audio.
+- Trường 'word_hiddens' phải là một mảng (Array) các chuỗi (String) được lấy từ 'text_content'.
+
+Bây giờ, hãy tạo bài tập mới cho chủ đề '${topic}' và trình độ '${level}'.
 `;

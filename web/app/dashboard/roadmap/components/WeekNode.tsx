@@ -2,15 +2,20 @@ import { motion } from "framer-motion"
 
 type Week = {
     week: number
-    focus: string
+    focus_vi: string
+    focus_en: string
     lessons: Lesson[]
+    isCompleted?: boolean
 }
 
 type Lesson = {
     type: string
-    level: string
-    topic: string
-    description: string
+    level_vi: string
+    level_en: string
+    topic_vi: string
+    topic_en: string
+    description_vi: string
+    description_en: string
     quantity: number
     completedCount: number
     typeParagraph?: string

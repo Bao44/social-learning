@@ -102,7 +102,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -166,7 +166,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateListening(level.name_vi, topic.name_vi);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash"});
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -280,7 +280,7 @@ const botCoverLearningController = {
     );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       // Lọc JSON thuần từ Gemini
@@ -310,11 +310,22 @@ const botCoverLearningController = {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Lấy thông tin level từ Supabase
+    const level = await learningService.getLevelBySlug(level_slug);
+    if (!level) {
+      return res.status(400).json({ error: "Invalid level_slug" });
+    }
+    // Lấy thông tin topic từ Supabase
+    const topic = await learningService.getTopicBySlug(topic_slug);
+    if (!topic) {
+      return res.status(400).json({ error: "Invalid topic_slug" });
+    }
+
     // Prompt để gọi Gemini
-    const prompt = promptGenerateSpeaking(level_slug, topic_slug);
+    const prompt = promptGenerateSpeaking(level.name_vi, topic.name_vi);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -361,7 +372,7 @@ const botCoverLearningController = {
     const prompt = promptGeneratePersonalWord(word);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -427,11 +438,25 @@ const botCoverLearningController = {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Lấy thông tin level từ Supabase
+    const level = await learningService.getLevelBySlug(level_slug);
+    if (!level) {
+      return res.status(400).json({ error: "Invalid level_slug" });
+    }
+    // Lấy thông tin topic từ Supabase
+    const topic = await learningService.getTopicBySlug(topic_slug);
+    if (!topic) {
+      return res.status(400).json({ error: "Invalid topic_slug" });
+    }
+
     // Prompt để gọi Gemini
-    const prompt = promptGenerateConversationPractice(level_slug, topic_slug);
+    const prompt = promptGenerateConversationPractice(
+      level.name_vi,
+      topic.name_vi
+    );
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();
@@ -477,7 +502,7 @@ const botCoverLearningController = {
     const prompt = promptGenerateWordsPractice(words);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const result = await model.generateContent(prompt);
 
       const text = result.response.text();

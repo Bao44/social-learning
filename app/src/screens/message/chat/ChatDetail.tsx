@@ -1,168 +1,3 @@
-// import { useEffect, useState } from "react";
-// import useAuth from "../../../../hooks/useAuth";
-// import { getSocket } from "../../../../socket/socketClient";
-// import { fetchMessages, markMessagesAsRead, sendMessage } from "../../../api/chat/message/route";
-// import MessageSender from "./components/MessageSender";
-// import MessageReceiver from "./components/MessageReceiver";
-// import { hp } from "../../../../helpers/common";
-// import { ArrowLeft, Info, Paperclip, Phone, Smile, Video } from "lucide-react-native";
-// import { Text, TextInput, View, TouchableOpacity, ScrollView, FlatList } from "react-native";
-// import { useRoute, useNavigation } from '@react-navigation/native';
-
-// const ChatDetail = () => {
-//     const route = useRoute<any>();
-//     const navigation = useNavigation();
-//     const { conversation } = route.params;
-//     const [text, setText] = useState<string>("");
-//     const { user } = useAuth();
-//     const [files, setFiles] = useState<File[]>([]);
-//     const [messages, setMessages] = useState<any[]>([]);
-
-//     // Lắng nghe sự kiện tin nhắn mới từ socket
-//     useEffect(() => {
-//         const socket = getSocket();
-//         const conversationId = conversation?.id;
-//         if (conversationId) {
-//             console.log("User joined conversation:", conversationId);
-//             socket.emit("joinRoom", conversationId);
-//         }
-
-//         socket.on("newMessage", (newMessage: any) => {
-//             console.log("New message received:", newMessage);
-//             setMessages(prev => [newMessage, ...prev]);
-//             if (newMessage.senderId !== user?.id && conversation && user) {
-//                 markMessagesAsRead(conversation.id, user.id);
-//             }
-//         });
-
-//         socket.on("markMessagesAsRead", ({ userId, seenAt, messageIds }: { userId: string, seenAt: string, messageIds: string[] }) => {
-//             setMessages(prevMessages => prevMessages.map(msg => {
-//                 if (messageIds.includes(msg._id)) {
-//                     if (!msg.seens.some((seen: { userId: string }) => seen.userId === userId)) {
-//                         msg.seens.push({ userId, seenAt });
-//                     }
-//                 }
-//                 return msg;
-//             }));
-//         });
-
-//         return () => {
-//             socket.off("newMessage");
-//             socket.off("markMessagesAsRead");
-//             if (conversationId) {
-//                 socket.emit("leaveRoom", conversationId);
-//             }
-//         };
-//     }, [user?.id, conversation?.id]);
-
-//     // Lấy tin nhắn từ server
-//     useEffect(() => {
-//         const fetchDataMessages = async () => {
-//             const conversationId = conversation?.id;
-//             if (!conversationId) return;
-//             const data = await fetchMessages(conversationId);
-//             setMessages(data);
-//             if (user) {
-//                 await markMessagesAsRead(conversationId, user.id);
-//             }
-//         };
-//         fetchDataMessages();
-//     }, [conversation?.id]);
-
-//     // Gửi tin nhắn
-//     const handleSendMessage = async () => {
-//         if (text.trim() === "" && files.length === 0) return;
-//         if (!user) return;
-//         const formData = new FormData();
-//         formData.append("conversationId", conversation?.id || "");
-//         formData.append("senderId", user.id);
-//         if (text) formData.append("text", text);
-//         if (files.length > 0) {
-//             files.forEach(f => formData.append("files", f));
-//         }
-
-//         const res = await sendMessage({
-//             conversationId: conversation?.id || "",
-//             senderId: user.id,
-//             text,
-//             files
-//         });
-//         setText("");
-//     };
-
-//     return (
-//         <View className="flex-1 bg-white">
-//             {/* Chat header */}
-//             <View className="flex-row items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
-//                 <View className="flex flex-row items-center justify-between w-full">
-//                     <View className="flex-row items-center gap-3">
-//                         <ArrowLeft size={28} className="text-gray-600" onPress={() => navigation.goBack()} />
-//                         <Text className="text-lg font-semibold text-gray-800">
-//                             {conversation?.type === "private"
-//                                 ? conversation?.members.filter((member: { id: string }) => member.id !== user?.id)[0]?.name
-//                                 : conversation?.name || `Bạn, ${conversation?.members.filter((m: { id: string }) => m.id !== user?.id).map((m: { name: string }) => m.name).join(", ")}`}
-//                         </Text>
-//                     </View>
-//                     <View className="flex flex-row items-center gap-6">
-//                         {conversation?.type === "private" && <Phone size={24} className="text-gray-500" />}
-//                         <Video size={28} className="text-gray-500" />
-//                         <Info size={28} className="text-gray-500" />
-//                     </View>
-//                 </View>
-//             </View>
-
-//             {/* Chat messages */}
-//             <FlatList
-//                 data={messages}
-//                 keyExtractor={(item) => item?._id}
-//                 renderItem={({ item }) => (
-//                     <View key={item?._id} className="mb-2">
-//                         {item?.senderId === user?.id ? (
-//                             <MessageSender message={item} />
-//                         ) : (
-//                             <MessageReceiver message={item} />
-//                         )}
-//                     </View>
-//                 )}
-//                 inverted
-//                 contentContainerStyle={{ padding: 12 }}
-//             />
-
-//             {/* Input area */}
-//             <View style={{ height: hp(10) }} className="flex-row items-start gap-3 p-3 border-t border-gray-200 bg-white">
-//                 <View className="flex flex-row items-center gap-3">
-//                     <TouchableOpacity onPress={() => console.log("Smile clicked")}>
-//                         <Smile className="text-gray-500 w-6 h-6" />
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => console.log("Paperclip clicked")}>
-//                         <Paperclip className="text-gray-500 w-6 h-6" />
-//                     </TouchableOpacity>
-//                     <TextInput
-//                         placeholder="Nhập tin nhắn..."
-//                         className="flex-1 p-3 bg-gray-100 rounded-lg text-gray-800"
-//                         value={text}
-//                         onChangeText={setText}
-//                         onKeyPress={(e) => {
-//                             if (e.nativeEvent.key === "Enter") {
-//                                 e.preventDefault?.();
-//                                 handleSendMessage();
-//                             }
-//                         }}
-//                     />
-//                     <TouchableOpacity
-//                         onPress={handleSendMessage}
-//                         className="px-4 py-2 bg-blue-500 rounded-lg"
-//                     >
-//                         <Text className="text-white font-medium">Gửi</Text>
-//                     </TouchableOpacity>
-//                 </View>
-//             </View>
-//         </View>
-//     );
-// };
-
-// export default ChatDetail;
-
 import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import { getSocket } from '../../../../socket/socketClient';
@@ -193,18 +28,25 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import { checkUserOnline } from '../../../api/user/route';
+import Toast from 'react-native-toast-message';
 
 const ChatDetail = () => {
   const route = useRoute<any>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const { conversation } = route.params;
   const [text, setText] = useState<string>('');
   const { user } = useAuth();
   const [files, setFiles] = useState<File[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+
+  const [onlineStatus, setOnlineStatus] = useState<boolean>(false);
+  const [offlineTime, setOfflineTime] = useState<string | null>(null);
+  const [loadingStatus, setLoadingStatus] = useState<boolean>(true);
 
   // Lắng nghe sự kiện tin nhắn mới từ socket
   useEffect(() => {
@@ -272,6 +114,53 @@ const ChatDetail = () => {
     fetchDataMessages();
   }, [conversation?.id]);
 
+  useEffect(() => {
+    const checkOnlineStatus = async () => {
+      if (!conversation?.members || !user) return;
+      setLoadingStatus(true); // Bắt đầu loading
+
+      const otherMembers = conversation.members.filter(
+        (m: any) => m.id !== user?.id,
+      );
+
+      if (conversation.type === 'private') {
+        if (otherMembers.length > 0) {
+          const otherMember = otherMembers[0];
+          try {
+            const res = await checkUserOnline(otherMember.id);
+            setOnlineStatus(res.data.isOnline);
+            setOfflineTime(res.data.isOnline ? null : res.data.offlineTime);
+          } catch (error) {
+            console.error('Failed to check user online status:', error);
+            setOnlineStatus(false);
+            setOfflineTime(null);
+          }
+        }
+      } else {
+        if (otherMembers.length > 0) {
+          try {
+            const statusPromises = otherMembers.map((member: any) =>
+              checkUserOnline(member.id),
+            );
+            const statusResults = await Promise.all(statusPromises);
+            const isAnyoneOnline = statusResults.some(res => res.data.isOnline);
+            setOnlineStatus(isAnyoneOnline);
+            setOfflineTime(null);
+          } catch (error) {
+            console.error('Failed to check group online status:', error);
+            setOnlineStatus(false);
+            setOfflineTime(null);
+          }
+        }
+      }
+      setLoadingStatus(false);
+    };
+
+    checkOnlineStatus();
+    const unsubscribe = navigation.addListener('focus', checkOnlineStatus);
+    return unsubscribe;
+  }, [conversation, user?.id, navigation]);
+
   // Gửi tin nhắn
   const handleSendMessage = async () => {
     if (text.trim() === '' && files.length === 0) return;
@@ -291,6 +180,31 @@ const ChatDetail = () => {
       files,
     });
     setText('');
+  };
+
+  const handleStartCall = () => {
+    if (!onlineStatus) {
+      const message =
+        conversation?.type === 'private'
+          ? 'Người dùng không online'
+          : 'Thành viên không online';
+      Toast.show({ type: 'info', text1: message });
+      return;
+    }
+    const socket = getSocket();
+    const callPayload = {
+      conversationId: conversation?.id,
+      callerId: user?.id,
+      callerName: user?.name,
+      members: conversation?.members,
+    };
+
+    socket.emit('startCall', callPayload);
+    
+    navigation.navigate('ConferenceCall', {
+      userID: user?.id,
+      conferenceID: conversation?.id,
+    });
   };
 
   const getConversationName = () => {
@@ -317,7 +231,6 @@ const ChatDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header với gradient */}
       <LinearGradient
         colors={['#667eea', '#764ba2']}
         start={{ x: 0, y: 0 }}
@@ -338,31 +251,44 @@ const ChatDetail = () => {
               <Text style={styles.headerTitle} numberOfLines={1}>
                 {getConversationName()}
               </Text>
-              {getMemberCount() && (
+
+              {loadingStatus ? (
+                <ActivityIndicator
+                  size="small"
+                  color="#ffffff"
+                  style={{ alignSelf: 'flex-start' }}
+                />
+              ) : conversation?.type === 'private' ? (
+                <View style={styles.statusContainer}>
+                  <View
+                    style={[
+                      styles.statusDot,
+                      onlineStatus ? styles.statusOnline : styles.statusOffline,
+                    ]}
+                  />
+                  <Text style={styles.headerSubtitle}>
+                    {onlineStatus
+                      ? 'Đang hoạt động'
+                      : offlineTime || 'Ngoại tuyến'}
+                  </Text>
+                </View>
+              ) : getMemberCount() ? (
                 <Text style={styles.headerSubtitle}>
                   {getMemberCount()} thành viên
                 </Text>
-              )}
+              ) : null}
             </View>
           </View>
 
           <View style={styles.headerActions}>
-            {conversation?.type === 'private' && (
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => console.log('Phone clicked')}
-                activeOpacity={0.8}
-              >
-                <Phone size={20} color="#fff" />
-              </TouchableOpacity>
-            )}
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => console.log('Video clicked')}
+              onPress={handleStartCall}
               activeOpacity={0.8}
             >
-              <Video size={20} color="#fff" />
+              <Phone size={20} color="#fff" />
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => console.log('Info clicked')}
@@ -374,9 +300,7 @@ const ChatDetail = () => {
         </View>
       </LinearGradient>
 
-      {/* Content */}
       <View style={styles.content}>
-        {/* Chat messages */}
         <FlatList
           data={messages}
           keyExtractor={item => item?._id}
@@ -394,7 +318,7 @@ const ChatDetail = () => {
           showsVerticalScrollIndicator={false}
         />
 
-        {/* Input area */}
+        {/* Input area (Giữ nguyên) */}
         <View style={styles.inputSection}>
           <View style={styles.inputContainer}>
             <View style={styles.inputRow}>
@@ -482,15 +406,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 16,
   },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
   headerInfo: {
     flex: 1,
   },
@@ -518,12 +433,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Status (Mới)
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    gap: 6,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  statusOnline: {
+    backgroundColor: '#22C55E', // green-500
+  },
+  statusOffline: {
+    backgroundColor: '#EF4444', // red-500
+  },
+  // Content (Giữ nguyên)
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
     marginTop: -12,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    overflow: 'hidden', // Quan trọng để bo góc
   },
   messageContainer: {
     marginBottom: 8,
@@ -532,6 +467,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
+  // Input (Giữ nguyên)
   inputSection: {
     backgroundColor: '#ffffff',
     paddingHorizontal: 16,

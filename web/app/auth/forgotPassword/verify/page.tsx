@@ -54,6 +54,10 @@ export default function VerifyPage() {
       toast.warning(t("auth.enterOtp"), { autoClose: 1000 });
       return;
     }
+    if (/\D/.test(otp)) {
+      toast.warning(t("auth.otpDigitsOnly"), { autoClose: 1000 });
+      return;
+    }
 
     try {
       const email = JSON.parse(localStorage.getItem("email") || '""');
