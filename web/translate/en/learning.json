@@ -322,5 +322,22 @@
   "aiComments": "AI Comments",
   "better": "Better",
   "analyzingConversationPatterns": "Analyzing conversation patterns...",
-  "noSummaryAvailable": "No summary available yet. Finish the conversation to see the report."
+  "noSummaryAvailable": "No summary available yet. Finish the conversation to see the report.",
+  "continue": "Continue",
+  "confirmationNotification": "Confirmation Notification",
+  "confirmationMessage": "Do you agree to spend",
+  "confirmationQuestion": "snowflakes to use this AI feature?",
+  "confirmationBalance": "Your current balance is",
+  "confirmationBalance1": " snowflakes. You need",
+  "confirmationBalance2": " to continue.",
+  "confirmationPurchaseLimit": "You are only allowed to purchase additional turns once in this session!",
+  "end": "End",
+  "unlock": "Unlock",
+  "unlockConversation": "Unlock Conversation",
+  "continueConversation": "Continue this interesting conversation!",
+  "turnsToBuy": "Number of turns to buy",
+  "maxTurns": "Maximum 10 turns",
+  "totalCost": "Total cost:",
+  "processing": "Processing...",
+  "purchaseAndUnlock": "Purchase & Unlock"
 }

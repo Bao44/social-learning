@@ -18,6 +18,8 @@ import {
   Sparkles,
   MessageSquare,
   ArrowLeft,
+  Lock,
+  Ban,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAISpeech, useRepeatSpeech, useGoogleVoices } from "@/hooks/useTTS";
@@ -26,6 +28,8 @@ import { SettingsModal } from "./SettingsModal";
 import { TranscriptModal } from "./TranscriptModal";
 import { Feedback, LoadedTopic } from "@/types/VoiceRealTimeType";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { toast } from "react-toastify";
+import { ExtendTurnModal } from "./ExtendTurnModal";
 
 interface ActiveChatProps {
   topic: string | null;
@@ -61,7 +65,8 @@ export const ActiveChatSession = ({
     : "Tutor";
 
   const [userTurnCount, setUserTurnCount] = useState(0);
-  const maxTurns = 6;
+  const [maxTurns, setMaxTurns] = useState(5);
+  const [hasPurchased, setHasPurchased] = useState(false);
   const isChatLocked = userTurnCount >= maxTurns;
 
   const [selectedVoice, setSelectedVoice] =
@@ -76,6 +81,7 @@ export const ActiveChatSession = ({
   const [showSettings, setShowSettings] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const [showMission, setShowMission] = useState(true);
+  const [showExtendModal, setShowExtendModal] = useState(false);
 
   const [loadingStates, setLoadingStates] = useState({
     translateId: null as string | null,
@@ -250,6 +256,21 @@ export const ActiveChatSession = ({
   }, [listening, transcript, isChatLocked]);
 
   const handleMicClick = useCallback(() => {
+    // Trường hợp bị khóa (Hết lượt)
+    if (isChatLocked) {
+      if (hasPurchased) {
+        // Nếu đã mua 1 lần rồi -> Không cho mua nữa -> Thông báo
+        toast.info(t("learning.confirmationPurchaseLimit"), {
+          autoClose: 1500,
+        });
+        return;
+      }
+
+      // Nếu chưa mua lần nào -> Mở modal
+      setShowExtendModal(true);
+      return;
+    }
+
     if (listening) {
       SpeechRecognition.stopListening();
     } else {
@@ -257,7 +278,15 @@ export const ActiveChatSession = ({
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true, language: "en-US" });
     }
-  }, [listening, resetTranscript]);
+  }, [listening, resetTranscript, isChatLocked, hasPurchased]); // Thêm hasPurchased vào dependency
+
+  const handleExtendSuccess = (addedTurns: number) => {
+    setMaxTurns((prev) => prev + addedTurns);
+    setHasPurchased(true);
+    toast.success(`Bạn đã mua thêm ${addedTurns} lượt!`, {
+      autoClose: 1000,
+    });
+  };
 
   if (!isClient)
     return (
@@ -459,9 +488,16 @@ export const ActiveChatSession = ({
         <div className="relative max-w-4xl mx-auto w-full px-6 pb-6 pt-10 flex items-end justify-between gap-4">
           {/* Left: Tools */}
           <div className="flex flex-col gap-3 mb-2 pointer-events-auto">
-            <div className="bg-white/80 backdrop-blur text-slate-500 px-3 py-1 rounded-full text-xs font-bold border border-slate-200 w-fit shadow-sm">
+            <div
+              className={`backdrop-blur px-3 py-1 rounded-full text-xs font-bold border w-fit shadow-sm transition-colors ${
+                isChatLocked
+                  ? "bg-red-100 text-red-600 border-red-200"
+                  : "bg-white/80 text-slate-500 border-slate-200"
+              }`}
+            >
               {userTurnCount}/{maxTurns} {t("learning.turns")}
             </div>
+
             <button
               onClick={handleHint}
               disabled={isChatLocked || loadingStates.hint}
@@ -493,14 +529,35 @@ export const ActiveChatSession = ({
             )}
             <button
               onClick={handleMicClick}
-              disabled={isChatLocked}
               className={`relative z-10 w-20 h-20 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 border-4 border-white ${
                 listening
                   ? "bg-gradient-to-r from-rose-500 to-red-600 scale-110 shadow-red-500/40"
+                  : isChatLocked
+                  ? "bg-slate-200 border-slate-100 text-slate-400 cursor-pointer hover:bg-slate-300"
                   : "bg-gradient-to-r from-green-500 to-green-600 hover:shadow-indigo-500/40 hover:-translate-y-1"
-              } ${isChatLocked ? "grayscale opacity-70" : ""}`}
+              }`}
             >
-              {listening ? <MicOff size={32} /> : <Mic size={32} />}
+              {listening ? (
+                <MicOff size={32} />
+              ) : isChatLocked ? (
+                hasPurchased ? (
+                  <div className="flex flex-col items-center">
+                    <Ban size={28} className="text-slate-400" />
+                    <span className="text-[10px] font-bold mt-0.5 uppercase text-slate-500">
+                      {t("learning.end")}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <Lock size={28} />
+                    <span className="text-[10px] font-bold mt-0.5 uppercase">
+                      {t("learning.unlock")}
+                    </span>
+                  </div>
+                )
+              ) : (
+                <Mic size={32} />
+              )}
             </button>
           </div>
 
@@ -543,6 +600,11 @@ export const ActiveChatSession = ({
         translations={translations}
         summary={summary}
         loadingSummary={loadingStates.summary}
+      />
+      <ExtendTurnModal
+        isOpen={showExtendModal}
+        onClose={() => setShowExtendModal(false)}
+        onSuccess={handleExtendSuccess}
       />
     </div>
   );

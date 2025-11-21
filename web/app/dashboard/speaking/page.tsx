@@ -9,10 +9,13 @@ import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { ModalByLesson } from "../components/ModalByLesson";
 
 export default function SpeakingPage() {
   const { t } = useLanguage();
   const router = useRouter();
+  const [showByLesson, setShowByLesson] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<{
     id: number;
     slug: string;
@@ -31,6 +34,33 @@ export default function SpeakingPage() {
       ? `${selectedLevel.name} - ${selectedTopic.name}`
       : "";
 
+  const executeSoloPracticeAI = () => {
+    if (selectedLevel && selectedTopic) {
+      setLoading(true);
+      router.push(
+        `/dashboard/speaking/lessonAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+      );
+    }
+  };
+
+  const executeConversationPracticeAI = () => {
+    if (selectedLevel && selectedTopic) {
+      setLoading(true);
+      router.push(
+        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+      );
+    }
+  };
+
+  const executeConversationRealTimeAI = () => {
+    if (selectedLevel && selectedTopic) {
+      setLoading(true);
+      router.push(
+        `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+      );
+    }
+  };
+
   const handleSoloPractice = () => {
     setLoading(true);
     if (selectedLevel && selectedTopic) {
@@ -41,34 +71,19 @@ export default function SpeakingPage() {
     setLoading(false);
   };
 
-  const handleSoloPracticeAI = () => {
-    setLoading(true);
-    if (selectedLevel && selectedTopic) {
-      router.push(
-        `/dashboard/speaking/lessonAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
-      );
-    }
-    setLoading(false);
+  const handleSoloPracticeAI_Click = () => {
+    setPendingAction(() => executeSoloPracticeAI);
+    setShowByLesson(true);
   };
 
-  const handleConversationRealTimeAI = () => {
-    setLoading(true);
-    if (selectedLevel && selectedTopic) {
-      router.push(
-        `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
-      );
-    }
-    setLoading(false);
+  const handleConversationPracticeAI_Click = () => {
+    setPendingAction(() => executeConversationPracticeAI);
+    setShowByLesson(true);
   };
 
-  const handleConversationPracticeAI = () => {
-    setLoading(true);
-    if (selectedLevel && selectedTopic) {
-      router.push(
-        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
-      );
-    }
-    setLoading(false);
+  const handleConversationRealTimeAI_Click = () => {
+    setPendingAction(() => executeConversationRealTimeAI);
+    setShowByLesson(true);
   };
 
   const handleClearSelection = () => {
@@ -271,7 +286,7 @@ export default function SpeakingPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full">
                       <Button
-                        onClick={handleSoloPracticeAI}
+                        onClick={handleSoloPracticeAI_Click}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white cursor-pointer"
                       >
@@ -309,7 +324,7 @@ export default function SpeakingPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full">
                       <Button
-                        onClick={handleConversationPracticeAI}
+                        onClick={handleConversationPracticeAI_Click}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white cursor-pointer"
                       >
@@ -317,7 +332,7 @@ export default function SpeakingPage() {
                         Generate AI
                       </Button>
                       <Button
-                        onClick={handleConversationRealTimeAI}
+                        onClick={handleConversationRealTimeAI_Click}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
                       >
@@ -339,6 +354,19 @@ export default function SpeakingPage() {
           <RightSidebar />
         </div>
       </div>
+
+      <ModalByLesson
+        isOpen={showByLesson}
+        onClose={() => {
+          setShowByLesson(false);
+          setPendingAction(null);
+        }}
+        onConfirmAction={() => {
+          if (pendingAction) {
+            pendingAction();
+          }
+        }}
+      />
     </>
   );
 }
