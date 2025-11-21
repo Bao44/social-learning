@@ -1,10 +1,9 @@
 "use client";
 
 import useAuth from "@/hooks/useAuth";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, TrendingUp, AlertCircle, Volume2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { BookOpen, TrendingUp, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getListPersonalVocabByUserIdAndCreated } from "@/app/apiClient/learning/vocabulary/vocabulary";
@@ -12,7 +11,6 @@ import { useLanguage } from "@/components/contexts/LanguageContext";
 import OverviewRangeView from "./components/RangeView";
 import TopicsTab from "./components/TopicsTab";
 import MasteredTab from "./components/MasteredTab";
-import { RightSidebar } from "../components/RightSidebar";
 
 export default function VocabularyPage() {
   const { t } = useLanguage();

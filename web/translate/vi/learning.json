@@ -298,7 +298,7 @@
     "generateWithAI": "Tạo với AI",
     "startLesson": "Bài tập hệ thống"
   },
-  "noteTopicSpeaking":"Lưu ý: Vì đây là topic được tạo từ AI nên khi bạn đã chọn \"Bắt đầu\" thì sẽ không thể quay về để chọn topic khác vì có khả năng topic sẽ bị thay đổi",
+  "noteTopicSpeaking": "Lưu ý: Vì đây là topic được tạo từ AI nên khi bạn đã chọn \"Bắt đầu\" thì sẽ không thể quay về để chọn topic khác vì có khả năng topic sẽ bị thay đổi",
   "currentScenario": "Bối cảnh hiện tại",
   "conversationPartner": "Đối tác hội thoại",
   "goal": "Mục tiêu",
@@ -322,5 +322,22 @@
   "aiComments": "Nhận xét từ AI",
   "better": "Cách cải thiện",
   "analyzingConversationPatterns": "Đang phân tích các mẫu hội thoại...",
-  "noSummaryAvailable": "Không có tóm tắt nào khả dụng."
+  "noSummaryAvailable": "Không có tóm tắt nào khả dụng.",
+  "continue": "Tiếp tục",
+  "confirmationNotification": "Thông báo xác nhận",
+  "confirmationMessage": "Bạn có đồng ý bỏ ra",
+  "confirmationQuestion": "bông tuyết để sử dụng tính năng AI này không?",
+  "confirmationBalance": "Bạn chỉ còn ",
+  "confirmationBalance1": " bông tuyết. Cần ",
+  "confirmationBalance2": " để tiếp tục.",
+  "confirmationPurchaseLimit": "Bạn chỉ được phép mua thêm lượt 1 lần duy nhất trong phiên này!",
+  "end": "Kết thúc",
+  "unlock": "Mở khóa",
+  "unlockConversation": "Mở khóa hội thoại",
+  "continueConversation": "Tiếp tục cuộc trò chuyện thú vị này!",
+  "turnsToBuy": "Số lượt muốn mua",
+  "maxTurns": "Tối đa 10 lượt",
+  "totalCost": "Tổng chi phí:",
+  "processing": "Đang xử lý...",
+  "purchaseAndUnlock": "Thanh toán & Mở khóa"
 }

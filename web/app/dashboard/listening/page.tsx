@@ -17,10 +17,13 @@ import { useRouter } from "next/navigation";
 import { listeningService } from "@/app/apiClient/learning/listening/listening";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
+import { ModalByLesson } from "../components/ModalByLesson";
 
 export default function ListeningPage() {
   const router = useRouter();
   const { t } = useLanguage();
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const [showByLesson, setShowByLesson] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<{
     id: number;
     slug: string;
@@ -52,7 +55,7 @@ export default function ListeningPage() {
     }
   };
 
-  const handleGenerateAI = async () => {
+  const executeGenerateAI = async () => {
     setLoading(true);
     // Call API to generate AI content here
     if (selectedLevel && selectedTopic) {
@@ -67,6 +70,11 @@ export default function ListeningPage() {
         console.error("Invalid response from AI generation:", response);
       }
     }
+  };
+
+  const handleGenerateAI_Click = () => {
+    setPendingAction(() => executeGenerateAI);
+    setShowByLesson(true);
   };
 
   if (loading)
@@ -249,7 +257,7 @@ export default function ListeningPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full">
                       <Button
-                        onClick={handleGenerateAI}
+                        onClick={handleGenerateAI_Click}
                         disabled={loading}
                         className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white cursor-pointer"
                       >
@@ -278,6 +286,19 @@ export default function ListeningPage() {
           <RightSidebar />
         </div>
       </div>
+
+      <ModalByLesson
+        isOpen={showByLesson}
+        onClose={() => {
+          setShowByLesson(false);
+          setPendingAction(null);
+        }}
+        onConfirmAction={() => {
+          if (pendingAction) {
+            pendingAction();
+          }
+        }}
+      />
     </>
   );
 }
