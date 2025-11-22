@@ -5,8 +5,10 @@ import { Loader2 } from "lucide-react";
 import { LoadedTopic } from "@/types/VoiceRealTimeType";
 import { ActiveChatSession } from "./components/ActiveChatSession";
 import { RoleSelection } from "./components/RoleSelection";
+import useAuth from "@/hooks/useAuth";
 
 export default function VoiceChatPage() {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const level = searchParams.get("level");
   const topic = searchParams.get("topic");
@@ -26,6 +28,7 @@ export default function VoiceChatPage() {
         }
       }
       setIsMounted(true);
+      sessionStorage.removeItem("topic");
     }
   }, []);
 
@@ -40,6 +43,7 @@ export default function VoiceChatPage() {
   if (!loadedTopic) {
     return (
       <ActiveChatSession
+        user={user}
         topic={topic}
         level={level}
         loadedTopic={null}
@@ -57,6 +61,7 @@ export default function VoiceChatPage() {
   // Đã chọn vai -> Vào Chat
   return (
     <ActiveChatSession
+      user={user}
       topic={topic}
       level={level}
       loadedTopic={loadedTopic}
