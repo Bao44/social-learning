@@ -444,16 +444,11 @@ const botCoverLearningController = {
     if (!level) {
       return res.status(400).json({ error: "Invalid level_slug" });
     }
-    // Lấy thông tin topic từ Supabase
-    const topic = await learningService.getTopicBySlug(topic_slug);
-    if (!topic) {
-      return res.status(400).json({ error: "Invalid topic_slug" });
-    }
 
     // Prompt để gọi Gemini
     const prompt = promptGenerateConversationPractice(
       level.name_vi,
-      topic.name_vi
+      topic_slug
     );
 
     try {

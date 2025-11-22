@@ -29,7 +29,7 @@ export default function SpeakingListContent() {
   const searchParams = useSearchParams();
   const level = searchParams.get("level") || "";
   const topic = searchParams.get("topic") || "";
-
+  const mode = searchParams.get("mode") || "realtime";
   const [topics, setTopics] = useState<TopicSpeaking[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -135,14 +135,14 @@ export default function SpeakingListContent() {
         </div>
       ) : (
         <div className="w-full pb-8 grid grid-cols-1 2xl:grid-cols-3 md:grid-cols-2 gap-6">
-          {topics.map((topic, index) => (
+          {topics.map((t, index) => (
             <motion.div
-              key={topic.id}
+              key={t.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <CardTopic topic={topic} level={level} />
+              <CardTopic topic={t} level={level} mode={mode} topicParent={topic}/>
             </motion.div>
           ))}
         </div>

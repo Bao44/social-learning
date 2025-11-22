@@ -20,7 +20,10 @@ import {
   ArrowLeft,
   Lock,
   Ban,
+  Trophy,
+  Flag,
 } from "lucide-react";
+import Confetti from "react-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAISpeech, useRepeatSpeech, useGoogleVoices } from "@/hooks/useTTS";
 import { MissionCard } from "./MissionCard";
@@ -30,8 +33,19 @@ import { Feedback, LoadedTopic } from "@/types/VoiceRealTimeType";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { toast } from "react-toastify";
 import { ExtendTurnModal } from "./ExtendTurnModal";
+import { addSkillScore } from "@/app/apiClient/learning/score/score";
+import { useWindowSize } from "react-use";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 interface ActiveChatProps {
+  user: any;
   topic: string | null;
   level: string | null;
   loadedTopic: LoadedTopic | null;
@@ -40,12 +54,14 @@ interface ActiveChatProps {
 }
 
 export const ActiveChatSession = ({
+  user,
   topic,
   level,
   loadedTopic,
   userSide,
   onExit,
 }: ActiveChatProps) => {
+  const router = useRouter();
   const { t, language } = useLanguage();
   const [isClient, setIsClient] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -89,6 +105,10 @@ export const ActiveChatSession = ({
     hint: false,
     summary: false,
   });
+
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [rewardClaimed, setRewardClaimed] = useState(false);
+  const { width, height } = useWindowSize();
 
   const {
     transcript,
@@ -255,18 +275,25 @@ export const ActiveChatSession = ({
     }
   }, [listening, transcript, isChatLocked]);
 
+  const handleFinishSession = useCallback(() => {
+    setShowCelebration(true);
+    // Kiểm tra xem đã cộng điểm chưa
+    if (!rewardClaimed && user?.id) {
+      addSkillScore(user.id, "speaking", 10);
+      setRewardClaimed(true); // Đánh dấu đã cộng rồi
+    }
+  }, [rewardClaimed, user?.id]);
+
   const handleMicClick = useCallback(() => {
-    // Trường hợp bị khóa (Hết lượt)
     if (isChatLocked) {
       if (hasPurchased) {
-        // Nếu đã mua 1 lần rồi -> Không cho mua nữa -> Thông báo
-        toast.info(t("learning.confirmationPurchaseLimit"), {
-          autoClose: 1500,
+        // Hết lượt hoàn toàn -> Gợi ý kết thúc
+        toast.info("Bạn đã hết lượt nói. Hãy nhấn kết thúc để nhận điểm!", {
+          autoClose: 2000,
         });
+        handleFinishSession();
         return;
       }
-
-      // Nếu chưa mua lần nào -> Mở modal
       setShowExtendModal(true);
       return;
     }
@@ -278,7 +305,7 @@ export const ActiveChatSession = ({
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true, language: "en-US" });
     }
-  }, [listening, resetTranscript, isChatLocked, hasPurchased]); // Thêm hasPurchased vào dependency
+  }, [listening, resetTranscript, isChatLocked, hasPurchased]);
 
   const handleExtendSuccess = (addedTurns: number) => {
     setMaxTurns((prev) => prev + addedTurns);
@@ -303,13 +330,22 @@ export const ActiveChatSession = ({
 
   return (
     <div className="relative w-full h-[calc(100vh)] flex flex-col overflow-hidden lg:ml-10 md:ml-20 max-sm:pt-16">
+      {showCelebration && (
+        <div className="fixed inset-0 z-[100] pointer-events-none">
+          <Confetti
+            width={width}
+            height={height}
+            recycle={false}
+            numberOfPieces={500}
+            gravity={0.3}
+          />
+        </div>
+      )}
+
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-          }}
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{
             duration: 20,
             repeat: Number.POSITIVE_INFINITY,
@@ -318,10 +354,7 @@ export const ActiveChatSession = ({
         />
         <motion.div
           className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [90, 0, 90],
-          }}
+          animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
           transition={{
             duration: 20,
             repeat: Number.POSITIVE_INFINITY,
@@ -329,18 +362,20 @@ export const ActiveChatSession = ({
           }}
         />
       </div>
-      {/* Header */}
-      <header className="flex-none h-16 px-4 sm:px-6 flex items-center justify-between">
+
+      {/* HEADER */}
+      <header className="flex-none h-16 px-4 sm:px-6 flex items-center justify-between relative z-20">
         <div className="">
           <button
             onClick={onExit}
             className="p-2 rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 cursor-pointer transition-colors flex items-center justify-between gap-3"
           >
             <ArrowLeft size={20} />
-            {t("learning.back")}
+            <span className="hidden sm:inline">{t("learning.back")}</span>
           </button>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm p-1.5 rounded-full border border-white/50 shadow-sm">
           <button
             onClick={() => setShowMission(!showMission)}
             className={`p-2 rounded-full transition-colors ${
@@ -348,15 +383,28 @@ export const ActiveChatSession = ({
                 ? "bg-indigo-100 text-indigo-600"
                 : "hover:bg-slate-100 text-slate-600"
             }`}
+            title="Show Mission"
           >
             <Sparkles size={20} />
           </button>
           <button
             onClick={() => setShowSettings(true)}
             className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition-colors"
+            title="Settings"
           >
             <Settings size={20} />
           </button>
+          <div className="w-px h-6 bg-slate-200 mx-1"></div>
+          {isChatLocked && (
+            <button
+              onClick={handleFinishSession}
+              className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 text-green-600 hover:bg-green-100 hover:text-green-700 transition-all font-bold text-sm border border-rose-100"
+              title="Finish Session"
+            >
+              <Flag size={16} />
+              <span className="hidden sm:inline">Finish</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -381,8 +429,8 @@ export const ActiveChatSession = ({
           return (
             <motion.div
               key={m.id}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               className={`flex flex-col ${
                 isUser ? "items-end" : "items-start"
               }`}
@@ -458,6 +506,7 @@ export const ActiveChatSession = ({
             </motion.div>
           );
         })}
+
         {hint && !listening && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -486,7 +535,7 @@ export const ActiveChatSession = ({
 
       <div className="bottom-0">
         <div className="relative max-w-4xl mx-auto w-full px-6 pb-6 pt-10 flex items-end justify-between gap-4">
-          {/* Left: Tools */}
+          {/* Left */}
           <div className="flex flex-col gap-3 mb-2 pointer-events-auto">
             <div
               className={`backdrop-blur px-3 py-1 rounded-full text-xs font-bold border w-fit shadow-sm transition-colors ${
@@ -511,7 +560,7 @@ export const ActiveChatSession = ({
             </button>
           </div>
 
-          {/* Center: Microphone */}
+          {/* Center */}
           <div className="relative flex justify-center pointer-events-auto">
             {listening && (
               <>
@@ -561,7 +610,7 @@ export const ActiveChatSession = ({
             </button>
           </div>
 
-          {/* Right: Report */}
+          {/* Right */}
           <div className="flex flex-col gap-3 mb-2 items-end pointer-events-auto">
             {summary && (
               <motion.button
@@ -582,6 +631,40 @@ export const ActiveChatSession = ({
           </div>
         </div>
       </div>
+
+      <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
+        <DialogContent className="max-w-lg rounded-3xl bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white z-[110]">
+          <DialogHeader className="text-center">
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
+              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2 }}
+              className="inline-block mb-6"
+            >
+              <Trophy className="w-24 h-24 drop-shadow-2xl text-yellow-200" />
+            </motion.div>
+            <DialogTitle className="text-4xl font-bold mb-3 drop-shadow-lg">
+              {t("learning.congratulations")}
+            </DialogTitle>
+            <DialogDescription className="text-2xl mb-8 font-semibold text-white/90">
+              {t("learning.completedAllSentences")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setShowCelebration(false);
+                router.replace("/dashboard/speaking");
+              }}
+              className="mx-auto w-full px-10 py-4 rounded-xl bg-white text-purple-600 hover:bg-gray-50 transition-all font-bold text-xl shadow-2xl border-2 border-purple-200 cursor-pointer"
+            >
+              {t("learning.tryAnother")}
+            </motion.button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <SettingsModal
         isOpen={showSettings}

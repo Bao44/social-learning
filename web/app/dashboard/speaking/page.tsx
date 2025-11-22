@@ -47,7 +47,7 @@ export default function SpeakingPage() {
     if (selectedLevel && selectedTopic) {
       setLoading(true);
       router.push(
-        `/dashboard/speaking/conversationPracticeAI?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+        `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}&mode=conversation`
       );
     }
   };
@@ -56,7 +56,7 @@ export default function SpeakingPage() {
     if (selectedLevel && selectedTopic) {
       setLoading(true);
       router.push(
-        `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}`
+        `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}&mode=realtime`
       );
     }
   };
@@ -121,7 +121,7 @@ export default function SpeakingPage() {
               </motion.div>
               <div className="flex flex-col items-center gap-2">
                 <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
-                  {t("learning.creatingLesson")}
+                  {t("learning.loading")}
                 </span>
                 <span className="text-gray-500 text-xs md:text-sm text-center">
                   {t("learning.pleaseWait")}
@@ -165,62 +165,38 @@ export default function SpeakingPage() {
         </div>
 
         {/* Header Section */}
-        <motion.div
-          className="flex flex-col items-center justify-center text-center gap-3 md:gap-4 mt-4 md:mt-8 relative z-10"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <motion.div
-            className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl md:rounded-3xl shadow-lg"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Volume2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
-          </motion.div>
-
-          <motion.h1
-            className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            {t("learning.practiceSpeaking")}
-          </motion.h1>
-
-          <motion.p
-            className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl px-4 leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            {t("learning.contentPracticeSpeaking")}
-          </motion.p>
-        </motion.div>
-
-        {/* Main Content */}
-        <motion.div
-          className="flex flex-col max-w-6xl mx-auto mt-8 md:mt-12 gap-6 md:gap-8 relative z-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          {/* Level Selection */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100">
-            <Level
-              selectedLevel={selectedLevel}
-              setSelectedLevel={setSelectedLevel}
-            />
+        <div className="flex-1 max-w-6xl px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center justify-center ml-14 p-3 bg-white rounded-2xl shadow-sm border border-slate-100 mb-4 -translate-x-1/2 animate-bounce"
+            >
+              <Volume2 className="w-8 h-8 text-orange-500" />
+            </motion.div>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+              {t("learning.practiceSpeaking")}
+            </h1>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+              {t("learning.contentPracticeSpeaking")}
+            </p>
           </div>
 
-          {/* Topic Selection */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg border border-gray-100">
-            <Topic
-              selectedTopic={selectedTopic}
-              setSelectedTopic={setSelectedTopic}
-            />
+          <div className="space-y-8 pb-32">
+            <section>
+              <Level
+                selectedLevel={selectedLevel}
+                setSelectedLevel={setSelectedLevel}
+              />
+            </section>
+            <section>
+              <Topic
+                selectedTopic={selectedTopic}
+                setSelectedTopic={setSelectedTopic}
+              />
+            </section>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <AnimatePresence>

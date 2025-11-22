@@ -139,6 +139,7 @@
   "wellMastered": "Sắp thành thạo",
   "vocabulary": "từ",
   "practice": "Luyện tập",
+  "practiceNow":"Luyện tập ngay",
   "noWordsInRange": "Không có từ nào trong khoảng này.",
   "noWordsInTopic": "Không có từ nào trong chủ đề này.",
   "all": "Tất cả",
@@ -151,6 +152,7 @@
   "relatedWordsNote": "Lưu ý: Để luyện tập hiệu quả, hãy xem thêm các từ liên quan bên dưới.",
 
   "myVocabulary": "Từ vựng của tôi",
+  "tapToViewDetails": "Nhấn để xem chi tiết",
   "myVocabularyDescription": "Làm chủ bộ sưu tập từ vựng cá nhân của bạn và theo dõi tiến trình học tập",
   "totalWords": "Tổng số từ",
   "averageMastery": "Khả năng thông thạo trung bình",
@@ -177,6 +179,9 @@
   "practiceAll": "Luyện tập tất cả",
   "practiceSelected": "Luyện tập đã chọn",
   "selectAll": "Chọn tất cả",
+  "wordsSelected": "từ đã chọn",
+  "deselectAll": "Bỏ chọn tất cả",
+
   "clearSelection": "Xóa lựa chọn",
   "mission": "Nhiệm vụ của bạn:",
   "creatingExercise": "Đang tạo bài tập...",
@@ -199,6 +204,7 @@
   "leaderboardDescription": "Thể hiện kỹ năng của bạn",
   "leaderboardUserRank": "Xếp hạng của bạn",
   "test": "Kiểm tra",
+  "currentStanding": "Xếp hạng hiện tại",
   "progressLearning": "Tiến trình học tập",
   "progressLearningDescription": "Theo dõi sự tiến bộ của bạn qua các kỹ năng khác nhau",
   "comparisonChart": "Biểu đồ so sánh",
@@ -255,6 +261,7 @@
   "skillListening": "Kỹ năng Nghe",
   "achievement": "Thành tích",
   "achievementUnlocked": "Đã mở khóa",
+  "locked": "Đã khóa",
   "achiev": "thành tích",
   "roadmapTitle": "Lộ trình học tập cá nhân",
   "roadmapDescription": "Tạo lộ trình học tập cá nhân để đạt được mục tiêu tiếng Anh của bạn một cách hiệu quả",
@@ -339,5 +346,11 @@
   "maxTurns": "Tối đa 10 lượt",
   "totalCost": "Tổng chi phí:",
   "processing": "Đang xử lý...",
-  "purchaseAndUnlock": "Thanh toán & Mở khóa"
+  "purchaseAndUnlock": "Thanh toán & Mở khóa",
+  "scriptPreview": " Xem trước kịch bản",
+  "lines": " dòng",
+  "speakNow": "Nói ngay...",
+  "pressMicToSpeak": "Nhấn micro để nói",
+  "aiIsSpeaking": "AI đang nói...",
+  "audioTrack": "Bản âm thanh"
 }

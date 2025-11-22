@@ -24,17 +24,32 @@ interface TopicExercise {
 interface CardTopicProps {
   topic: TopicExercise;
   level: string;
+  mode: string;
+  topicParent: string;
 }
 
-export default function CardTopic({ topic, level }: CardTopicProps) {
+export default function CardTopic({
+  topic,
+  level,
+  mode,
+  topicParent,
+}: CardTopicProps) {
   const { t, language } = useLanguage();
   const router = useRouter();
 
   const handleStart = () => {
-    sessionStorage.setItem("topic", JSON.stringify(topic));
-    router.push(
-      `/dashboard/speaking/conversationRealTimeAI?level=${level}&topic=${topic.sub_topic_en}`
-    );
+    if (mode === "conversation") {
+      sessionStorage.setItem("topicParent", JSON.stringify(topicParent));
+      sessionStorage.setItem("topic", JSON.stringify(topic));
+      router.push(
+        `/dashboard/speaking/conversationPracticeAI?level=${level}&topic=${topic.sub_topic_vi}`
+      );
+    } else {
+      sessionStorage.setItem("topic", JSON.stringify(topic));
+      router.push(
+        `/dashboard/speaking/conversationRealTimeAI?level=${level}&topic=${topic.sub_topic_en}`
+      );
+    }
   };
 
   return (
