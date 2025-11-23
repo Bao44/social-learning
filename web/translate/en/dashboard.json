@@ -269,6 +269,11 @@
   "view": "View",
   "userDetails": "User Details",
   "noUsersFound": "No users found",
+  "learningHabits": "Learning Habits (Last 30 Days)",
+  "byDay": "By Day",
+  "byHour": "By Hour",
+  "busiestDayCaption": "Most popular learning days of the week.",
+  "busiestHourCaption": "Most popular learning hours during the day.",
 
   "listeningParagraphs": "Listening Exercises",
   "speakingLessons": "Speaking Lessons",

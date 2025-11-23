@@ -258,8 +258,11 @@
   "newUser": "Người dùng mới",
   "activeUser": "Người dùng hoạt động",
   "recentActivities": "Hoạt động gần đây",
-  "pendingApproval": "Đang chờ kiểm duyệt",
-  "noPendingPosts": "Không có bài viết nào đang chờ kiểm duyệt",
+  "learningHabits": "Thói quen học tập (30 ngày qua)",
+  "byDay": "Theo Thứ",
+  "byHour": "Theo Giờ",
+  "busiestDayCaption": "Ngày học tập nhiều nhất trong tuần.",
+  "busiestHourCaption": "Khung giờ học tập phổ biến trong ngày.",
 
   "userManagement": "Quản lý người dùng",
   "userSearch": "Tìm kiếm theo tên, email hoặc biệt danh...",
