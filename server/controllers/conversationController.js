@@ -54,7 +54,8 @@ const conversationController = {
 
     // Lấy danh sách cuộc trò chuyện của người dùng
     getUserConversations: async (req, res) => {
-        const userId = req.params.userId;
+        // Lấy userId từ req.user (đã được authMiddleware thêm vào)
+        const userId = req.user.id;
         try {
             const conversations = await conversationService.getUserConversations(userId);
             const formattedConversations = await Promise.all(
@@ -97,7 +98,9 @@ const conversationController = {
 
     // Đếm số tin nhắn chưa đọc trong một cuộc trò chuyện của user
     countUnreadMessages: async (req, res) => {
-        const { conversationId, userId } = req.params;
+        const { conversationId } = req.params;
+        // Lấy userId từ req.user (đã được authMiddleware thêm vào)
+        const userId = req.user.id;
         try {
             const count = await conversationService.countUnreadMessages(conversationId, userId);
             res.status(200).json({ count });
@@ -152,7 +155,8 @@ const conversationController = {
 
     // Đếm tổng số tin nhắn chưa đọc của người dùng trong tất cả cuộc trò chuyện
     countTotalUnreadMessages: async (req, res) => {
-        const userId = req.params.userId;
+        // Lấy userId từ req.user (đã được authMiddleware thêm vào)
+        const userId = req.user.id;
         try {
             const totalUnread = await conversationService.countTotalUnreadMessages(userId);
             res.status(200).json({ totalUnread });

@@ -224,7 +224,7 @@ export default function LearningPathPage() {
                   {!path?.isUsed && !path?.isCompleted && (
                     <div className="absolute top-4 right-8">
                       <button
-                        className="px-4 py-1 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors hover:cursor-progress"
+                        className="px-4 py-1 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors hover:cursor-pointer"
                         onClick={(e) => {
                           // Handle apply button click
                           e.stopPropagation();

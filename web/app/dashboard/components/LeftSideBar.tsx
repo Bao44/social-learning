@@ -261,7 +261,7 @@ export function LeftSidebar() {
     const socket = getSocket();
 
     const fetchMessagesCount = async () => {
-      const res = await fetchTotalUnreadMessages(user?.id);
+      const res = await fetchTotalUnreadMessages();
       setMessagesCount(res);
     };
 
