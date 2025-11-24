@@ -49,7 +49,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type UserDetailDialogProps = {
   userId: string | null;
@@ -167,9 +174,11 @@ export function UserDetailDialog({
       // Update local state để hiển thị ngay lập tức
       if (type === "role") {
         setUser({ ...user, role: payload.role });
-        toast.success(`Đã cập nhật quyền thành: ${payload.role}`, { autoClose: 1000 });
+        toast.success(`${t("dashboard.updateRoleSuccess")} ${payload.role}`, {
+          autoClose: 1000,
+        });
       } else {
-        toast.success("Đã cập nhật trạng thái khóa tài khoản", { autoClose: 1000 });
+        toast.success(t("dashboard.updateBanSuccess"), { autoClose: 1000 });
         // Reload user để lấy thời gian banned_until mới từ server
         const userRes = await loadUserDetail(user.id);
         setUser(userRes.data);
@@ -177,14 +186,14 @@ export function UserDetailDialog({
 
       if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
-      toast.error("Cập nhật thất bại", { autoClose: 1000 });
+      toast.error(t("dashboard.updateFailed"), { autoClose: 1000 });
       console.error(error);
     } finally {
       setIsUpdating(false);
     }
   };
 
-  if (userLoading) return null
+  if (userLoading) return null;
   if (!user) return null;
 
   const isBanned =
@@ -206,14 +215,14 @@ export function UserDetailDialog({
                   variant="destructive"
                   className="flex gap-1 items-center"
                 >
-                  <Lock className="w-3 h-3" /> Banned
+                  <Lock className="w-3 h-3" /> {t("dashboard.banned")}
                 </Badge>
               ) : (
                 <Badge
                   variant="outline"
                   className="text-green-600 border-green-600 flex gap-1 items-center"
                 >
-                  <ShieldCheck className="w-3 h-3" /> Active
+                  <ShieldCheck className="w-3 h-3" /> {t("dashboard.active")}
                 </Badge>
               )}
             </div>
@@ -248,7 +257,9 @@ export function UserDetailDialog({
                       <p className="font-bold text-gray-900">
                         {user.submit_credits ?? 0}
                       </p>
-                      <p className="text-gray-500 text-xs">Credits</p>
+                      <p className="text-gray-500 text-xs">
+                        {t("dashboard.credits")}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -258,14 +269,15 @@ export function UserDetailDialog({
               <Card className="border-orange-200 bg-orange-50/50">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm uppercase text-orange-700 font-bold flex items-center gap-2">
-                    <UserCog className="w-4 h-4" /> Admin Controls
+                    <UserCog className="w-4 h-4" />{" "}
+                    {t("dashboard.adminControls")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Promote/Demote */}
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium text-gray-600">
-                      Role Management
+                      {t("dashboard.roleManagement")}
                     </label>
                     <Button
                       variant={
@@ -276,15 +288,15 @@ export function UserDetailDialog({
                       disabled={isUpdating}
                     >
                       {user.role === "admin"
-                        ? "Demote to User"
-                        : "Promote to Admin"}
+                        ? t("dashboard.demoteToUser")
+                        : t("dashboard.promoteToAdmin")}
                     </Button>
                   </div>
 
                   {/* Ban/Unban */}
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium text-gray-600">
-                      Account Status
+                      {t("dashboard.accountStatus")}
                     </label>
                     <Select
                       onValueChange={(val) => handleUpdateStatus("ban", val)}
@@ -292,20 +304,34 @@ export function UserDetailDialog({
                     >
                       <SelectTrigger className="w-full bg-white">
                         <SelectValue
-                          placeholder={isBanned ? "Modify Ban" : "Ban User..."}
+                          placeholder={
+                            isBanned
+                              ? t("dashboard.modifyBan")
+                              : t("dashboard.banUser")
+                          }
                         />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="0">Unban (Active)</SelectItem>
-                        <SelectItem value="1">Ban 1 Day</SelectItem>
-                        <SelectItem value="7">Ban 7 Days</SelectItem>
-                        <SelectItem value="30">Ban 30 Days</SelectItem>
-                        <SelectItem value="-1">Ban Permanently</SelectItem>
+                        <SelectItem value="0">
+                          {t("dashboard.unbanActive")}
+                        </SelectItem>
+                        <SelectItem value="1">
+                          {t("dashboard.ban1Day")}
+                        </SelectItem>
+                        <SelectItem value="7">
+                          {t("dashboard.ban7Days")}
+                        </SelectItem>
+                        <SelectItem value="30">
+                          {t("dashboard.ban30Days")}
+                        </SelectItem>
+                        <SelectItem value="-1">
+                          {t("dashboard.banPermanently")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     {isBanned && user.banned_until && (
                       <p className="text-xs text-red-500 mt-1">
-                        Banned until:{" "}
+                        {t("dashboard.bannedUntil")}:{" "}
                         {new Date(user.banned_until).toLocaleDateString()}
                       </p>
                     )}
@@ -320,19 +346,19 @@ export function UserDetailDialog({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <StatCard
                   icon={<Flame className="w-5 h-5 text-orange-600" />}
-                  label="Streak"
+                  label={t("dashboard.streak")}
                   value={user.learningStreak?.current_streak ?? 0}
                   color="bg-orange-50"
                 />
                 <StatCard
                   icon={<Trophy className="w-5 h-5 text-purple-600" />}
-                  label="Achievements"
+                  label={t("dashboard.achievements")}
                   value={achievements.length}
                   color="bg-purple-50"
                 />
                 <StatCard
                   icon={<Calendar className="w-5 h-5 text-blue-600" />}
-                  label="Joined"
+                  label={t("dashboard.joined")}
                   value={new Date(user.created_at).toLocaleDateString()}
                   color="bg-blue-50"
                 />
@@ -344,52 +370,53 @@ export function UserDetailDialog({
                     value="scores"
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-orange-500 data-[state=active]:shadow-none px-0 pb-2"
                   >
-                    Scores
+                    {t("dashboard.scores")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="achievements"
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-orange-500 data-[state=active]:shadow-none px-0 pb-2"
                   >
-                    Achievements
+                    {t("dashboard.achievements")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="posts"
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-orange-500 data-[state=active]:shadow-none px-0 pb-2"
                   >
-                    Posts
+                    {t("dashboard.posts")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="vocabulary"
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-orange-500 data-[state=active]:shadow-none px-0 pb-2"
                   >
-                    Vocabulary
+                    {t("dashboard.vocabulary")}
                   </TabsTrigger>
                   <TabsTrigger
                     value="errors"
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-orange-500 data-[state=active]:shadow-none px-0 pb-2"
                   >
-                    Errors
+                    {t("dashboard.errors")}
                   </TabsTrigger>
                 </TabsList>
 
                 <div className="mt-6">
                   <TabsContent value="scores">
-                    <ScoresTab loading={scoresLoading} scores={scores} />
+                    <ScoresTab loading={scoresLoading} scores={scores} t={t} />
                   </TabsContent>
                   <TabsContent value="achievements">
                     <AchievementsTab
                       loading={achievementsLoading}
                       data={achievements}
+                      t={t}
                     />
                   </TabsContent>
                   <TabsContent value="posts">
-                    <PostsTab loading={postsLoading} data={posts} />
+                    <PostsTab loading={postsLoading} data={posts} t={t} />
                   </TabsContent>
                   <TabsContent value="vocabulary">
-                    <VocabTab loading={vocabLoading} data={vocab} />
+                    <VocabTab loading={vocabLoading} data={vocab} t={t} />
                   </TabsContent>
                   <TabsContent value="errors">
-                    <ErrorsTab loading={errorsLoading} data={errors} />
+                    <ErrorsTab loading={errorsLoading} data={errors} t={t} />
                   </TabsContent>
                 </div>
               </Tabs>
@@ -428,25 +455,27 @@ function StatCard({
 }
 
 /* --- Tabs --- */
-function ScoresTab({ loading, scores }: any) {
+function ScoresTab({ loading, scores, t }: any) {
   if (loading) return <Skeleton className="h-48 w-full" />;
   if (!scores.length)
     return (
-      <p className="text-center py-8 text-gray-500">No score data available</p>
+      <p className="text-center py-8 text-gray-500">
+        {t("dashboard.noScoreData")}
+      </p>
     );
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Learning Progress</CardTitle>
+        <CardTitle>{t("dashboard.learningProgress")}</CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Skill</TableHead>
-              <TableHead>Score</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>{t("dashboard.skill")}</TableHead>
+              <TableHead>{t("dashboard.scores")}</TableHead>
+              <TableHead>{t("dashboard.date")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -468,16 +497,18 @@ function ScoresTab({ loading, scores }: any) {
   );
 }
 
-function AchievementsTab({ loading, data }: any) {
+function AchievementsTab({ loading, data, t }: any) {
   if (loading) return <Skeleton className="h-48 w-full" />;
   if (!data.length)
     return (
-      <p className="text-center py-8 text-gray-500">No achievements yet</p>
+      <p className="text-center py-8 text-gray-500">
+        {t("dashboard.noAchievements")}
+      </p>
     );
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Achievements</CardTitle>
+        <CardTitle>{t("dashboard.achievements")}</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
         {data.map((a: any) => (
@@ -507,22 +538,28 @@ function AchievementsTab({ loading, data }: any) {
   );
 }
 
-function PostsTab({ loading, data }: any) {
+function PostsTab({ loading, data, t }: any) {
   if (loading) return <Skeleton className="h-48 w-full" />;
   if (!data.length)
-    return <p className="text-center py-8 text-gray-500">No posts yet</p>;
+    return (
+      <p className="text-center py-8 text-gray-500">{t("dashboard.noPosts")}</p>
+    );
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Social Activity</CardTitle>
+        <CardTitle>{t("dashboard.socialActivity")}</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
         {data.map((post: any) => (
           <div key={post.id} className="p-4 border rounded-lg">
             <p className="text-sm">{post.content}</p>
             <div className="flex gap-4 mt-3 text-xs text-gray-500">
-              <span>{post.likes_count[0].count} likes</span>
-              <span>{post.comments_count[0].count} comments</span>
+              <span>
+                {post.likes_count[0].count} {t("dashboard.like")}
+              </span>
+              <span>
+                {post.comments_count[0].count} {t("dashboard.comments")}
+              </span>
               <span>{new Date(post.created_at).toLocaleDateString()}</span>
             </div>
           </div>
@@ -532,25 +569,25 @@ function PostsTab({ loading, data }: any) {
   );
 }
 
-function VocabTab({ loading, data }: any) {
+function VocabTab({ loading, data, t }: any) {
   if (loading) return <Skeleton className="h-48 w-full" />;
   if (!data.length)
     return (
-      <p className="text-center py-8 text-gray-500">No vocabulary entries</p>
+      <p className="text-center py-8 text-gray-500">{t("dashboard.noVocabularyEntries")}</p>
     );
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Vocabulary</CardTitle>
+        <CardTitle>{t("dashboard.personalVocabulary")}</CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Word</TableHead>
-              <TableHead>Mastery Score</TableHead>
-              <TableHead>Errors</TableHead>
-              <TableHead>Next Review</TableHead>
+              <TableHead>{t("dashboard.word")}</TableHead>
+              <TableHead>{t("dashboard.masteryScore")}</TableHead>
+              <TableHead>{t("dashboard.errors")}</TableHead>
+              <TableHead>{t("dashboard.nextReview")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -575,23 +612,23 @@ function VocabTab({ loading, data }: any) {
   );
 }
 
-function ErrorsTab({ loading, data }: any) {
+function ErrorsTab({ loading, data, t }: any) {
   if (loading) return <Skeleton className="h-48 w-full" />;
   if (!data.length)
-    return <p className="text-center py-8 text-gray-500">No error data</p>;
+    return <p className="text-center py-8 text-gray-500">{t("dashboard.noErrorData")}</p>;
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Error Patterns</CardTitle>
+        <CardTitle>{t("dashboard.errorPatterns")}</CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Word</TableHead>
-              <TableHead>Error Type</TableHead>
-              <TableHead>Skill</TableHead>
-              <TableHead>Count</TableHead>
+              <TableHead>{t("dashboard.word")}</TableHead>
+              <TableHead>{t("dashboard.errorType")}</TableHead>
+              <TableHead>{t("dashboard.skill")}</TableHead>
+              <TableHead>{t("dashboard.count")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
