@@ -168,11 +168,6 @@ export default function ProfileEditPage() {
       }
 
       // Validate địa chỉ
-      if (!formData.address || formData.address.trim().length < 5) {
-        toast.error(t("dashboard.addressTooShort"), { autoClose: 1500 });
-        return;
-      }
-
       // Regex:
       //  - Ít nhất 1 chữ cái (A-Z hoặc có dấu tiếng Việt)
       //  - Ít nhất 1 khoảng trắng (đảm bảo có nhiều từ)
