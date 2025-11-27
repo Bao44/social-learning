@@ -23,6 +23,7 @@ import { getFollowers, getFollowing } from "@/app/apiClient/follow/follow";
 import FollowModal from "./FollowModal";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { countPostsByUserId } from "@/app/apiClient/post/post";
 
 interface User {
   id: string;
@@ -48,6 +49,7 @@ export default function ProfileHeader() {
   const [following, setFollowing] = useState<Follower[]>([]);
   const [openFollower, setOpenFollower] = useState(false);
   const [follower, setFollower] = useState<Follower[]>([]);
+  const [postCount, setPostCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,10 +104,21 @@ export default function ProfileHeader() {
 
   useEffect(() => {
     if (user?.id) {
+      countPostsByUser();
       getListFollowing();
       getListFollowers();
     }
   }, [user?.id]);
+
+  const countPostsByUser = async () => {
+    if (!user?.id) return;
+    setIsLoading(true);
+    const res = await countPostsByUserId(user?.id);
+    if (res.success) {
+      setPostCount(res.count);
+    }
+    setIsLoading(false);
+  };
 
   const getListFollowing = async () => {
     if (!user?.id) return;
@@ -209,7 +222,7 @@ export default function ProfileHeader() {
 
             <div className="grid grid-cols-3 text-xs sm:text-sm mt-2 gap-2">
               <motion.div whileHover={{ scale: 1.05 }}>
-                <div className="font-semibold">0</div>
+                <div className="font-semibold">{postCount}</div>
                 <div className="text-muted-foreground">
                   {t("dashboard.posts")}
                 </div>

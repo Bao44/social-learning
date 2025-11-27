@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useScore } from "@/components/contexts/ScoreContext";
+import { countPostsByUserId } from "@/app/apiClient/post/post";
 
 interface FriendSuggestion {
   id: string;
@@ -74,6 +75,7 @@ export function RightSidebar() {
   const router = useRouter();
   const [suggestions, setSuggestions] = useState<FriendSuggestion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [postCount, setPostCount] = useState(0);
   const [followingUser, setFollowingUser] = useState<string | null>(null);
   const [openFollowing, setOpenFollowing] = useState(false);
   const [following, setFollowing] = useState<Follower[]>([]);
@@ -165,10 +167,22 @@ export function RightSidebar() {
 
   useEffect(() => {
     if (user?.id) {
+      countPostsByUser();
       getListFollowing();
       getListFollowers();
     }
   }, [user?.id]);
+
+  const countPostsByUser = async () => {
+    if (!user?.id) return;
+
+    setLoading(true);
+    const res = await countPostsByUserId(user?.id);
+    if (res.success) {
+      setPostCount(res.count);
+    }
+    setLoading(false);
+  };
 
   const getListFollowing = async () => {
     if (!user?.id) {
@@ -214,7 +228,7 @@ export function RightSidebar() {
         <CardHeader className="relative">
           <CardTitle className="text-base font-bold flex items-center">
             <span className="bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-             {t("dashboard.yourAchievements")}
+              {t("dashboard.yourAchievements")}
             </span>
           </CardTitle>
         </CardHeader>
@@ -237,7 +251,7 @@ export function RightSidebar() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-orange-700 font-medium mb-1">
-                           {t("dashboard.practiceScore")}
+                            {t("dashboard.practiceScore")}
                           </p>
                           <p
                             className={`${getResponsiveFontSize(
@@ -283,7 +297,7 @@ export function RightSidebar() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-pink-700 font-medium mb-1">
-                           {t("dashboard.testScore")}
+                            {t("dashboard.testScore")}
                           </p>
                           <p
                             className={`${getResponsiveFontSize(
@@ -391,7 +405,7 @@ export function RightSidebar() {
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4 text-center">
             <div className="transform transition-all duration-300 hover:scale-110 cursor-pointer">
-              <p className="font-semibold text-gray-900">0</p>
+              <p className="font-semibold text-gray-900">{postCount}</p>
               <p className="text-xs text-gray-500">{t("dashboard.posts")}</p>
             </div>
             <div
