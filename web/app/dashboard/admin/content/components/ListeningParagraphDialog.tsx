@@ -92,13 +92,13 @@ export function ListeningParagraphDialog({
     if (open && paragraph) {
       // Edit
       setFormData({
-        titleEn: paragraph.title_en || "",
-        titleVi: paragraph.title_vi || "",
-        textContent: paragraph.text_content || "",
-        audioUrl: paragraph.audio_url || "",
-        description: paragraph.description || "",
-        levelId: paragraph.level_id?.toString() || "",
-        topicId: paragraph.topic_id?.toString() || "",
+        titleEn: paragraph.title_en,
+        titleVi: paragraph.title_vi,
+        textContent: paragraph.text_content,
+        audioUrl: paragraph.audio_url,
+        description: paragraph.description,
+        levelId: paragraph.level_id?.toString(),
+        topicId: paragraph.topic_id?.toString(),
       });
     } else if (open) {
       // Create
@@ -136,7 +136,10 @@ export function ListeningParagraphDialog({
       if (paragraph) {
         // Chế độ Edit
         const payloadWithId = { id: paragraph.id, ...payload };
-        response = await updateListeningParagraph(payloadWithId);
+        response = await updateListeningParagraph({
+          id: paragraph.id,
+          paragraphData: payloadWithId,
+        });
       } else {
         // Chế độ Create
         response = await createListeningParagraph(payload);
@@ -146,15 +149,16 @@ export function ListeningParagraphDialog({
         toast.success(
           paragraph
             ? `${t("dashboard.paragraphUpdated")}`
-            : `${t("dashboard.paragraphCreated")}`
+            : `${t("dashboard.paragraphCreated")}`,
+          { autoClose: 2000 }
         );
         onOpenChange(false); // Đóng modal
         onSuccess(); // Refresh lại bảng
       } else {
-        toast.error(response.message);
+        toast.error(response.message, { autoClose: 2000 });
       }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message, { autoClose: 2000 });
     } finally {
       setIsSaving(false);
     }
@@ -174,7 +178,9 @@ export function ListeningParagraphDialog({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="titleEn">{t("dashboard.titleContent")} (English)</Label>
+              <Label htmlFor="titleEn">
+                {t("dashboard.titleContent")} (English)
+              </Label>
               <Input
                 id="titleEn"
                 name="titleEn"
@@ -184,7 +190,9 @@ export function ListeningParagraphDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="titleVi">{t("dashboard.titleContent")} (Vietnamese)</Label>
+              <Label htmlFor="titleVi">
+                {t("dashboard.titleContent")} (Vietnamese)
+              </Label>
               <Input
                 id="titleVi"
                 name="titleVi"

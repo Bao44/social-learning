@@ -334,6 +334,7 @@
   "user": "Người dùng",
   "engagement": "Tương tác",
   "created": "Đã tạo",
+  "lastModified": "Thay đổi lần cuối",
   "noPostsFound": "Không tìm thấy bài viết",
   "postDetails": "Chi tiết bài viết",
   "postedBy": "Được đăng bởi",
@@ -352,6 +353,10 @@
 
   "paragraphUpdated": "Đoạn nghe đã được cập nhật",
   "paragraphCreated": "Đoạn nghe đã được tạo",
+  "speakingLessonUpdated": "Bài nói đã được cập nhật",
+  "speakingLessonCreated": "Bài nói đã được tạo",
+  "exerciseUpdated": "Bài tập viết đã được cập nhật",
+  "exerciseCreated": "Bài tập viết đã được tạo",
   "textContent": "Nội dung văn bản",
 
   "exerciseDeleted": "Bài tập đã bị xóa",
