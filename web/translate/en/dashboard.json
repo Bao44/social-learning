@@ -335,6 +335,7 @@
   "user": "User",
   "engagement": "Engagement",
   "created": "Created",
+  "lastModified": "Last Modified",
   "noPostsFound": "No posts found",
   "postDetails": "Post Details",
   "postedBy": "Posted by",
@@ -353,6 +354,11 @@
 
   "paragraphUpdated": "Listening paragraph updated",
   "paragraphCreated": "Listening paragraph created",
+  "speakingLessonUpdated": "Speaking lesson updated",
+  "speakingLessonCreated": "Speaking lesson created",
+  "exerciseUpdated": "Writing exercise updated",
+  "exerciseCreated": "Writing exercise created",
+
   "textContent": "Text content",
 
   "exerciseDeleted": "Exercise deleted successfully!",

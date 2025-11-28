@@ -91,7 +91,15 @@ const contentService = {
   createListeningParagraph: async (paragraphData) => {
     const { data, error } = await supabase
       .from("listenParagraphs")
-      .insert(paragraphData)
+      .insert({
+        title_en: paragraphData.titleEn,
+        title_vi: paragraphData.titleVi,
+        text_content: paragraphData.textContent,
+        level_id: paragraphData.levelId,
+        topic_id: paragraphData.topicId,
+        audio_url: paragraphData.audioUrl,
+        created_at: new Date().toISOString(),
+      })
       .select()
       .single();
     if (error) return { data: null, error };
@@ -101,9 +109,14 @@ const contentService = {
   createSpeakingLesson: async (lessonData) => {
     const { data, error } = await supabase
       .from("speakingLessons")
-      .insert(lessonData)
+      .insert({
+        content: lessonData.content,
+        level_id: lessonData.levelId,
+        topic_id: lessonData.topicId,
+      })
       .select()
       .single();
+
     if (error) return { data: null, error };
     return { data, error: null };
   },
@@ -111,7 +124,16 @@ const contentService = {
   createWritingExercise: async (exerciseData) => {
     const { data, error } = await supabase
       .from("writingParagraphs")
-      .insert(exerciseData)
+      .insert({
+        type_exercise_id: exerciseData.typeExerciseId,
+        type_paragraph_id: exerciseData.typeParagraphId,
+        title: exerciseData.title,
+        content_en: exerciseData.contentEn,
+        content_vi: exerciseData.contentVi,
+        level_id: exerciseData.levelId,
+        topic_id: exerciseData.topicId,
+        number_sentences: exerciseData.numberSentences,
+      })
       .select()
       .single();
     if (error) return { data: null, error };
@@ -123,7 +145,15 @@ const contentService = {
   updateListeningParagraph: async (id, paragraphData) => {
     const { data, error } = await supabase
       .from("listenParagraphs")
-      .update(paragraphData)
+      .update({
+        title_en: paragraphData.titleEn,
+        title_vi: paragraphData.titleVi,
+        text_content: paragraphData.textContent,
+        level_id: paragraphData.levelId,
+        topic_id: paragraphData.topicId,
+        audio_url: paragraphData.audioUrl,
+        created_at: new Date().toISOString(),
+      })
       .eq("id", id)
       .select()
       .single();
@@ -134,7 +164,16 @@ const contentService = {
   updateWritingExercise: async (id, exerciseData) => {
     const { data, error } = await supabase
       .from("writingParagraphs")
-      .update(exerciseData)
+      .update({
+        type_exercise_id: exerciseData.typeExerciseId,
+        type_paragraph_id: exerciseData.typeParagraphId,
+        title: exerciseData.title,
+        content_en: exerciseData.contentEn,
+        content_vi: exerciseData.contentVi,
+        level_id: exerciseData.levelId,
+        topic_id: exerciseData.topicId,
+        number_sentences: exerciseData.numberSentences,
+      })
       .eq("id", id)
       .select()
       .single();
@@ -142,6 +181,21 @@ const contentService = {
     return { data, error: null };
   },
 
+  updateSpeakingLesson: async (id, lessonData) => {
+    const { data, error } = await supabase
+      .from("speakingLessons")
+      .update({
+        content: lessonData.content,
+        level_id: lessonData.levelId,
+        topic_id: lessonData.topicId,
+        created_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) return { data: null, error };
+    return { data, error: null };
+  },
   // ====== DELETE ======
 
   deleteListeningParagraph: async (id) => {
