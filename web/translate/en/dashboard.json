@@ -376,5 +376,42 @@
   "noSpeakingLessonsFound": "No speaking lessons found",
   "deleteSpeakingLessonConfirmation": "This will permanently delete this speaking lesson. This action cannot be undone.",
   "createSpeakingLesson": "Create Speaking Lesson",
-  "premium": "Premium"
+  "premium": "Premium",
+
+  "rewardSent": "Reward sent to learner",
+  "analyticsDashboard": "Analytics Dashboard",
+  "analyticsDashboardDescription": "Track user growth and learning effectiveness",
+  "userGrowth": "User Growth",
+  "userGrowthDescription": "Number of new users over time",
+  "skillPerformance": "Skill Performance",
+  "skillPerformanceDescription": "Average scores and number of attempts by skill",
+  "topPerformers": "Top Performers",
+  "topPerformersDescription": "Leaderboard of top users",
+  "giftReward": "Gift Reward",
+  "totalScore": "Total Score",
+
+  "vocabularyAnalytics": "Vocabulary Analytics",
+  "vocabularyAnalyticsDescription": "Overview of vocabulary repository and issues faced by learners.",
+  "totalVocabularyEntries": "Total Vocabulary Entries",
+  "activeTopics": "Active Topics",
+  "avgMasteryScore": "Avg. Mastery Score",
+  "difficultWordsAnalysis": "Difficult Words Analysis",
+  "difficultWordsAnalysisDescription": "Top difficult words faced by learners.",
+  "top10MostFrequentErrors": "Top 10 Most Frequent Errors",
+  "totalErrors": "Total Errors",
+  "affected": "Affected",
+  "noDataFound": "No data found",
+  "userVocabularyTopics": "User Vocabulary Topics",
+  "userVocabularyTopicsDescription": "Vocabulary sets contributed by users.",
+  "topicName": "Topic Name",
+  "vietnameseName": "Vietnamese Name",
+  "totalVocab": "Total Vocab",
+  "dateCreated": "Date Created",
+  "words": "words",
+
+  "prevPage": "Previous",
+  "nextPage": "Next",
+  "page": "Page",
+
+  "achievementsGamification":"Achievements & Gamification"
 }

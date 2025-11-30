@@ -35,7 +35,6 @@ export default function page() {
   const [achievements, setAchievements] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Hàm gọi API mới
   const fetchAchievements = async () => {
     try {
       setLoading(true);
@@ -68,7 +67,7 @@ export default function page() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-3xl">
-            Achievements & Gamification
+            {t("dashboard.achievementsGamification")}
           </CardTitle>
           <Button onClick={handleCreate} className="cursor-pointer">
             <Plus className="w-4 h-4 mr-2" />

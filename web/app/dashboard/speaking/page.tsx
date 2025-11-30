@@ -45,13 +45,14 @@ export default function SpeakingPage() {
     }
   };
 
-  const executeConversationPracticeAI = () => {
+  const handleConversationPracticeAI_Click = () => {
     if (selectedLevel && selectedTopic) {
       setLoading(true);
       router.push(
         `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}&mode=conversation`
       );
     }
+    setLoading(false);
   };
 
   const executeConversationRealTimeAI = () => {
@@ -78,10 +79,11 @@ export default function SpeakingPage() {
     setShowByLesson(true);
   };
 
-  const handleConversationPracticeAI_Click = () => {
-    setPendingAction(() => executeConversationPracticeAI);
-    setShowByLesson(true);
-  };
+  // Không dùng bông tuyết
+  // const handleConversationPracticeAI_Click = () => {
+  //   setPendingAction(() => executeConversationPracticeAI);
+  //   setShowByLesson(true);
+  // };
 
   const handleConversationRealTimeAI_Click = () => {
     setPendingAction(() => executeConversationRealTimeAI);

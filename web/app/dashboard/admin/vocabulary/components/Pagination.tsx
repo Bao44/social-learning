@@ -11,12 +11,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // 1. Định nghĩa props mà component của bạn sẽ nhận
 type PaginationProps = {
+  t: (key: string) => string;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 };
 
 export function Pagination({
+  t,
   currentPage,
   totalPages,
   onPageChange,
@@ -52,13 +54,13 @@ export function Pagination({
             disabled={currentPage === 1}
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
-            Previous
+            {t("dashboard.prevPage")}
           </Button>
         </PaginationItem>
 
         <PaginationItem>
           <span className="text-sm font-medium px-4">
-            Page {currentPage} of {totalPages}
+            {t("dashboard.page")} {currentPage} / {totalPages}
           </span>
         </PaginationItem>
 
@@ -69,7 +71,7 @@ export function Pagination({
             onClick={handleNext}
             disabled={currentPage === totalPages}
           >
-            Next
+            {t("dashboard.nextPage")}
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </PaginationItem>
