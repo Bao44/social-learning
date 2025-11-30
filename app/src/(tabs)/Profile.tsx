@@ -14,6 +14,7 @@ import StoryHighlights from '../screens/user/components/StoryHighlights';
 import ProfileTabs from '../screens/user/components/ProfileTabs';
 import PhotoGrid from '../screens/user/components/PhotoGrid';
 import LinearGradient from 'react-native-linear-gradient';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function ProfileScreen() {
   const [active, setActive] = useState<'posts' | 'saved' | 'tagged'>('posts');
@@ -85,9 +86,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   headerGradient: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -100,16 +101,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: scale(12),
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: 'bold',
     color: '#ffffff',
     flex: 1,
@@ -119,21 +120,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: moderateScale(44),
+    height: moderateScale(44),
+    borderRadius: moderateScale(22),
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: scale(8),
   },
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
-    marginTop: -15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-     overflow: 'hidden', 
+    marginTop: verticalScale(-15),
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    overflow: 'hidden',
   },
   tabContent: {
     flex: 1,
@@ -142,10 +143,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: scale(40),
   },
   emptyStateText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#6b7280',
     textAlign: 'center',
   },

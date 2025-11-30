@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Plus } from 'lucide-react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function StoryHighlights() {
   return (
@@ -43,51 +44,51 @@ export default function StoryHighlights() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
-    paddingVertical: 16,
+    paddingVertical: verticalScale(16),
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
   },
   scrollContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: scale(16),
   },
   highlightItem: {
-    width: 80,
+    width: scale(80),
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: scale(16),
   },
   highlightCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    padding: 3,
+    width: moderateScale(64),
+    height: moderateScale(64),
+    borderRadius: moderateScale(32),
+    padding: scale(3),
     backgroundColor: '#f3f4f6',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   highlightImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 29,
+    borderRadius: moderateScale(29),
   },
   highlightLabel: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#374151',
     textAlign: 'center',
     fontWeight: '500',
   },
   addCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: moderateScale(64),
+    height: moderateScale(64),
+    borderRadius: moderateScale(32),
     borderWidth: 2,
     borderColor: '#e5e7eb',
     borderStyle: 'dashed',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f9fafb',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   addLabel: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#9ca3af',
     textAlign: 'center',
     fontWeight: '500',

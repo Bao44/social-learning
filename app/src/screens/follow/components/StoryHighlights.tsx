@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function StoryHighlights() {
   return (
@@ -39,27 +40,38 @@ export default function StoryHighlights() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
+    paddingVertical: verticalScale(8),
     borderBottomWidth: 1,
     borderBottomColor: '#e6e6e6',
   },
-  item: { width: 68, alignItems: 'center', marginRight: 10 },
+  item: {
+    width: scale(68),
+    alignItems: 'center',
+    marginRight: scale(10),
+  },
   highlightAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
     borderWidth: 2,
     borderColor: '#ccc',
   },
   addCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
     borderStyle: 'dashed',
     borderWidth: 1.5,
     borderColor: '#bbb',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { fontSize: 12, marginTop: 6, textAlign: 'center' },
+  label: {
+    fontSize: moderateScale(12),
+    marginTop: verticalScale(6),
+    textAlign: 'center',
+  },
+  plusIcon: {
+    fontSize: moderateScale(20),
+  },
 });

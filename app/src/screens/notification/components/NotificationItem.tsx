@@ -8,6 +8,7 @@ import { getUserImageSrc } from '../../../api/image/route';
 import { convertToDate } from '../../../../helpers/formatTime';
 import { markNotificationAsRead } from '../../../api/notification/route';
 import { Bell, MessageCircle, Heart, User } from 'lucide-react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const NotificationItem = ({ item, navigation, onRead }: any) => {
   const handleClick = async () => {
@@ -28,15 +29,15 @@ const NotificationItem = ({ item, navigation, onRead }: any) => {
 
   const getNotificationIcon = () => {
     if (item?.title?.includes('bình luận')) {
-      return <MessageCircle size={16} color="#667eea" />;
+      return <MessageCircle size={moderateScale(16)} color="#667eea" />;
     }
     if (item?.title?.includes('thích')) {
-      return <Heart size={16} color="#ef4444" />;
+      return <Heart size={moderateScale(16)} color="#ef4444" />;
     }
     if (item?.title?.includes('theo dõi')) {
-      return <User size={16} color="#10b981" />;
+      return <User size={moderateScale(16)} color="#10b981" />;
     }
-    return <Bell size={16} color="#667eea" />;
+    return <Bell size={moderateScale(16)} color="#667eea" />;
   };
 
   return (
@@ -52,7 +53,7 @@ const NotificationItem = ({ item, navigation, onRead }: any) => {
       <View style={styles.avatarContainer}>
         <Avatar
           uri={getUserImageSrc(item?.sender?.avatar)}
-          size={hp(5.5)}
+          size={moderateScale(45)}
           rounded={theme.radius.xxl * 100}
         />
         {!item.is_read && <View style={styles.unreadDot} />}
@@ -84,9 +85,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 8,
+    padding: scale(16),
+    borderRadius: moderateScale(16),
+    marginBottom: verticalScale(8),
     borderWidth: 1,
     borderColor: '#f3f4f6',
     backgroundColor: '#ffffff',
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   unreadContainer: {
     backgroundColor: '#f8faff',
     borderColor: '#e0e7ff',
-    borderLeftWidth: 4,
+    borderLeftWidth: scale(4),
     borderLeftColor: '#667eea',
   },
   readContainer: {
@@ -107,22 +108,22 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'relative',
-    marginRight: 12,
+    marginRight: scale(12),
   },
   unreadDot: {
     position: 'absolute',
     top: -2,
     right: -2,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: moderateScale(12),
+    height: moderateScale(12),
+    borderRadius: moderateScale(6),
     backgroundColor: '#667eea',
     borderWidth: 2,
     borderColor: '#ffffff',
   },
   contentContainer: {
     flex: 1,
-    gap: 4,
+    gap: verticalScale(4),
   },
   headerRow: {
     flexDirection: 'row',
@@ -130,39 +131,39 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   senderName: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#1f2937',
   },
   iconContainer: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: moderateScale(24),
+    height: moderateScale(24),
+    borderRadius: moderateScale(12),
     backgroundColor: '#f9fafb',
     alignItems: 'center',
     justifyContent: 'center',
   },
   titleText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
-    lineHeight: 20,
+    lineHeight: verticalScale(20),
   },
   unreadTitle: {
     color: '#374151',
     fontWeight: '500',
   },
   timeText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#9ca3af',
-    marginTop: 2,
+    marginTop: verticalScale(2),
   },
   actionIndicator: {
-    marginLeft: 8,
+    marginLeft: scale(8),
     alignItems: 'center',
     justifyContent: 'center',
   },
   chevron: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     color: '#d1d5db',
     fontWeight: '300',
   },
