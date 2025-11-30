@@ -14,8 +14,7 @@ import useAuth from '../../hooks/useAuth';
 import { getUserData } from '../api/user/route';
 import { supabase } from '../../lib/supabase';
 import { fetchPosts } from '../api/post/route';
-import { hp, wp } from '../../helpers/common';
-import { theme } from '../../constants/theme';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import PostCard from '../screens/post/PostCard';
 import Loading from '../components/Loading';
 import LinearGradient from 'react-native-linear-gradient';
@@ -142,22 +141,21 @@ const Main = () => {
       setUnreadMessageCount(res);
     };
 
-    socket.on("notificationNewMessage", () => {
+    socket.on('notificationNewMessage', () => {
       fetchMessagesCount();
     });
 
-    socket.on("notificationMessagesRead", () => {
+    socket.on('notificationMessagesRead', () => {
       fetchMessagesCount();
     });
 
     fetchMessagesCount();
 
     return () => {
-      socket.off("notificationNewMessage");
-      socket.off("notificationMessagesRead");
+      socket.off('notificationNewMessage');
+      socket.off('notificationMessagesRead');
     };
   }, [user]);
-
 
   const getPosts = async () => {
     if (!hasMore) return;
@@ -299,9 +297,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   headerGradient: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -314,28 +312,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   socialIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: scale(12),
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: 'bold',
     color: '#ffffff',
   },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: scale(8),
   },
   actionButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: moderateScale(44),
+    height: moderateScale(44),
+    borderRadius: moderateScale(22),
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -345,9 +343,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -2,
     right: -2,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: moderateScale(20),
+    height: moderateScale(20),
+    borderRadius: moderateScale(10),
     backgroundColor: '#ef4444',
     alignItems: 'center',
     justifyContent: 'center',
@@ -356,60 +354,60 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     color: '#ffffff',
-    fontSize: 10,
+    fontSize: moderateScale(10),
     fontWeight: 'bold',
   },
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
-    marginTop: -12,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    marginTop: verticalScale(-12),
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
   },
   scrollView: {
     flex: 1,
   },
   postsContainer: {
-    paddingTop: 16,
+    paddingTop: verticalScale(16),
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
-    marginTop: 60,
+    padding: scale(40),
+    marginTop: verticalScale(60),
   },
   emptyIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
     backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   emptyDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: verticalScale(20),
   },
   loadingContainer: {
-    marginVertical: 30,
+    marginVertical: verticalScale(30),
     alignItems: 'center',
   },
   endContainer: {
-    marginBottom: 60,
+    marginBottom: verticalScale(60),
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: verticalScale(20),
   },
   endText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#6b7280',
     textAlign: 'center',
   },

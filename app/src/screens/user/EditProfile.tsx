@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
   ActivityIndicator,
   ScrollView,
   StyleSheet,
@@ -29,6 +28,7 @@ import {
   FileText,
   Users,
 } from 'lucide-react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function EditProfileScreen() {
   const { user, setUser } = useAuth();
@@ -199,7 +199,7 @@ export default function EditProfileScreen() {
               style={styles.avatar}
             />
             <View style={styles.cameraOverlay}>
-              <Camera size={20} color="#fff" />
+              <Camera size={moderateScale(20)} color="#fff" />
             </View>
           </TouchableOpacity>
           <Text style={styles.changePhotoText}>Thay đổi ảnh đại diện</Text>
@@ -210,7 +210,7 @@ export default function EditProfileScreen() {
           {/* Nickname */}
           <View style={styles.inputGroup}>
             <View style={styles.inputLabel}>
-              <User size={20} color="#667eea" />
+              <User size={moderateScale(20)} color="#667eea" />
               <Text style={styles.labelText}>Biệt danh</Text>
             </View>
             <TextInput
@@ -225,7 +225,7 @@ export default function EditProfileScreen() {
           {/* Phone */}
           <View style={styles.inputGroup}>
             <View style={styles.inputLabel}>
-              <Phone size={20} color="#667eea" />
+              <Phone size={moderateScale(20)} color="#667eea" />
               <Text style={styles.labelText}>Số điện thoại</Text>
             </View>
             <TextInput
@@ -241,7 +241,7 @@ export default function EditProfileScreen() {
           {/* Address */}
           <View style={styles.inputGroup}>
             <View style={styles.inputLabel}>
-              <MapPin size={20} color="#667eea" />
+              <MapPin size={moderateScale(20)} color="#667eea" />
               <Text style={styles.labelText}>Địa chỉ</Text>
             </View>
             <TextInput
@@ -256,7 +256,7 @@ export default function EditProfileScreen() {
           {/* Bio */}
           <View style={styles.inputGroup}>
             <View style={styles.inputLabel}>
-              <FileText size={20} color="#667eea" />
+              <FileText size={moderateScale(20)} color="#667eea" />
               <Text style={styles.labelText}>Tiểu sử</Text>
             </View>
             <TextInput
@@ -277,7 +277,7 @@ export default function EditProfileScreen() {
           {/* Gender */}
           <View style={styles.inputGroup}>
             <View style={styles.inputLabel}>
-              <Users size={20} color="#667eea" />
+              <Users size={moderateScale(20)} color="#667eea" />
               <Text style={styles.labelText}>Giới tính</Text>
             </View>
             <View style={styles.genderContainer}>
@@ -341,8 +341,8 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
     elevation: 2,
@@ -357,26 +357,26 @@ const styles = StyleSheet.create({
   avatarSection: {
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    paddingVertical: 32,
-    marginBottom: 16,
+    paddingVertical: verticalScale(32),
+    marginBottom: verticalScale(16),
   },
   avatarContainer: {
     position: 'relative',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: moderateScale(120),
+    height: moderateScale(120),
+    borderRadius: moderateScale(60),
     backgroundColor: '#f3f4f6',
   },
   cameraOverlay: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: moderateScale(36),
+    height: moderateScale(36),
+    borderRadius: moderateScale(18),
     backgroundColor: '#667eea',
     alignItems: 'center',
     justifyContent: 'center',
@@ -384,58 +384,58 @@ const styles = StyleSheet.create({
     borderColor: '#ffffff',
   },
   changePhotoText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#667eea',
     fontWeight: '600',
   },
   formSection: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(24),
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: verticalScale(24),
   },
   inputLabel: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   labelText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#374151',
-    marginLeft: 8,
+    marginLeft: scale(8),
   },
   textInput: {
     borderWidth: 1,
     borderColor: '#e5e7eb',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
+    borderRadius: moderateScale(12),
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
+    fontSize: moderateScale(16),
     color: '#374151',
     backgroundColor: '#f9fafb',
   },
   textArea: {
-    height: 100,
+    height: verticalScale(100),
     textAlignVertical: 'top',
   },
   charCount: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#9ca3af',
     textAlign: 'right',
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
   genderContainer: {
     flexDirection: 'row',
-    gap: 8,
+    gap: scale(8),
   },
   genderOption: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+    borderRadius: moderateScale(12),
     borderWidth: 1,
     borderColor: '#e5e7eb',
     backgroundColor: '#f9fafb',
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
     borderColor: '#667eea',
   },
   genderOptionText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600',
     color: '#6b7280',
   },
@@ -455,10 +455,10 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#667eea',
-    marginHorizontal: 20,
-    marginTop: 16,
-    paddingVertical: 16,
-    borderRadius: 12,
+    marginHorizontal: scale(20),
+    marginTop: verticalScale(16),
+    paddingVertical: verticalScale(16),
+    borderRadius: moderateScale(12),
     alignItems: 'center',
     elevation: 2,
     shadowColor: '#667eea',
@@ -473,10 +473,10 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: 'bold',
   },
   bottomSpacing: {
-    height: 32,
+    height: verticalScale(32),
   },
 });

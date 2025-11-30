@@ -16,6 +16,7 @@ router.post("/create-writing", contentController.createWritingExercise);
 
 router.put("/update-listening/:id", contentController.updateListeningParagraph);
 router.put("/update-writing/:id", contentController.updateWritingExercise);
+router.put("/update-speaking/:id", contentController.updateSpeakingLesson);
 
 router.delete(
   "/delete-listening/:id",

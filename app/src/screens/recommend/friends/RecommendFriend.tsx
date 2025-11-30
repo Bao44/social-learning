@@ -7,16 +7,14 @@ import {
   Image,
   ActivityIndicator,
   StyleSheet,
-  Alert,
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../../../lib/supabase';
 import { getSupabaseFileUrl } from '../../../api/image/route';
-import Header from '../../../components/Header';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import {
   Users,
-  UserPlus,
   Star,
   RefreshCw,
   Sparkles,
@@ -92,9 +90,7 @@ const RecommendFriend = () => {
         <TouchableOpacity
           style={styles.friendInfo}
           onPress={() =>
-            navigation.navigate('UserFollow', {
-              userSearch: item,
-            })
+            navigation.navigate('UserFollow', { userSearch: item })
           }
           activeOpacity={0.8}
         >
@@ -111,7 +107,7 @@ const RecommendFriend = () => {
             )}
             {item.isSameOrHigherLevel && (
               <View style={styles.levelBadge}>
-                <Award size={12} color="#fff" />
+                <Award size={moderateScale(12)} color="#fff" />
               </View>
             )}
           </View>
@@ -122,7 +118,7 @@ const RecommendFriend = () => {
               <Text style={styles.userName}>{item.name}</Text>
               {item.isFoF && item.mutualCount > 0 && (
                 <View style={styles.mutualBadge}>
-                  <Heart size={10} color="#ef4444" />
+                  <Heart size={moderateScale(10)} color="#ef4444" />
                   <Text style={styles.mutualText}>{item.mutualCount}</Text>
                 </View>
               )}
@@ -132,11 +128,11 @@ const RecommendFriend = () => {
 
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
-                <Star size={12} color="#fbbf24" />
+                <Star size={moderateScale(12)} color="#fbbf24" />
                 <Text style={styles.statText}>Level {item.level}</Text>
               </View>
               <View style={styles.statItem}>
-                <Sparkles size={12} color="#667eea" />
+                <Sparkles size={moderateScale(12)} color="#667eea" />
                 <Text style={styles.statText}>{item.matchCount} phù hợp</Text>
               </View>
             </View>
@@ -170,7 +166,7 @@ const RecommendFriend = () => {
         onPress={fetchFriends}
         activeOpacity={0.8}
       >
-        <RefreshCw size={16} color="#fff" />
+        <RefreshCw size={moderateScale(16)} color="#fff" />
         <Text style={styles.retryButtonText}>Thử lại</Text>
       </TouchableOpacity>
     </View>
@@ -179,7 +175,7 @@ const RecommendFriend = () => {
   const renderEmptyState = () => (
     <View style={styles.centerContainer}>
       <View style={styles.emptyIconContainer}>
-        <Users size={48} color="#9ca3af" />
+        <Users size={moderateScale(48)} color="#9ca3af" />
       </View>
       <Text style={styles.emptyTitle}>Chưa có gợi ý bạn bè</Text>
       <Text style={styles.emptyDescription}>
@@ -210,7 +206,7 @@ const RecommendFriend = () => {
             style={styles.backButton}
             activeOpacity={0.8}
           >
-            <ArrowLeft size={20} color="#fff" />
+            <ArrowLeft size={moderateScale(20)} color="#fff" />
           </TouchableOpacity>
 
           <View style={styles.headerCenter}>
@@ -248,9 +244,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   headerGradient: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -258,17 +254,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   headerCenter: {
     flexDirection: 'row',
@@ -276,137 +267,130 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
   headerTitle: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#ffffff',
   },
   headerRight: {
-    width: 40,
+    width: moderateScale(40),
   },
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
-    marginTop: -12,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    marginTop: verticalScale(-12),
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
   },
   centerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: scale(40),
   },
   loadingIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
     backgroundColor: '#f0f4ff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   loadingTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   loadingDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: verticalScale(20),
   },
   errorIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
     backgroundColor: '#fef2f2',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   errorIcon: {
-    fontSize: 32,
+    fontSize: moderateScale(32),
   },
   errorTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     color: '#dc2626',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   errorDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 24,
+    lineHeight: verticalScale(20),
+    marginBottom: verticalScale(24),
   },
   retryButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#dc2626',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(12),
   },
   retryButtonText: {
     color: '#fff',
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: scale(8),
+    fontSize: moderateScale(14),
   },
   emptyIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: moderateScale(80),
+    height: moderateScale(80),
+    borderRadius: moderateScale(40),
     backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   emptyTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
   emptyDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 24,
+    lineHeight: verticalScale(20),
+    marginBottom: verticalScale(24),
   },
   exploreButton: {
     backgroundColor: '#667eea',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(12),
   },
   exploreButtonText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: moderateScale(14),
   },
   listContainer: {
-    padding: 16,
+    padding: scale(16),
   },
   friendCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: moderateScale(16),
+    padding: scale(16),
+    marginBottom: verticalScale(12),
     borderWidth: 1,
     borderColor: '#f3f4f6',
     elevation: 2,
@@ -422,12 +406,12 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'relative',
-    marginRight: 12,
+    marginRight: scale(12),
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
   },
   avatarFallback: {
     backgroundColor: '#667eea',
@@ -436,16 +420,16 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#ffffff',
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
   },
   levelBadge: {
     position: 'absolute',
     bottom: -2,
     right: -2,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: moderateScale(20),
+    height: moderateScale(20),
+    borderRadius: moderateScale(10),
     backgroundColor: '#fbbf24',
     alignItems: 'center',
     justifyContent: 'center',
@@ -458,57 +442,44 @@ const styles = StyleSheet.create({
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   userName: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#1f2937',
-    marginRight: 8,
+    marginRight: scale(8),
   },
   mutualBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fef2f2',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    paddingHorizontal: scale(6),
+    paddingVertical: verticalScale(2),
+    borderRadius: moderateScale(8),
   },
   mutualText: {
-    fontSize: 10,
+    fontSize: moderateScale(10),
     color: '#ef4444',
     fontWeight: '600',
-    marginLeft: 2,
+    marginLeft: scale(2),
   },
   userNickname: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
   },
   statsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: scale(12),
   },
   statItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   statText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#6b7280',
-    marginLeft: 4,
-  },
-  addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#667eea',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 2,
-    shadowColor: '#667eea',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    marginLeft: scale(4),
   },
 });

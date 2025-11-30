@@ -3,6 +3,7 @@ const supabase = require("../../lib/supabase").supabase;
 const speakingService = {
   // Get list speaking by topic and level
   async getSpeakingByTopicAndLevel(levelId, topicId) {
+    const shuffle = arr => arr.sort(() => Math.random() - 0.5);
     const { data, error } = await supabase
       .from("speakingLessons")
       .select("id, content, topic_id, level_id")
@@ -11,7 +12,9 @@ const speakingService = {
 
     if (error) return { data: null, error };
 
-    return { data, error: null };
+    const random10 = shuffle(data).slice(0, 10);
+
+    return { data: random10, error: null };
   },
 };
 

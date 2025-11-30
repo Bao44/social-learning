@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Grid3X3, Bookmark, Tag } from 'lucide-react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 type TabId = 'posts' | 'saved' | 'tagged';
 
@@ -22,7 +23,7 @@ export default function ProfileTabs({
       {tabs.map(t => {
         const IconComponent = t.icon;
         const isActive = active === t.id;
-        
+
         return (
           <TouchableOpacity
             key={t.id}
@@ -30,10 +31,7 @@ export default function ProfileTabs({
             onPress={() => setActive(t.id)}
             activeOpacity={0.7}
           >
-            <IconComponent 
-              size={20} 
-              color={isActive ? '#667eea' : '#9ca3af'} 
-            />
+            <IconComponent size={20} color={isActive ? '#667eea' : '#9ca3af'} />
             <Text
               style={[
                 styles.tabText,
@@ -65,17 +63,17 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingVertical: verticalScale(16),
+    paddingHorizontal: scale(8),
     position: 'relative',
   },
   activeTab: {
     backgroundColor: '#f8faff',
   },
   tabText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '500',
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
   activeText: {
     color: '#667eea',
@@ -89,8 +87,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: '25%',
     right: '25%',
-    height: 3,
+    height: verticalScale(3),
     backgroundColor: '#667eea',
-    borderRadius: 2,
+    borderRadius: moderateScale(2),
   },
 });

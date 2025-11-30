@@ -1,13 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
-import { createSpeakingLesson, loadLevels, loadTopics } from "@/app/apiClient/admin/content";
+import {
+  createSpeakingLesson,
+  loadLevels,
+  loadTopics,
+  updateSpeakingLesson,
+} from "@/app/apiClient/admin/content";
 
 type Level = { id: number; name_en: string; [key: string]: any };
 type Topic = { id: number; name_en: string; [key: string]: any };
@@ -28,6 +44,7 @@ type SpeakingLessonDialogProps = {
   t: (key: string) => string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  lesson: any;
   onSuccess: () => void;
 };
 
@@ -35,6 +52,7 @@ export function SpeakingLessonDialog({
   t,
   open,
   onOpenChange,
+  lesson,
   onSuccess,
 }: SpeakingLessonDialogProps) {
   const [levels, setLevels] = useState<Level[]>([]);
@@ -62,10 +80,16 @@ export function SpeakingLessonDialog({
   }, [open]);
 
   useEffect(() => {
-    if (open) {
+    if (open && lesson) {
+      setFormData({
+        content: lesson.content,
+        levelId: lesson.level_id?.toString(),
+        topicId: lesson.topic_id?.toString(),
+      });
+    } else if (open) {
       setFormData(defaultValues);
     }
-  }, [open]);
+  }, [lesson, open]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -91,13 +115,29 @@ export function SpeakingLessonDialog({
     };
 
     try {
-      const response = await createSpeakingLesson(payload);
-      if (response.success) {
-        toast.success("Lesson created!");
-        onOpenChange(false); // Đóng modal
-        onSuccess(); // Refresh lại bảng
+      let response;
+      if (lesson) {
+        // edit
+        const payloadWithId = { id: lesson?.id, ...payload };
+        response = await updateSpeakingLesson({
+          id: lesson.id,
+          lessonData: payloadWithId,
+        });
       } else {
-        toast.error(response.message || "Failed to save.");
+        // create
+        response = await createSpeakingLesson(payload);
+      }
+
+      if (response.success) {
+        toast.success(
+          lesson
+            ? `${t("dashboard.speakingLessonUpdated")}`
+            : `${t("dashboard.speakingLessonCreated")}`
+        );
+        onOpenChange(false);
+        onSuccess();
+      } else {
+        toast.error(response.message, { autoClose: 2000 });
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.");
@@ -110,7 +150,10 @@ export function SpeakingLessonDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{t("dashboard.createSpeakingLesson")}</DialogTitle>
+          <DialogTitle>
+            {lesson ? `${t("dashboard.edit")}` : `${t("dashboard.create")}`}{" "}
+            {t("dashboard.speakingLessons")}
+          </DialogTitle>
         </DialogHeader>
 
         {/* Đây là form đã bỏ react-hook-form */}
@@ -176,7 +219,7 @@ export function SpeakingLessonDialog({
               {t("dashboard.cancel")}
             </Button>
             <Button type="submit" disabled={isSaving}>
-              {isSaving ? `${t("dashboard.creating")}` : `${t("dashboard.create")}`}
+              {isSaving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>
           </div>
         </form>

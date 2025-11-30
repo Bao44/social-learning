@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,6 +63,7 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
   const [topicId, setTopicId] = useState<string | null>(null);
   const [typeExerciseId, setTypeExerciseId] = useState<string | null>(null);
   const [typeParagraphId, setTypeParagraphId] = useState<string | null>(null);
+  const [selectedExercise, setSelectedExercise] = useState<WritingExercise | null>(null);
 
   const [exercises, setExercises] = useState<WritingExercise[]>([]);
   const [levels, setLevels] = useState<Level[]>([]);
@@ -131,6 +132,12 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
 
   // Xử lý các hành động
   const handleCreate = () => {
+    setSelectedExercise(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (exercise: WritingExercise) => {
+    setSelectedExercise(exercise);
     setDialogOpen(true);
   };
 
@@ -301,6 +308,14 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => handleEdit(exercise)}
+                            className="cursor-pointer hover:bg-gray-200"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => handleDeleteClick(exercise.id)}
                             className="cursor-pointer hover:bg-gray-200"
                           >
@@ -321,6 +336,7 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
         t={t}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        exercise={selectedExercise}
         onSuccess={refreshExercises}
       />
 

@@ -48,6 +48,7 @@ const analyticsService = {
         user:users ( name, avatar )
       `
       )
+      .eq("leaderboard_type", "practice")
       .order("rank", { ascending: true })
       .limit(10);
     if (error) return { data: null, error };

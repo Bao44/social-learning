@@ -22,6 +22,7 @@ import { theme } from '../../../../constants/theme';
 import Header from '../../../components/Header';
 import Toast from 'react-native-toast-message';
 import { getUserImageSrc } from '../../../api/image/route';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function Follow() {
   const route = useRoute<any>();
@@ -116,14 +117,14 @@ export default function Follow() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Header
           title={type === 'followers' ? 'Người theo dõi' : 'Đang theo dõi'}
         />
       </View>
 
-      <View style={{ padding: 12 }}>
+      <View style={styles.searchContainer}>
         <TextInput
           placeholder="Tìm kiếm"
           value={keyword}
@@ -133,7 +134,7 @@ export default function Follow() {
       </View>
 
       {loading ? (
-        <ActivityIndicator style={{ marginTop: 24 }} />
+        <ActivityIndicator style={{ marginTop: verticalScale(24) }} />
       ) : (
         <FlatList
           data={filtered}
@@ -142,17 +143,15 @@ export default function Follow() {
             const isF = followStatus[item.id] ?? false;
             return (
               <View style={styles.row}>
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', alignItems: 'center' }}
-                >
+                <TouchableOpacity style={styles.userInfo}>
                   <Avatar
                     uri={getUserImageSrc(item?.avatar)}
-                    size={48}
+                    size={moderateScale(48)}
                     rounded={theme.radius.xxl * 100}
                   />
-                  <View style={{ marginLeft: 10 }}>
-                    <Text style={{ fontWeight: '600' }}>{item.name}</Text>
-                    <Text style={{ color: '#888' }}>{item.nick_name}</Text>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.nameText}>{item.name}</Text>
+                    <Text style={styles.nickNameText}>{item.nick_name}</Text>
                   </View>
                 </TouchableOpacity>
 
@@ -166,7 +165,9 @@ export default function Follow() {
                       isF ? styles.unfollowBtn : styles.followBtnPrimary,
                     ]}
                   >
-                    <Text style={{ color: isF ? '#000' : '#fff' }}>
+                    <Text
+                      style={[styles.btnText, { color: isF ? '#000' : '#fff' }]}
+                    >
                       {isF
                         ? type === 'following'
                           ? 'Hủy theo dõi'
@@ -179,9 +180,7 @@ export default function Follow() {
             );
           }}
           ListEmptyComponent={
-            <Text style={{ textAlign: 'center', marginTop: 24, color: '#888' }}>
-              Không tìm thấy người dùng
-            </Text>
+            <Text style={styles.emptyText}>Không tìm thấy người dùng</Text>
           }
         />
       )}
@@ -190,22 +189,67 @@ export default function Follow() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   header: {
-    padding: 12,
+    padding: scale(12),
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  title: { fontSize: 18, fontWeight: '700' },
-  search: { backgroundColor: '#f3f3f3', padding: 10, borderRadius: 8 },
+  searchContainer: {
+    padding: scale(12),
+  },
+  search: {
+    backgroundColor: '#f3f3f3',
+    padding: scale(10),
+    borderRadius: moderateScale(8),
+    fontSize: moderateScale(14),
+  },
   row: {
-    padding: 12,
+    padding: scale(12),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
   },
-  followBtn: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 },
-  followBtnPrimary: { backgroundColor: '#1677ff' },
-  unfollowBtn: { backgroundColor: '#eee' },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textContainer: {
+    marginLeft: scale(10),
+  },
+  nameText: {
+    fontWeight: '600',
+    fontSize: moderateScale(14),
+    color: '#000',
+  },
+  nickNameText: {
+    color: '#888',
+    fontSize: moderateScale(12),
+  },
+  followBtn: {
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: scale(12),
+    borderRadius: moderateScale(8),
+  },
+  followBtnPrimary: {
+    backgroundColor: '#1677ff',
+  },
+  unfollowBtn: {
+    backgroundColor: '#eee',
+  },
+  btnText: {
+    fontSize: moderateScale(12),
+    fontWeight: '500',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: verticalScale(24),
+    color: '#888',
+    fontSize: moderateScale(14),
+  },
 });
