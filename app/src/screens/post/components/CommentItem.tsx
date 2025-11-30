@@ -3,11 +3,11 @@ import React from 'react';
 import Avatar from '../../../components/Avatar';
 import { TouchableOpacity } from 'react-native';
 import { theme } from '../../../../constants/theme';
-import { hp } from '../../../../helpers/common';
 import { Trash } from 'lucide-react-native';
 import { convertToDate, formatTime } from '../../../../helpers/formatTime';
 import { getUserImageSrc } from '../../../api/image/route';
 import { useNavigation } from '@react-navigation/native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const CommentItem = ({
   item,
@@ -44,16 +44,11 @@ const CommentItem = ({
         <Avatar
           uri={getUserImageSrc(item?.user?.avatar)}
           rounded={theme.radius.xxl * 100}
+          size={moderateScale(32)}
         />
       </TouchableOpacity>
       <View style={[styles.content, highlight && styles.highlight]}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+        <View style={styles.header}>
           <View style={styles.nameContainer}>
             <Text style={styles.text}>{item?.user?.name}</Text>
             <Text> - </Text>
@@ -63,7 +58,7 @@ const CommentItem = ({
           </View>
           {canDelete && (
             <TouchableOpacity onPress={handleDelete}>
-              <Trash size={20} color={theme.colors.rose} />
+              <Trash size={moderateScale(20)} color={theme.colors.rose} />
             </TouchableOpacity>
           )}
         </View>
@@ -81,16 +76,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    gap: 7,
-    alignItems: 'center',
+    gap: scale(7),
+    alignItems: 'flex-start',
   },
   content: {
     backgroundColor: 'rgba(0,0,0,0.06)',
     flex: 1,
-    gap: 5,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: theme.radius.md,
+    gap: verticalScale(5),
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(10),
+    borderRadius: moderateScale(12),
     borderCurve: 'continuous',
   },
   highlight: {
@@ -98,21 +93,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: theme.colors.dark,
     shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: scale(3),
+    flex: 1,
+    flexWrap: 'wrap',
   },
   text: {
-    fontSize: hp(1.6),
+    fontSize: moderateScale(13),
     fontWeight: theme.fonts.medium,
     color: theme.colors.textDark,
   },

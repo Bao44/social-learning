@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import Avatar from '../../components/Avatar';
 import Video from 'react-native-video';
 import { theme } from '../../../constants/theme';
-import { hp, stripHtmlTags, wp } from '../../../helpers/common';
+import { stripHtmlTags } from '../../../helpers/common';
 import {
   Edit2,
   Forward,
@@ -24,6 +24,7 @@ import { getSupabaseFileUrl, getUserImageSrc } from '../../api/image/route';
 import Loading from '../../components/Loading';
 import { likePost, unlikePost } from '../../api/post/route';
 import { convertToDate, formatTime } from '../../../helpers/formatTime';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const PostCard = ({
   item,
@@ -126,7 +127,7 @@ const PostCard = ({
             activeOpacity={0.8}
           >
             <Avatar
-              size={hp(4.5)}
+              size={moderateScale(40)} // Thay hp(4.5)
               uri={getUserImageSrc(item?.user?.avatar)}
               rounded={theme.radius.xxl * 100}
             />
@@ -143,7 +144,10 @@ const PostCard = ({
             style={styles.moreButton}
             activeOpacity={0.8}
           >
-            <MoreHorizontal size={20} color={theme.colors.textLight} />
+            <MoreHorizontal
+              size={moderateScale(20)}
+              color={theme.colors.textLight}
+            />
           </TouchableOpacity>
         )}
 
@@ -154,14 +158,14 @@ const PostCard = ({
               style={styles.actionButton}
               activeOpacity={0.8}
             >
-              <Edit2 size={18} color="#667eea" />
+              <Edit2 size={moderateScale(18)} color="#667eea" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handlePostDelete}
               style={styles.actionButton}
               activeOpacity={0.8}
             >
-              <Trash size={18} color="#ef4444" />
+              <Trash size={moderateScale(18)} color="#ef4444" />
             </TouchableOpacity>
           </View>
         )}
@@ -201,7 +205,7 @@ const PostCard = ({
           activeOpacity={0.8}
         >
           <Heart
-            size={22}
+            size={moderateScale(22)}
             color={liked ? '#ef4444' : '#9ca3af'}
             fill={liked ? '#ef4444' : 'transparent'}
           />
@@ -215,7 +219,7 @@ const PostCard = ({
           onPress={openPostDetails}
           activeOpacity={0.8}
         >
-          <MessageCircle size={22} color="#9ca3af" />
+          <MessageCircle size={moderateScale(22)} color="#9ca3af" />
           <Text style={styles.footerText}>
             {item?.comments?.[0]?.count || commentCount || 0}
           </Text>
@@ -229,7 +233,7 @@ const PostCard = ({
           {loading ? (
             <Loading size="small" />
           ) : (
-            <Forward size={22} color="#9ca3af" />
+            <Forward size={moderateScale(22)} color="#9ca3af" />
           )}
         </TouchableOpacity>
       </View>
@@ -242,10 +246,10 @@ export default PostCard;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
+    borderRadius: moderateScale(16),
+    marginHorizontal: scale(16),
+    marginBottom: verticalScale(16),
+    padding: scale(16),
     borderWidth: 1,
     borderColor: '#f3f4f6',
   },
@@ -260,7 +264,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   userInfo: {
     flexDirection: 'row',
@@ -268,23 +272,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userDetails: {
-    marginLeft: 12,
+    marginLeft: scale(12),
     flex: 1,
   },
   username: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   postTime: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#9ca3af',
   },
   moreButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: moderateScale(32),
+    height: moderateScale(32),
+    borderRadius: moderateScale(16),
     backgroundColor: '#f9fafb',
     alignItems: 'center',
     justifyContent: 'center',
@@ -292,52 +296,52 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: scale(8),
   },
   actionButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: moderateScale(36),
+    height: moderateScale(36),
+    borderRadius: moderateScale(18),
     backgroundColor: '#f9fafb',
     alignItems: 'center',
     justifyContent: 'center',
   },
   content: {
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   textContent: {
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   contentText: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: moderateScale(15),
+    lineHeight: verticalScale(22),
     color: '#374151',
   },
   mediaContent: {
     width: '100%',
-    height: hp(35),
-    borderRadius: 12,
+    height: verticalScale(250), // Thay thế hp(35)
+    borderRadius: moderateScale(12),
     backgroundColor: '#f3f4f6',
   },
   videoContainer: {
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     overflow: 'hidden',
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 12,
+    paddingTop: verticalScale(12),
     borderTopWidth: 1,
     borderTopColor: '#f3f4f6',
-    gap: 24,
+    gap: scale(24),
   },
   footerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: scale(6),
   },
   footerText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
     fontWeight: '500',
   },

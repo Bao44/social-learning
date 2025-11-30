@@ -10,9 +10,9 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { BookOpen } from 'lucide-react-native';
-import ScreenWrapper from '../../components/ScreenWrapper';
 import Toast from 'react-native-toast-message';
 import { register, resendOtp, verifyOtp } from '../../api/auth/route';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const Register = () => {
   const navigation = useNavigation<any>();
@@ -267,92 +267,95 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
+    padding: scale(16),
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    top: 16,
-    left: 16,
+    top: verticalScale(40), // Tăng top để tránh notch
+    left: scale(16),
     position: 'absolute',
   },
   logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
+    width: moderateScale(32),
+    height: moderateScale(32),
+    borderRadius: moderateScale(8),
     justifyContent: 'center',
     alignItems: 'center',
   },
   logoText: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#111827',
-    marginLeft: 8,
+    marginLeft: scale(8),
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: moderateScale(8),
     elevation: 4,
     width: '100%',
-    maxWidth: 400,
+    maxWidth: scale(380),
     alignSelf: 'center',
   },
   cardHeader: {
     alignItems: 'center',
-    padding: 16,
+    padding: scale(16),
   },
   cardIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: moderateScale(48),
+    height: moderateScale(48),
+    borderRadius: moderateScale(12),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   cardTitle: {
-    fontSize: 22,
+    fontSize: moderateScale(22),
     fontWeight: 'bold',
     color: '#111827',
   },
   cardDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#4B5563',
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
   cardContent: {
-    padding: 16,
+    padding: scale(16),
   },
   label: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#111827',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
   input: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 12,
+    borderRadius: moderateScale(8),
+    padding: verticalScale(8),
+    paddingHorizontal: scale(8),
+    marginBottom: verticalScale(12),
+    fontSize: moderateScale(14),
   },
   buttonWrapper: {
-    marginTop: 8,
-    borderRadius: 50,
+    marginTop: verticalScale(8),
+    borderRadius: moderateScale(50),
     overflow: 'hidden',
   },
   button: {
-    paddingVertical: 12,
+    paddingVertical: verticalScale(12),
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
   },
   footerText: {
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: verticalScale(12),
     color: '#4B5563',
+    fontSize: moderateScale(14),
   },
   link: {
     color: '#F97316',
@@ -360,16 +363,17 @@ const styles = StyleSheet.create({
   },
   countdown: {
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: verticalScale(8),
     color: '#4B5563',
   },
   resendBtn: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: verticalScale(8),
   },
   resendText: {
     color: '#F97316',
     fontWeight: '600',
+    fontSize: moderateScale(14),
   },
 });
 

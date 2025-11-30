@@ -23,6 +23,7 @@ import Header from '../../../components/Header';
 import Toast from 'react-native-toast-message';
 import { getUserImageSrc } from '../../../api/image/route';
 import { Search, Users } from 'lucide-react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function Follow() {
   const route = useRoute<any>();
@@ -127,7 +128,7 @@ export default function Follow() {
 
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
-          <Search size={20} color="#9ca3af" />
+          <Search size={moderateScale(20)} color="#9ca3af" />
           <TextInput
             placeholder="Tìm kiếm người dùng..."
             value={keyword}
@@ -181,10 +182,12 @@ export default function Follow() {
                     ]}
                     activeOpacity={0.8}
                   >
-                    <Text style={[
-                      styles.followButtonText,
-                      { color: isF ? '#374151' : '#fff' }
-                    ]}>
+                    <Text
+                      style={[
+                        styles.followButtonText,
+                        { color: isF ? '#374151' : '#fff' },
+                      ]}
+                    >
                       {isF
                         ? type === 'following'
                           ? 'Hủy theo dõi'
@@ -200,7 +203,9 @@ export default function Follow() {
             <View style={styles.emptyContainer}>
               <Users size={48} color="#9ca3af" />
               <Text style={styles.emptyText}>
-                {keyword ? 'Không tìm thấy người dùng' : 'Chưa có người dùng nào'}
+                {keyword
+                  ? 'Không tìm thấy người dùng'
+                  : 'Chưa có người dùng nào'}
               </Text>
             </View>
           }
@@ -218,8 +223,8 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
     elevation: 2,
@@ -230,8 +235,8 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
   },
@@ -239,27 +244,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f9fafb',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderRadius: moderateScale(12),
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
     borderWidth: 1,
     borderColor: '#e5e7eb',
   },
   searchInput: {
     flex: 1,
-    marginLeft: 12,
-    fontSize: 16,
+    marginLeft: scale(12),
+    fontSize: moderateScale(16),
     color: '#374151',
+    paddingVertical: 0,
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: scale(40),
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
+    marginTop: verticalScale(16),
+    fontSize: moderateScale(16),
     color: '#6b7280',
   },
   listContainer: {
@@ -267,8 +273,8 @@ const styles = StyleSheet.create({
   },
   userRow: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(16),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -281,24 +287,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userDetails: {
-    marginLeft: 12,
+    marginLeft: scale(12),
     flex: 1,
   },
   userName: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   userNickname: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#6b7280',
   },
   followButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    minWidth: 100,
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: scale(16),
+    borderRadius: moderateScale(20),
+    minWidth: scale(100),
     alignItems: 'center',
   },
   followButtonPrimary: {
@@ -310,19 +316,19 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb',
   },
   followButtonText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600',
   },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
-    marginTop: 60,
+    padding: scale(40),
+    marginTop: verticalScale(60),
   },
   emptyText: {
-    marginTop: 16,
-    fontSize: 16,
+    marginTop: verticalScale(16),
+    fontSize: moderateScale(16),
     color: '#6b7280',
     textAlign: 'center',
   },

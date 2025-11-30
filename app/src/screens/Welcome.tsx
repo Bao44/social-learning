@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const Welcome = () => {
   const navigation = useNavigation<any>();
@@ -59,15 +60,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 120,
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(60),
   },
   header: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
   title: {
-    fontSize: 40,
+    fontSize: moderateScale(40),
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -77,43 +78,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   welcomeImage: {
-    width: 300,
-    height: 300,
-    marginBottom: 20,
+    width: scale(300),
+    height: scale(300),
+    marginBottom: verticalScale(20),
   },
   footer: {
-    gap: 15,
+    gap: verticalScale(15),
     width: '100%',
     alignItems: 'center',
   },
   linearGradient: {
-    borderRadius: 25,
+    borderRadius: moderateScale(25),
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    width: '100%',
   },
   loginButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 80,
+    paddingVertical: verticalScale(14),
+    alignItems: 'center',
+    width: '100%',
   },
   signupButton: {
     backgroundColor: '#FFF',
-    paddingVertical: 12,
-    paddingHorizontal: 70,
-    borderRadius: 25,
+    paddingVertical: verticalScale(14),
+    borderRadius: moderateScale(25),
     borderWidth: 0.5,
+    width: '100%',
+    alignItems: 'center',
   },
   buttonTextLogin: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     textAlign: 'center',
     fontWeight: '500',
   },
   buttonTextSignup: {
     color: '#000',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     textAlign: 'center',
     fontWeight: '500',
   },
