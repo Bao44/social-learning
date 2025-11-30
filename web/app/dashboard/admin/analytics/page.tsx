@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -13,6 +19,14 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "react-toastify";
 import {
   loadAnalyticOverview,
@@ -20,6 +34,20 @@ import {
   loadSkillBreakdown,
 } from "@/app/apiClient/admin/analytic";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  Legend,
+} from "recharts";
+import { Users, TrendingUp, Award, Calendar, Gift } from "lucide-react";
+import { getUserImageSrc } from "@/app/apiClient/image/image";
 
 type AnalyticsData = {
   date: string;
@@ -35,7 +63,7 @@ type SkillData = {
 type LeaderboardEntry = {
   rank: number;
   user: {
-    // API trả về object lồng
+    id: string;
     name: string;
     avatar: string;
   } | null;
@@ -43,15 +71,32 @@ type LeaderboardEntry = {
   score: number;
 };
 
-export default function page() {
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-slate-200 shadow-lg rounded-lg text-sm">
+        <p className="font-bold text-slate-700 mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} style={{ color: entry.color }} className="font-medium">
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+export default function AnalyticsPage() {
   const { t } = useLanguage();
   const [fromDate, setFromDate] = useState<string | null>(null);
   const [toDate, setToDate] = useState<string | null>(null);
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
+  const [analyticsData, setAnalyticsData] = useState<any[]>([]);
   const [skillData, setSkillData] = useState<SkillData[]>([]);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
+
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [skillLoading, setSkillLoading] = useState(true);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
@@ -67,18 +112,23 @@ export default function page() {
         ]);
 
         if (skillRes.success) {
-          setSkillData(skillRes.data);
+          const formattedSkills = skillRes.data.map((item: SkillData) => ({
+            ...item,
+            skill: item.skill.charAt(0).toUpperCase() + item.skill.slice(1),
+            avg_score: Number(item.avg_score.toFixed(1)),
+          }));
+          setSkillData(formattedSkills);
         } else {
-          toast.error(skillRes.message || "Failed to load skill data");
+          toast.error(skillRes.message);
         }
 
         if (leaderboardRes.success) {
           setLeaderboardData(leaderboardRes.data);
         } else {
-          toast.error(leaderboardRes.message || "Failed to load leaderboard");
+          toast.error(leaderboardRes.message);
         }
       } catch (error: any) {
-        toast.error(error.message || "An error occurred fetching static data");
+        toast.error(error.message);
       } finally {
         setSkillLoading(false);
         setLeaderboardLoading(false);
@@ -95,12 +145,25 @@ export default function page() {
         toDate: toDate || undefined,
       });
       if (response.success) {
-        setAnalyticsData(response.data);
+        const sortedData = response.data.sort(
+          (a: AnalyticsData, b: AnalyticsData) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+          }
+        );
+
+        const formattedData = sortedData.map((item: AnalyticsData) => ({
+          ...item,
+          displayDate: new Date(item.date).toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+          }),
+        }));
+        setAnalyticsData(formattedData);
       } else {
-        toast.error(response.message || "Failed to load analytics");
+        toast.error(response.message);
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred fetching analytics");
+      toast.error(error.message);
     } finally {
       setAnalyticsLoading(false);
     }
@@ -110,152 +173,330 @@ export default function page() {
     const timer = setTimeout(() => {
       fetchAnalytics();
     }, 500);
-
     return () => clearTimeout(timer);
   }, [fetchAnalytics]);
 
+  const handleRewardUser = (userName: string) => {
+    toast.success(`${t("dashboard.rewardSent")} ${userName}!`, {
+      autoClose: 1000,
+    });
+  };
+
   return (
     <div className="flex-1 pr-6 py-4 pl-12 space-y-6">
-      <Card>
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800 tracking-tight">
+            {t("dashboard.analyticsDashboard")}
+          </h1>
+          <p className="text-slate-500 mt-1">
+            {t("dashboard.analyticsDashboardDescription")}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 bg-white p-2 rounded-xl shadow-sm border border-slate-200">
+          <Calendar className="w-5 h-5 text-slate-400 ml-2" />
+          <div className="h-6 w-px bg-slate-200 mx-1" />
+          <Input
+            type="date"
+            className="border-0 shadow-none focus-visible:ring-0 w-auto h-9"
+            value={fromDate ?? ""}
+            onChange={(e) => setFromDate(e.target.value || null)}
+          />
+          <span className="text-slate-400">-</span>
+          <Input
+            type="date"
+            className="border-0 shadow-none focus-visible:ring-0 w-auto h-9"
+            value={toDate ?? ""}
+            onChange={(e) => setToDate(e.target.value || null)}
+          />
+        </div>
+      </div>
+
+      {/* Main Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* User Growth Chart */}
+        <Card className="border-0 shadow-md ring-1 ring-slate-100">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                <TrendingUp size={20} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  {t("dashboard.userGrowth")}
+                </CardTitle>
+                <CardDescription>
+                  {t("dashboard.userGrowthDescription")}
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 pt-2">
+            {analyticsLoading ? (
+              <Skeleton className="h-[300px] w-full rounded-xl" />
+            ) : analyticsData.length === 0 ? (
+              <div className="h-[300px] flex items-center justify-center text-slate-400">
+                {t("dashboard.noData")}
+              </div>
+            ) : (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={analyticsData}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="colorUsers"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#6366f1"
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#6366f1"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f1f5f9"
+                    />
+                    <XAxis
+                      dataKey="displayDate"
+                      stroke="#94a3b8"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={10}
+                    />
+                    <YAxis
+                      stroke="#94a3b8"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `${value}`}
+                    />
+                    <RechartsTooltip content={<CustomTooltip />} />
+                    <Area
+                      type="monotone"
+                      dataKey="user_count"
+                      name="New Users"
+                      stroke="#6366f1"
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorUsers)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Skill Performance Chart */}
+        <Card className="border-0 shadow-md ring-1 ring-slate-100">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                <Award size={20} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  {t("dashboard.skillPerformance")}
+                </CardTitle>
+                <CardDescription>
+                  {t("dashboard.skillPerformanceDescription")}
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 pt-2">
+            {skillLoading ? (
+              <Skeleton className="h-[300px] w-full rounded-xl" />
+            ) : skillData.length === 0 ? (
+              <div className="h-[300px] flex items-center justify-center text-slate-400">
+                {t("dashboard.noData")}
+              </div>
+            ) : (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={skillData}
+                    margin={{ top: 20, right: 30, left: -20, bottom: 5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f1f5f9"
+                    />
+                    <XAxis
+                      dataKey="skill"
+                      stroke="#64748b"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      yAxisId="left"
+                      orientation="left"
+                      stroke="#64748b"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      domain={[0, 100]}
+                    />
+
+                    <RechartsTooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: "#f8fafc" }}
+                    />
+                    <Legend wrapperStyle={{ paddingTop: "20px" }} />
+
+                    <Bar
+                      yAxisId="left"
+                      dataKey="avg_score"
+                      name="Avg Score"
+                      fill="#10b981"
+                      radius={[6, 6, 0, 0]}
+                      barSize={40}
+                    />
+                    <Bar
+                      yAxisId="left"
+                      dataKey="count"
+                      name="Attempts"
+                      fill="#94a3b8"
+                      radius={[6, 6, 0, 0]}
+                      barSize={40}
+                      opacity={0.3}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Performers (Leaderboard) */}
+      <Card className="border-0 shadow-md ring-1 ring-slate-100 overflow-hidden">
         <CardHeader>
-          <CardTitle>Learning Analytics & Reports</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="flex gap-4 mb-6">
-            <Input
-              type="date"
-              value={fromDate ?? ""}
-              onChange={(e) => setFromDate(e.target.value || null)}
-              placeholder="From Date"
-            />
-            <Input
-              type="date"
-              value={toDate ?? ""}
-              onChange={(e) => setToDate(e.target.value || null)}
-              placeholder="To Date"
-            />
+          <div className="flex items-center gap-2">
+            <div className="p-2 bg-yellow-100 rounded-lg text-yellow-600">
+              <Users size={20} />
+            </div>
+            <div>
+              <CardTitle className="text-lg">
+                {t("dashboard.topPerformers")}
+              </CardTitle>
+              <CardDescription>
+                {t("dashboard.topPerformersDescription")}
+              </CardDescription>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">User Growth</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                {analyticsLoading ? (
-                  <Skeleton className="h-64 w-full" />
-                ) : analyticsData.length === 0 ? (
-                  <p className="text-center py-8 text-gray-500">
-                    {t("dashboard.noData")}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>New Users</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {analyticsData
-                        .slice(0, 10)
-                        .map((item: AnalyticsData, i: number) => (
-                          <TableRow key={i}>
-                            <TableCell>
-                              {new Date(item.date).toLocaleDateString()}
-                            </TableCell>
-                            <TableCell>
-                              <Badge>{item.user_count}</Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Skill Performance</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                {skillLoading ? (
-                  <Skeleton className="h-64 w-full" />
-                ) : skillData.length === 0 ? (
-                  <p className="text-center py-8 text-gray-500">
-                    {t("dashboard.noData")}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Skill</TableHead>
-                        <TableHead>Attempts</TableHead>
-                        <TableHead>Avg Score</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {skillData.map((skill: SkillData, i: number) => (
-                        <TableRow key={i}>
-                          <TableCell className="capitalize font-medium">
-                            {skill.skill}
-                          </TableCell>
-                          <TableCell>{skill.count}</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">{skill.avg_score}</Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Performers</CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-0">
           {leaderboardLoading ? (
-            <Skeleton className="h-96 w-full" />
+            <div className="p-6">
+              <Skeleton className="h-96 w-full" />
+            </div>
           ) : leaderboardData.length === 0 ? (
-            <p className="text-center py-8 text-gray-500">
+            <p className="text-center py-12 text-gray-500">
               {t("dashboard.noData")}
             </p>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Rank</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Score</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {leaderboardData.map((entry: LeaderboardEntry, i: number) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Badge variant={i < 3 ? "default" : "secondary"}>
-                        #{entry.rank}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {entry.user?.name || "User Đã Bị Xóa"}
-                    </TableCell>
-                    <TableCell className="capitalize">
-                      {entry.leaderboard_type}
-                    </TableCell>
-                    <TableCell>{entry.score}</TableCell>
+            <TooltipProvider>
+              <Table>
+                <TableHeader className="bg-slate-50">
+                  <TableRow>
+                    <TableHead className="w-[100px]">Rank</TableHead>
+                    <TableHead>{t("dashboard.user")}</TableHead>
+                    <TableHead className="text-center">
+                      {t("dashboard.totalScore")}
+                    </TableHead>
+                    <TableHead className="text-right pr-6">
+                      {t("dashboard.actions")}
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {leaderboardData.map((entry: LeaderboardEntry, i: number) => (
+                    <TableRow key={i} className="hover:bg-slate-50/50">
+                      <TableCell>
+                        {entry.rank === 1 && (
+                          <Badge className="bg-yellow-400 hover:bg-yellow-500">
+                            🥇 #1
+                          </Badge>
+                        )}
+                        {entry.rank === 2 && (
+                          <Badge className="bg-slate-300 hover:bg-slate-400">
+                            🥈 #2
+                          </Badge>
+                        )}
+                        {entry.rank === 3 && (
+                          <Badge className="bg-orange-300 hover:bg-orange-400">
+                            🥉 #3
+                          </Badge>
+                        )}
+                        {entry.rank > 3 && (
+                          <span className="font-bold text-slate-500 ml-2">
+                            #{entry.rank}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-9 w-9 border border-slate-100">
+                            <AvatarImage
+                              src={getUserImageSrc(entry.user?.avatar)}
+                            />
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-slate-700">
+                              {entry.user?.name || "Deleted User"}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center font-bold text-indigo-600">
+                        {entry.score.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right pr-6">
+                        <div className="flex justify-end gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-pink-400 hover:text-pink-600 hover:bg-pink-50"
+                                onClick={() =>
+                                  handleRewardUser(entry.user?.name || "User")
+                                }
+                              >
+                                <Gift size={18} />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t("dashboard.giftReward")}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TooltipProvider>
           )}
         </CardContent>
       </Card>
