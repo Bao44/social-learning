@@ -193,7 +193,7 @@ export function ListeningParagraphs({ t }: { t: (key: string) => string }) {
                     <TableHead>{t("dashboard.topic")}</TableHead>
                     <TableHead>{t("dashboard.completionRate")}</TableHead>
                     <TableHead>{t("dashboard.averageScore")}</TableHead>
-                    <TableHead>{t("dashboard.created")}</TableHead>
+                    <TableHead>{t("dashboard.lastModified")}</TableHead>
                     <TableHead>{t("dashboard.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>

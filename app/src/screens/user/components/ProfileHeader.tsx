@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import useAuth from '../../../../hooks/useAuth';
@@ -9,6 +9,7 @@ import { hp } from '../../../../helpers/common';
 import { theme } from '../../../../constants/theme';
 import { Edit3, Archive } from 'lucide-react-native';
 import { Image } from 'react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function ProfileHeader() {
   const navigation = useNavigation<any>();
@@ -40,7 +41,7 @@ export default function ProfileHeader() {
           {(user?.avatar && (
             <Avatar
               uri={getUserImageSrc(user?.avatar)}
-              size={hp(12)}
+              size={moderateScale(80)}
               rounded={theme.radius.xxl * 100}
             />
           )) || (
@@ -107,12 +108,12 @@ export default function ProfileHeader() {
           onPress={() => navigation.navigate('EditProfile' as never)}
           activeOpacity={0.8}
         >
-          <Edit3 size={18} color="#667eea" />
-          <Text style={styles.primaryButtonText}>Chỉnh sửa trang cá nhân</Text>
+          <Edit3 size={moderateScale(18)} color="#667eea" />
+          <Text style={styles.primaryButtonText}>Chỉnh sửa</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
-          <Archive size={18} color="#6b7280" />
+          <Archive size={moderateScale(18)} color="#6b7280" />
           <Text style={styles.secondaryButtonText}>Kho lưu trữ</Text>
         </TouchableOpacity>
       </View>
@@ -128,25 +129,25 @@ export default function ProfileHeader() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: scale(20),
     backgroundColor: '#ffffff',
   },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   avatarContainer: {
-    marginRight: 20,
+    marginRight: scale(20),
   },
   infoSection: {
     flex: 1,
   },
   nickname: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
   },
   statsContainer: {
     flexDirection: 'row',
@@ -157,29 +158,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statNumber: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#6b7280',
     textAlign: 'center',
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
+    gap: scale(12),
+    marginBottom: verticalScale(16),
   },
   primaryButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+    borderRadius: moderateScale(12),
     backgroundColor: '#f0f4ff',
     borderWidth: 1,
     borderColor: '#e0e7ff',
@@ -187,17 +188,17 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#667eea',
     fontWeight: '600',
-    marginLeft: 8,
-    fontSize: 14,
+    marginLeft: scale(8),
+    fontSize: moderateScale(14),
   },
   secondaryButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+    borderRadius: moderateScale(12),
     backgroundColor: '#f9fafb',
     borderWidth: 1,
     borderColor: '#e5e7eb',
@@ -205,15 +206,15 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#6b7280',
     fontWeight: '600',
-    marginLeft: 8,
-    fontSize: 14,
+    marginLeft: scale(8),
+    fontSize: moderateScale(14),
   },
   bioContainer: {
-    marginTop: 8,
+    marginTop: verticalScale(8),
   },
   bioText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#374151',
-    lineHeight: 20,
+    lineHeight: verticalScale(20),
   },
 });

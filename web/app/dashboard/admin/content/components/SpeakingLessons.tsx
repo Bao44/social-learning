@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,6 +56,9 @@ type Topic = { id: number; name_en: string; [key: string]: any };
 export function SpeakingLessons({ t }: { t: (key: string) => string }) {
   const [levelId, setLevelId] = useState<string | null>(null);
   const [topicId, setTopicId] = useState<string | null>(null);
+
+  const [selectedLesson, setSelectedLesson] =
+    useState<SpeakingLesson | null>(null);
 
   const [lessons, setLessons] = useState<SpeakingLesson[]>([]);
   const [levels, setLevels] = useState<Level[]>([]);
@@ -114,6 +117,12 @@ export function SpeakingLessons({ t }: { t: (key: string) => string }) {
 
   // Xử lý các hành động
   const handleCreate = () => {
+    setSelectedLesson(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (lesson: SpeakingLesson) => {
+    setSelectedLesson(lesson);
     setDialogOpen(true);
   };
 
@@ -199,7 +208,7 @@ export function SpeakingLessons({ t }: { t: (key: string) => string }) {
                     <TableHead>{t("dashboard.content")}</TableHead>
                     <TableHead>{t("dashboard.level")}</TableHead>
                     <TableHead>{t("dashboard.topic")}</TableHead>
-                    <TableHead>{t("dashboard.created")}</TableHead>
+                    <TableHead>{t("dashboard.lastModified")}</TableHead>
                     <TableHead>{t("dashboard.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -253,6 +262,14 @@ export function SpeakingLessons({ t }: { t: (key: string) => string }) {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleEdit(lesson)}
+                              className="cursor-pointer hover:bg-gray-200"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleDeleteClick(lesson.id)}
                               className="cursor-pointer hover:bg-gray-200"
                             >
@@ -274,6 +291,7 @@ export function SpeakingLessons({ t }: { t: (key: string) => string }) {
         t={t}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        lesson={selectedLesson}
         onSuccess={refreshLessons}
       />
 

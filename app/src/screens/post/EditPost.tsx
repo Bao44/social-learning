@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useAuth from '../../../hooks/useAuth';
-import { hp, wp } from '../../../helpers/common';
+import { hp } from '../../../helpers/common';
 import { theme } from '../../../constants/theme';
 import Button from '../../components/Button';
-import { FileImage, Trash, VideoIcon, Edit3, User, ArrowLeft } from 'lucide-react-native';
+import { FileImage, Trash, VideoIcon, ArrowLeft } from 'lucide-react-native';
 import RichTextEditor from '../../components/RichTextEditor';
 import {
   getSupabaseFileUrl,
@@ -31,7 +31,7 @@ import {
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import Video from 'react-native-video';
-import Header from '../../components/Header';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface FileData {
@@ -296,9 +296,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   headerGradient: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -306,17 +306,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   headerCenter: {
     flexDirection: 'row',
@@ -324,79 +319,70 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  editIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
   headerTitle: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#ffffff',
   },
   headerRight: {
-    width: 40,
+    width: moderateScale(40),
   },
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
-    marginTop: -12,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    marginTop: verticalScale(-12),
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingBottom: 100,
+    padding: scale(20),
+    paddingBottom: verticalScale(100),
   },
   userSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
-    padding: 16,
+    marginBottom: verticalScale(24),
+    padding: scale(16),
     backgroundColor: '#f8faff',
-    borderRadius: 16,
+    borderRadius: moderateScale(16),
     borderWidth: 1,
     borderColor: '#e0e7ff',
   },
   userInfo: {
-    marginLeft: 12,
+    marginLeft: scale(12),
     flex: 1,
   },
   username: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
   publicBadge: {
     backgroundColor: '#667eea',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(4),
+    borderRadius: moderateScale(12),
     alignSelf: 'flex-start',
   },
   publicText: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '600',
     color: '#ffffff',
   },
   editorSection: {
-    marginBottom: 24,
-    minHeight: 120,
+    marginBottom: verticalScale(24),
+    minHeight: verticalScale(120),
   },
   filePreview: {
-    height: hp(30),
+    height: verticalScale(220), // Thay thế hp(30)
     width: '100%',
-    borderRadius: 16,
+    borderRadius: moderateScale(16),
     overflow: 'hidden',
-    marginBottom: 24,
+    marginBottom: verticalScale(24),
     position: 'relative',
     elevation: 4,
     shadowColor: '#000',
@@ -411,31 +397,31 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    top: scale(12),
+    right: scale(12),
+    width: moderateScale(36),
+    height: moderateScale(36),
+    borderRadius: moderateScale(18),
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   mediaSection: {
     backgroundColor: '#f8faff',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: moderateScale(16),
+    padding: scale(20),
     borderWidth: 1,
     borderColor: '#e0e7ff',
   },
   mediaSectionTitle: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
   },
   mediaButtons: {
     flexDirection: 'row',
-    gap: 16,
+    gap: scale(16),
   },
   mediaButton: {
     flex: 1,
@@ -443,9 +429,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    paddingVertical: verticalScale(16),
+    paddingHorizontal: scale(20),
+    borderRadius: moderateScale(12),
     borderWidth: 1,
     borderColor: '#e0e7ff',
     elevation: 2,
@@ -455,10 +441,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   mediaButtonText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600',
     color: '#667eea',
-    marginLeft: 8,
+    marginLeft: scale(8),
   },
   submitSection: {
     position: 'absolute',
@@ -466,7 +452,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#ffffff',
-    padding: 20,
+    padding: scale(20),
     borderTopWidth: 1,
     borderTopColor: '#f3f4f6',
     elevation: 8,
@@ -476,8 +462,8 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   submitButton: {
-    height: hp(6.2),
+    height: verticalScale(48), // Thay thế hp(6.2)
     backgroundColor: '#667eea',
-    borderRadius: 16,
+    borderRadius: moderateScale(16),
   },
 });

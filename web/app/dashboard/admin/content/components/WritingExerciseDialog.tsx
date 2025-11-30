@@ -25,6 +25,7 @@ import {
   loadTopics,
   loadTypeExercises,
   loadTypeParagraphs,
+  updateWritingExercise,
 } from "@/app/apiClient/admin/content";
 
 type Level = { id: number; name_en: string; [key: string]: any };
@@ -51,13 +52,14 @@ const defaultValues: FormData = {
   topicId: "",
   typeExerciseId: "",
   typeParagraphId: "",
-  numberSentence: "",
+  numberSentence: "1",
 };
 
 type WritingExerciseDialogProps = {
   t: (key: string) => string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  exercise: any;
   onSuccess: () => void;
 };
 
@@ -65,6 +67,7 @@ export function WritingExerciseDialog({
   t,
   open,
   onOpenChange,
+  exercise,
   onSuccess,
 }: WritingExerciseDialogProps) {
   const [levels, setLevels] = useState<Level[]>([]);
@@ -100,6 +103,25 @@ export function WritingExerciseDialog({
       setFormData(defaultValues);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (open && exercise) {
+      // Edit
+      setFormData({
+        title: exercise.title,
+        contentVi: exercise.content_vi,
+        contentEn: exercise.content_en,
+        levelId: exercise.level_id?.toString(),
+        topicId: exercise.topic_id?.toString(),
+        typeExerciseId: exercise.type_exercise_id?.toString(),
+        typeParagraphId: exercise.type_paragraph_id?.toString(),
+        numberSentence: "1",
+      });
+    } else if (open) {
+      // Create
+      setFormData(defaultValues);
+    }
+  }, [exercise, open]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -138,9 +160,25 @@ export function WritingExerciseDialog({
     }
 
     try {
-      const response = await createWritingExercise(payload);
+      let response;
+      if (exercise) {
+        const payloadWithId = { id: exercise.id, ...payload };
+        response = await updateWritingExercise({
+          id: exercise.id,
+          exerciseData: payloadWithId,
+        });
+      } else {
+        // Chế độ Create
+        response = await createWritingExercise(payload);
+      }
+
       if (response.success) {
-        toast.success(t("dashboard.createWritingExercise"));
+        toast.success(
+          exercise
+            ? `${t("dashboard.exerciseUpdated")}`
+            : `${t("dashboard.exerciseCreated")}`,
+          { autoClose: 2000 }
+        );
         onOpenChange(false);
         onSuccess();
       } else {
@@ -157,7 +195,10 @@ export function WritingExerciseDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t("dashboard.createWritingExercise")}</DialogTitle>
+          <DialogTitle>
+            {exercise ? `${t("dashboard.edit")}` : `${t("dashboard.create")}`}{" "}
+            {t("dashboard.writingExercises")}
+          </DialogTitle>
         </DialogHeader>
 
         {/* Đây là form đã bỏ react-hook-form */}
@@ -173,9 +214,11 @@ export function WritingExerciseDialog({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="contentVi">{t("dashboard.content")} (Vietnamese)</Label>
+              <Label htmlFor="contentVi">
+                {t("dashboard.content")} (Vietnamese)
+              </Label>
               <Textarea
                 id="contentVi"
                 name="contentVi"
@@ -186,7 +229,9 @@ export function WritingExerciseDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contentEn">{t("dashboard.content")} (English)</Label>
+              <Label htmlFor="contentEn">
+                {t("dashboard.content")} (English)
+              </Label>
               <Textarea
                 id="contentEn"
                 name="contentEn"
@@ -237,7 +282,7 @@ export function WritingExerciseDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="typeExerciseId">{t("dashboard.type")}</Label>
               <Select
@@ -259,7 +304,9 @@ export function WritingExerciseDialog({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="typeParagraphId">{t("dashboard.paragraphType")}</Label>
+              <Label htmlFor="typeParagraphId">
+                {t("dashboard.paragraphType")}
+              </Label>
               <Select
                 value={formData.typeParagraphId}
                 onValueChange={(value) =>
@@ -279,7 +326,9 @@ export function WritingExerciseDialog({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="numberSentence">{t("dashboard.numberOfSentences")}</Label>
+              <Label htmlFor="numberSentence">
+                {t("dashboard.numberOfSentences")}
+              </Label>
               <Input
                 id="numberSentence"
                 name="numberSentence"
@@ -300,9 +349,7 @@ export function WritingExerciseDialog({
               {t("dashboard.cancel")}
             </Button>
             <Button type="submit" disabled={isSaving}>
-              {isSaving
-                ? `${t("dashboard.creating")}`
-                : `${t("dashboard.create")}`}
+              {isSaving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>
           </div>
         </form>
