@@ -13,10 +13,10 @@ export const getSpeakingByTopicAndLevel = async (
 export const speechToText = async (audioFile: string) => {
   const response = await api.post(
     `/api/learning/speaking/recognize`,
-    { audioContent: audioFile }, // <-- BODY đúng
+    { audioContent: audioFile },
     {
       headers: {
-        "Content-Type": "application/json", // <-- JSON mới đúng
+        "Content-Type": "application/json",
       },
     }
   );

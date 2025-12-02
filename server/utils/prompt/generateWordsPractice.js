@@ -12,7 +12,7 @@ Yêu cầu:
     - "speaking": Nói lại câu hoặc từ (kèm ví dụ).
     - "fill_in_blank": Chọn từ đúng để điền vào chỗ trống trong câu.
     - "word_build": Ghép các ký tự (từ ngân hàng chữ cái) thành từ đúng.
-2. Tổng cộng khoảng 10 câu hỏi, được chia đều hoặc gần đều cho 6 loại trên (mỗi loại khoảng 1–2 câu).
+2. Tổng cộng khoảng 10-20 câu hỏi tùy vào số lượng từ vựng trong danh sách từ vựng, được chia đều hoặc gần đều cho 6 loại trên (mỗi loại khoảng 2-4 câu tùy vào số lượng từ vựng).
 3. Mỗi phần tử phải có:
     - "id": số thứ tự (số nguyên, bắt đầu từ 1 và tăng dần).
     - "type": loại bài ("multiple_choice" | "sentence_order" | "synonym_match" | "speaking" | "fill_in_blank" | "word_build")

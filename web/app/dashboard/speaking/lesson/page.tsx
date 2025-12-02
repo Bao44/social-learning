@@ -80,7 +80,7 @@ function LessonContent() {
   const [transcript, setTranscript] = useState<string>("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false); // Fix lỗi nhảy bài: Chặn check khi đang chuyển
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -338,7 +338,7 @@ function LessonContent() {
       if (index <= completedSentences) {
         setCurrentLessonIndex(index);
         setShowExerciseList(false);
-        resetTranscript(); 
+        resetTranscript();
       }
     },
     [completedSentences, resetTranscript]
