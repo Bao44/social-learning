@@ -307,9 +307,7 @@ function LessonContent() {
         });
       }
     });
-
-    console.log("Wrong Pairs:", wrongPairs);
-
+    
     wrongPairs.forEach(({ correct, spoken }: any) => {
       if (user?.id && correct && isNaN(Number(correct))) {
         insertOrUpdateVocabularyErrors({
