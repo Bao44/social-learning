@@ -355,5 +355,7 @@
   "aiIsSpeaking": "AI đang nói...",
   "audioTrack": "Bản âm thanh",
 
-  "byPremiumToUse":"Mua premium để sử dụng"
+  "byPremiumToUse":"Mua premium để sử dụng",
+  "grammarScore":"Điểm ngữ pháp",
+  "vocabularyScore":"Điểm từ vựng"
 }

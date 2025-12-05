@@ -473,11 +473,11 @@ export default function PageExerciseDetail() {
                     <span className="font-bold text-blue-600">
                       {feedback.accuracy}%
                     </span>
-                     | {t("learning.grammar")}:{" "}
+                     | {t("learning.grammarScore")}:{" "}
                     <span className="font-bold text-purple-600">
                       {feedback.grammar}%
                     </span>{" "}
-                    | {t("learning.vocabulary")}:{" "}
+                    | {t("learning.vocabularyScore")}:{" "}
                     <span className="font-bold text-yellow-600">
                       {feedback.vocabulary}%
                     </span>
