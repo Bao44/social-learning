@@ -39,7 +39,7 @@ export default function MessageAttachments({ images, file }: MessageAttachmentsP
     return (
       <TouchableOpacity className="flex-row items-center gap-2 bg-white p-2 rounded-md border border-gray-200 mt-1 max-w-[250px]">
         <Image
-          source={require(`../../../../../assets/iconFiles/${getFileIconUrl({ name: file.filename } as unknown as File)}`)}
+          source={getFileIconUrl({ name: file.filename } as unknown as File)}
           style={{ width: 32, height: 32, resizeMode: 'contain' }}
         />
         <View className="flex-1">

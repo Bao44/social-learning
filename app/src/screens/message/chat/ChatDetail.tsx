@@ -232,7 +232,7 @@ const ChatDetail = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafb]">
-       {/* Header Gradient */}
+      {/* Header Gradient */}
       <LinearGradient
         colors={['#667eea', '#764ba2']}
         start={{ x: 0, y: 0 }}
@@ -241,16 +241,26 @@ const ChatDetail = () => {
       >
         {/* ... (Header code giữ nguyên từ câu trả lời trước, chỉ lưu ý dùng className) ... */}
         <View className="flex-row items-center justify-between">
-           {/* Back Button */}
-           <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 rounded-full bg-white/20 items-center justify-center">
-             <ArrowLeft size={24} color="#fff" />
-           </TouchableOpacity>
-           
-           {/* Title */}
-           <View className="flex-1 ml-4">
-              <Text className="text-lg font-bold text-white" numberOfLines={1}>{getConversationName()}</Text>
-              {onlineStatus && <Text className="text-xs text-green-300">Đang hoạt động</Text>}
-           </View>
+          {/* Back Button */}
+          <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 rounded-full bg-white/20 items-center justify-center">
+            <ArrowLeft size={24} color="#fff" />
+          </TouchableOpacity>
+
+          {/* Title */}
+          <View className="flex-1 ml-4">
+            <Text className="text-lg font-bold text-white" numberOfLines={1}>{getConversationName()}</Text>
+            {onlineStatus && <Text className="text-xs text-green-300">Đang hoạt động</Text>}
+          </View>
+
+          {/* Call Button */}
+          <View className="flex-row items-center space-x-3 gap-4">
+            <TouchableOpacity onPress={handleStartCall} className="w-10 h-10 rounded-full bg-white/15 items-center justify-center">
+              <Phone size={20} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ConversationInfo', { conversationId: conversation?.id })} className="w-10 h-10 rounded-full bg-white/15 items-center justify-center">
+              <Info size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
       </LinearGradient>
 
@@ -260,77 +270,77 @@ const ChatDetail = () => {
         className="flex-1"
       >
         <View className="flex-1 bg-white -mt-3 rounded-t-3xl overflow-hidden">
-            <FlatList
-                data={messages}
-                // Quan trọng: Inverted giúp tin nhắn mới nhất nằm dưới đáy, cuộn lên để xem tin cũ
-                inverted 
-                keyExtractor={item => item?._id}
-                renderItem={({ item, index }) => {
-                    const isMe = item?.senderId === user?.id;
-                    const prevMessage = messages[index + 1]; // Vì inverted nên index+1 là tin cũ hơn
-                    const nextMessage = messages[index - 1]; // index-1 là tin mới hơn
-                    
-                    const isLastInSequence = !nextMessage || nextMessage.senderId !== item.senderId;
-                    const showAvatar = !prevMessage || prevMessage.senderId !== item.senderId;
-                    const showTimestamp = isLastInSequence;
+          <FlatList
+            data={messages}
+            // Quan trọng: Inverted giúp tin nhắn mới nhất nằm dưới đáy, cuộn lên để xem tin cũ
+            inverted
+            keyExtractor={item => item?._id}
+            renderItem={({ item, index }) => {
+              const isMe = item?.senderId === user?.id;
+              const prevMessage = messages[index + 1]; // Vì inverted nên index+1 là tin cũ hơn
+              const nextMessage = messages[index - 1]; // index-1 là tin mới hơn
 
-                    if (item.content.type === "system") {
-                        return <MessageSystem message={item.content} />;
-                    }
+              const isLastInSequence = !nextMessage || nextMessage.senderId !== item.senderId;
+              const showAvatar = !prevMessage || prevMessage.senderId !== item.senderId;
+              const showTimestamp = isLastInSequence;
 
-                    return (
-                        <View className="px-4 py-0.5">
-                            {isMe ? (
-                                <MessageSender 
-                                    message={item} 
-                                    showTimestamp={showTimestamp}
-                                    isLastInSequence={isLastInSequence}
-                                />
-                            ) : (
-                                <MessageReceiver 
-                                    message={item}
-                                    showAvatar={showAvatar}
-                                    showTimestamp={showTimestamp}
-                                />
-                            )}
-                        </View>
-                    );
-                }}
-                contentContainerStyle={{ paddingVertical: 16 }}
-                showsVerticalScrollIndicator={false}
-                // Logic load more
-                onEndReached={() => {
-                   // Gọi hàm load tin nhắn cũ hơn ở đây
-                   // loadMoreMessages(); 
-                }}
-            />
+              if (item.content.type === "system") {
+                return <MessageSystem message={item.content} />;
+              }
 
-            {/* Input Bar */}
-            <View className="p-3 border-t border-gray-100 bg-white shadow-sm pb-5">
-               {/* Phần này copy từ code ChatDetail.tsx trước đó, dùng className */}
-               <View className="flex-row items-center bg-gray-100 rounded-3xl px-2 py-1 border border-gray-200">
-                    <TouchableOpacity className="p-2"><Smile size={24} color="#9ca3af" /></TouchableOpacity>
-                    
-                    <TextInput 
-                        placeholder="Nhập tin nhắn..." 
-                        className="flex-1 text-base max-h-24 text-gray-800"
-                        multiline
-                        value={text}
-                        onChangeText={setText}
+              return (
+                <View className="px-4 py-0.5">
+                  {isMe ? (
+                    <MessageSender
+                      message={item}
+                      showTimestamp={showTimestamp}
+                      isLastInSequence={isLastInSequence}
                     />
+                  ) : (
+                    <MessageReceiver
+                      message={item}
+                      showAvatar={showAvatar}
+                      showTimestamp={showTimestamp}
+                    />
+                  )}
+                </View>
+              );
+            }}
+            contentContainerStyle={{ paddingVertical: 16 }}
+            showsVerticalScrollIndicator={false}
+            // Logic load more
+            onEndReached={() => {
+              // Gọi hàm load tin nhắn cũ hơn ở đây
+              // loadMoreMessages(); 
+            }}
+          />
 
-                    {text.trim() ? (
-                        <TouchableOpacity onPress={handleSendMessage} className="bg-blue-600 w-9 h-9 rounded-full items-center justify-center ml-2">
-                             <Send size={18} color="white" />
-                        </TouchableOpacity>
-                    ) : (
-                        <View className="flex-row">
-                             <TouchableOpacity className="p-2"><Mic size={24} color="#9ca3af" /></TouchableOpacity>
-                             <TouchableOpacity className="p-2"><Image size={24} color="#9ca3af" /></TouchableOpacity>
-                        </View>
-                    )}
-               </View>
+          {/* Input Bar */}
+          <View className="p-3 border-t border-gray-100 bg-white shadow-sm pb-5">
+            {/* Phần này copy từ code ChatDetail.tsx trước đó, dùng className */}
+            <View className="flex-row items-center bg-gray-100 rounded-3xl px-2 py-1 border border-gray-200">
+              <TouchableOpacity className="p-2"><Smile size={24} color="#9ca3af" /></TouchableOpacity>
+
+              <TextInput
+                placeholder="Nhập tin nhắn..."
+                className="flex-1 text-base max-h-24 text-gray-800"
+                multiline
+                value={text}
+                onChangeText={setText}
+              />
+
+              {text.trim() ? (
+                <TouchableOpacity onPress={handleSendMessage} className="bg-blue-600 w-9 h-9 rounded-full items-center justify-center ml-2">
+                  <Send size={18} color="white" />
+                </TouchableOpacity>
+              ) : (
+                <View className="flex-row">
+                  <TouchableOpacity className="p-2"><Mic size={24} color="#9ca3af" /></TouchableOpacity>
+                  <TouchableOpacity className="p-2"><Image size={24} color="#9ca3af" /></TouchableOpacity>
+                </View>
+              )}
             </View>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
