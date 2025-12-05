@@ -156,8 +156,10 @@ const writingService = {
             feedback:feedbackParagraphAI (
                 id,
                 comment,
-                score,
+                final_score,
                 accuracy,
+                grammar,
+                vocabulary,
                 strengths,
                 errors: errorFeedback (
                     id,

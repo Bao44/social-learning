@@ -87,8 +87,10 @@ const writingController = {
 
       // Lưu feedback vào Supabase
       const data = {
-        score: json.score,
+        final_score: json.final_score,
         accuracy: json.accuracy,
+        grammar: json.grammar,
+        vocabulary: json.vocabulary,
         strengths: json.strengths,
         errors: json.errors,
         comment: json.comment,
