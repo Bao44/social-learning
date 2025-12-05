@@ -57,7 +57,7 @@ export default function MessageReceiver({ message, showTimestamp, showAvatar, on
                             {message.content.text ? (
                                 <Text className="text-base text-gray-800">{message.content.text}</Text>
                             ) : null}
-                            <MessageAttachments images={message.content.images} file={message.content.file} />
+                            <MessageAttachments images={message.content?.images} file={message.content?.file} />
                         </View>
 
                         {/* Likes */}
