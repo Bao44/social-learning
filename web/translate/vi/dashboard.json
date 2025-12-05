@@ -213,7 +213,7 @@
   "unfollowConfirmation": "Xác nhận bỏ theo dõi",
   "noUsers": "Không có người dùng nào",
 
-  "title": "Gợi ý bạn bè",
+  "recommendFriends": "Gợi ý bạn bè",
   "loginRequired": "Vui lòng đăng nhập để xem gợi ý bạn bè",
   "loadError": "Không thể tải gợi ý bạn bè",
   "slowConnection": "Kết nối quá chậm, vui lòng thử lại",
@@ -334,6 +334,7 @@
   "user": "Người dùng",
   "engagement": "Tương tác",
   "created": "Đã tạo",
+  "lastModified": "Thay đổi lần cuối",
   "noPostsFound": "Không tìm thấy bài viết",
   "postDetails": "Chi tiết bài viết",
   "postedBy": "Được đăng bởi",
@@ -352,6 +353,10 @@
 
   "paragraphUpdated": "Đoạn nghe đã được cập nhật",
   "paragraphCreated": "Đoạn nghe đã được tạo",
+  "speakingLessonUpdated": "Bài nói đã được cập nhật",
+  "speakingLessonCreated": "Bài nói đã được tạo",
+  "exerciseUpdated": "Bài tập viết đã được cập nhật",
+  "exerciseCreated": "Bài tập viết đã được tạo",
   "textContent": "Nội dung văn bản",
 
   "exerciseDeleted": "Bài tập đã bị xóa",
@@ -369,5 +374,42 @@
   "noSpeakingLessonsFound": "Không tìm thấy bài nói nào",
   "deleteSpeakingLessonConfirmation": "Điều này sẽ xóa vĩnh viễn bài nói này. Hành động này không thể hoàn tác.",
   "createSpeakingLesson": "Tạo bài nói",
-  "premium": "Cao cấp"
+  "premium": "Cao cấp",
+
+  "rewardSent": "Đã gửi phần thưởng cho học viên",
+  "analyticsDashboard": "Bảng điều khiển phân tích",
+  "analyticsDashboardDescription": "Theo dõi sự phát triển người dùng và hiệu quả học tập",
+  "userGrowth": "Tăng trưởng người dùng",
+  "userGrowthDescription": "Số lượng người dùng mới theo thời gian",
+  "skillPerformance": "Hiệu suất kỹ năng",
+  "skillPerformanceDescription": "Điểm trung bình và số lượt làm bài theo kỹ năng",
+  "topPerformers": "Người biểu diễn hàng đầu",
+  "topPerformersDescription": "Bảng xếp hạng người dùng xuất sắc nhất",
+  "giftReward": "Tặng phần thưởng",
+  "totalScore": "Tổng điểm",
+
+  "vocabularyAnalytics": "Phân tích từ vựng",
+  "vocabularyAnalyticsDescription": "Tổng quan về kho từ vựng và các vấn đề học viên đang gặp phải.",
+  "totalVocabularyEntries": "Tổng số mục từ vựng",
+  "activeTopics": "Chủ đề hoạt động",
+  "avgMasteryScore": "Điểm thành thạo trung bình",
+  "difficultWordsAnalysis": "Phân tích từ khó",
+  "difficultWordsAnalysisDescription": "Top từ khó mà học viên gặp phải.",
+  "top10MostFrequentErrors": "Top 10 lỗi phổ biến nhất",
+  "totalErrors": "Tổng số lỗi",
+  "affected": "Ảnh hưởng",
+  "noDataFound": "Không tìm thấy dữ liệu",
+  "userVocabularyTopics": "Chủ đề từ vựng của người dùng",
+  "userVocabularyTopicsDescription": "Bộ từ vựng do người dùng đóng góp.",
+  "topicName": "Tên chủ đề",
+  "vietnameseName": "Tên tiếng Việt",
+  "totalVocab": "Tổng số từ vựng",
+  "dateCreated": "Ngày tạo",
+  "words": "từ",
+
+  "prevPage": "Trang trước",
+  "nextPage": "Trang sau",
+  "page": "Trang",
+
+  "achievementsGamification": "Thành tích & Gamification"
 }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import ProfileHeader from '../screens/user/components/ProfileHeader';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +15,7 @@ import StoryHighlights from '../screens/user/components/StoryHighlights';
 import ProfileTabs from '../screens/user/components/ProfileTabs';
 import PhotoGrid from '../screens/user/components/PhotoGrid';
 import LinearGradient from 'react-native-linear-gradient';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function ProfileScreen() {
   const [active, setActive] = useState<'posts' | 'saved' | 'tagged'>('posts');
@@ -56,24 +58,32 @@ export default function ProfileScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        <ProfileHeader />
-        <StoryHighlights />
-        <ProfileTabs active={active} setActive={setActive} />
-        <View style={styles.tabContent}>
-          {active === 'posts' && <PhotoGrid />}
-          {active === 'saved' && (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>Chưa có bài viết đã lưu</Text>
-            </View>
-          )}
-          {active === 'tagged' && (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                Chưa có bài viết được gắn thẻ
-              </Text>
-            </View>
-          )}
-        </View>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <ProfileHeader />
+          <StoryHighlights />
+          <ProfileTabs active={active} setActive={setActive} />
+          <View style={styles.tabContent}>
+            {active === 'posts' && <PhotoGrid />}
+            {active === 'saved' && (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>
+                  Chưa có bài viết đã lưu
+                </Text>
+              </View>
+            )}
+            {active === 'tagged' && (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>
+                  Chưa có bài viết được gắn thẻ
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -85,9 +95,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   headerGradient: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -100,16 +110,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: scale(12),
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: 'bold',
     color: '#ffffff',
     flex: 1,
@@ -119,21 +129,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: moderateScale(44),
+    height: moderateScale(44),
+    borderRadius: moderateScale(22),
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: scale(8),
   },
   content: {
     flex: 1,
     backgroundColor: '#ffffff',
-    marginTop: -15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-     overflow: 'hidden', 
+    marginTop: verticalScale(-15),
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    overflow: 'hidden',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: scale(4),
+    paddingBottom: verticalScale(100),
   },
   tabContent: {
     flex: 1,
@@ -142,10 +159,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: scale(40),
   },
   emptyStateText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: '#6b7280',
     textAlign: 'center',
   },

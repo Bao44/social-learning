@@ -4,15 +4,17 @@ import { useState } from "react";
 import { Level } from "../components/Level";
 import { Topic } from "../components/Topic";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, ArrowRight, Volume2, X, Bot } from "lucide-react";
+import { Loader2, Sparkles, Volume2, X, Bot } from "lucide-react";
 import { RightSidebar } from "../components/RightSidebar";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { ModalByLesson } from "../components/ModalByLesson";
+import useAuth from "@/hooks/useAuth";
 
 export default function SpeakingPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const router = useRouter();
   const [showByLesson, setShowByLesson] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
@@ -43,13 +45,14 @@ export default function SpeakingPage() {
     }
   };
 
-  const executeConversationPracticeAI = () => {
+  const handleConversationPracticeAI_Click = () => {
     if (selectedLevel && selectedTopic) {
       setLoading(true);
       router.push(
         `/dashboard/speaking/list?level=${selectedLevel.slug}&topic=${selectedTopic.slug}&mode=conversation`
       );
     }
+    setLoading(false);
   };
 
   const executeConversationRealTimeAI = () => {
@@ -76,10 +79,11 @@ export default function SpeakingPage() {
     setShowByLesson(true);
   };
 
-  const handleConversationPracticeAI_Click = () => {
-    setPendingAction(() => executeConversationPracticeAI);
-    setShowByLesson(true);
-  };
+  // Không dùng bông tuyết
+  // const handleConversationPracticeAI_Click = () => {
+  //   setPendingAction(() => executeConversationPracticeAI);
+  //   setShowByLesson(true);
+  // };
 
   const handleConversationRealTimeAI_Click = () => {
     setPendingAction(() => executeConversationRealTimeAI);
@@ -202,7 +206,7 @@ export default function SpeakingPage() {
       <AnimatePresence>
         {isReady && (
           <motion.div
-            className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4 md:bottom-6"
+            className="fixed bottom-4 left-0 right-0 z-50 flex justify-center md:bottom-6 max-w-6xl mx-auto sm:px-6 lg:px-8 px-4"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
@@ -304,13 +308,34 @@ export default function SpeakingPage() {
                       >
                         Generate AI
                       </Button>
-                      <Button
-                        onClick={handleConversationRealTimeAI_Click}
-                        disabled={loading}
-                        className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
-                      >
-                        {t("learning.realTimePractice")}
-                      </Button>
+                      {user && user.premium_expire_date != null ? (
+                        <Button
+                          onClick={handleConversationRealTimeAI_Click}
+                          disabled={loading}
+                          className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white cursor-pointer"
+                        >
+                          {t("learning.realTimePractice")}
+                        </Button>
+                      ) : (
+                        <div className="relative flex-1 group">
+                          <Button
+                            disabled={true}
+                            className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white"
+                          >
+                            {t("learning.realTimePractice")}
+                          </Button>
+
+                          {/* Tooltip */}
+                          <div
+                            className="absolute left-1/2 -translate-x-1/2 -top-10 w-max
+               bg-black text-white text-xs py-2 px-3 rounded-md shadow-lg
+               opacity-0 group-hover:opacity-100
+               transition-opacity duration-200 pointer-events-none z-50"
+                          >
+                            {t("learning.byPremiumToUse")}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

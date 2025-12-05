@@ -13,13 +13,15 @@ import useAuth from '../../../../hooks/useAuth';
 import { fetchPostsByUserId } from '../../../api/post/route';
 import { getSupabaseFileUrl } from '../../../api/image/route';
 import Video from 'react-native-video';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const { width } = Dimensions.get('window');
+// Item size vẫn giữ theo width để chia đều, không cần scale
 const ITEM_SIZE = Math.floor((width - 2) / 3);
 
 export default function PhotoGrid({ userSearch }: { userSearch: any }) {
   const { user, loading } = useAuth();
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState([]);
   const [loadingPost, setLoadingPost] = useState(false);
 
   useEffect(() => {
@@ -36,29 +38,17 @@ export default function PhotoGrid({ userSearch }: { userSearch: any }) {
   };
 
   if (loadingPost) {
-    return <ActivityIndicator style={{ margin: 16 }} />;
+    return <ActivityIndicator style={{ margin: scale(16) }} />;
   }
 
   if (!loadingPost && posts.length === 0) {
     return (
-      <View style={{ padding: 20, alignItems: 'center' }}>
-        <View
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            borderWidth: 2,
-            borderColor: '#111',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text>📷</Text>
+      <View style={styles.emptyContainer}>
+        <View style={styles.emptyIconCircle}>
+          <Text style={{ fontSize: moderateScale(24) }}>📷</Text>
         </View>
-        <Text style={{ fontSize: 18, fontWeight: '600', marginTop: 12 }}>
-          Chia sẻ ảnh
-        </Text>
-        <Text style={{ color: '#888', marginTop: 6, textAlign: 'center' }}>
+        <Text style={styles.emptyTitle}>Chia sẻ ảnh</Text>
+        <Text style={styles.emptyDesc}>
           Khi bạn chia sẻ ảnh, ảnh sẽ xuất hiện trên trang cá nhân của bạn.
         </Text>
       </View>
@@ -86,20 +76,11 @@ export default function PhotoGrid({ userSearch }: { userSearch: any }) {
             resizeMode="cover"
             muted
             repeat
-            paused={false} // chỉ hiển thị thumbnail, không auto-play
+            paused={false}
           />
         ) : (
-          <View
-            style={[
-              styles.image,
-              {
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f3f3f3',
-              },
-            ]}
-          >
-            <Text style={{ color: '#666', textAlign: 'center' }}>
+          <View style={styles.textOnlyContainer}>
+            <Text style={styles.textOnlyContent} numberOfLines={3}>
               {item.content}
             </Text>
           </View>
@@ -122,6 +103,51 @@ export default function PhotoGrid({ userSearch }: { userSearch: any }) {
 }
 
 const styles = StyleSheet.create({
-  item: { width: ITEM_SIZE, height: ITEM_SIZE, margin: 0.5 },
-  image: { width: '100%', height: '100%' },
+  item: {
+    width: ITEM_SIZE,
+    height: ITEM_SIZE,
+    margin: 0.5,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  emptyContainer: {
+    padding: scale(20),
+    alignItems: 'center',
+  },
+  emptyIconCircle: {
+    width: moderateScale(64),
+    height: moderateScale(64),
+    borderRadius: moderateScale(32),
+    borderWidth: 2,
+    borderColor: '#111',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: '600',
+    marginTop: verticalScale(12),
+    color: '#000',
+  },
+  emptyDesc: {
+    color: '#888',
+    marginTop: verticalScale(6),
+    textAlign: 'center',
+    fontSize: moderateScale(14),
+  },
+  textOnlyContainer: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f3f3f3',
+    padding: scale(4),
+  },
+  textOnlyContent: {
+    color: '#666',
+    textAlign: 'center',
+    fontSize: moderateScale(12),
+  },
 });

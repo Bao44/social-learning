@@ -5,6 +5,7 @@ import { LogOut } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../../lib/supabase';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const Options = () => {
   const navigation = useNavigation<any>();
@@ -40,16 +41,18 @@ const Options = () => {
   return (
     <View>
       <Header title="Cài đặt và hoạt động" />
-      <Text>Options</Text>
-      <View style={styles.headerActions}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleLogout}
-          activeOpacity={0.8}
-        >
-          <LogOut size={24} />
-          <Text>Logout</Text>
-        </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <Text style={styles.sectionTitle}>Tùy chọn</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleLogout}
+            activeOpacity={0.8}
+          >
+            <LogOut size={moderateScale(24)} color="#333" />
+            <Text style={styles.logoutText}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -58,17 +61,30 @@ const Options = () => {
 export default Options;
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    padding: scale(16),
+  },
+  sectionTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    marginBottom: verticalScale(10),
+  },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   actionButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    flexDirection: 'row',
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+    borderRadius: moderateScale(8),
+    backgroundColor: '#f3f4f6',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 8,
+    width: '100%',
+  },
+  logoutText: {
+    marginLeft: scale(10),
+    fontSize: moderateScale(16),
+    fontWeight: '500',
   },
 });

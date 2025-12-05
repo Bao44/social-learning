@@ -94,6 +94,14 @@ export const updateWritingExercise = async ({ id, exerciseData }: any) => {
   return response.data;
 };
 
+export const updateSpeakingLesson = async ({ id, lessonData }: any) => {
+  const response = await api.put(
+    `/api/admin/content/update-speaking/${id}`,
+    lessonData
+  );
+  return response.data;
+};
+
 export const deleteListeningParagraph = async (id: any) => {
   const response = await api.delete(`/api/admin/content/delete-listening/${id}`);
   return response.data;
