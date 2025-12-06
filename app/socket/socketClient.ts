@@ -1,10 +1,11 @@
 import { io } from 'socket.io-client';
+import { BASE_URL_API } from '@env';
 
 let socket: any = null;
 
 export const getSocket = () => {
   if (!socket) {
-    socket = io('https://api.socialonlinelearning.tech', {
+    socket = io(BASE_URL_API, {
       transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,

@@ -105,17 +105,25 @@ export default function ProgressScreen() {
         statisticsScoreListening(user.id, period),
       ]);
 
-      const normalize = (res: any) =>
-        (res.data || []).map((d: any) => ({
-          value: Number(d.total),
-          label: d.day.slice(5),
-        }));
+      const normalize = (item: any) => {
+        if (!item || !item.data || !Array.isArray(item.data)) {
+          return [];
+        }
 
-      setDataSpeaking(normalize(speakingRes[0]));
-      setDataWriting(normalize(writingRes[0]));
-      setDataListening(normalize(listeningRes[0]));
+        return item.data.map((d: any) => ({
+          value: Number(d.total || 0),
+          label: d.day ? d.day.slice(5) : '',
+        }));
+      };
+
+      setDataSpeaking(normalize(speakingRes?.[0]));
+      setDataWriting(normalize(writingRes?.[0]));
+      setDataListening(normalize(listeningRes?.[0]));
     } catch (err) {
       console.error('Fetch failed:', err);
+      setDataSpeaking([]);
+      setDataWriting([]);
+      setDataListening([]);
     } finally {
       setLoading(false);
     }
@@ -454,7 +462,7 @@ export default function ProgressScreen() {
           </TouchableOpacity>
 
           <View style={styles.headerCenter}>
-            <View>
+            <View className='flex items-center'>
               <Text style={styles.headerTitle}>Tiến trình học tập</Text>
               <Text style={styles.headerSubtitle}>
                 Theo dõi sự tiến bộ của bạn
