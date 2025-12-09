@@ -43,7 +43,7 @@ const userService = {
   async getUserByNickName(nickName) {
     const { data, error } = await supabase
       .from("users")
-      .select("id, name, nick_name, avatar, bio")
+      .select("id, name, nick_name, avatar, bio, isPremium, level")
       .eq("nick_name", nickName)
       .maybeSingle();
 

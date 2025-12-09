@@ -115,7 +115,9 @@ export function MainFeed() {
           onDelete={handleRemovePostFromList}
         />
       ))}
-      {loadingPost && <p className="text-center text-gray-500">{t("dashboard.loading")}</p>}
+      {loadingPost && (
+        <p className="text-center text-gray-500">{t("dashboard.loading")}</p>
+      )}
       {posts.length === 0 && !loadingPost && (
         <p className="text-center text-gray-500">{t("dashboard.noPosts")}</p>
       )}
@@ -131,7 +133,9 @@ export function MainFeed() {
         </div>
       )}
       {posts.length > 0 && !loadingPost && !hasMorePosts && (
-        <div className="text-center mt-4 text-gray-500">{t("dashboard.noMorePosts")}</div>
+        <div className="text-center mt-4 text-gray-500">
+          {t("dashboard.noMorePosts")}
+        </div>
       )}
     </div>
   );

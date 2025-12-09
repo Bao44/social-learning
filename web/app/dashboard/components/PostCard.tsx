@@ -30,6 +30,8 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { CreateOrUpdatePostModal } from "./CreateOrUpdatePost";
 import { useRouter } from "next/navigation";
+import { createNotification } from "@/app/apiClient/notification/notification";
+import { supabase } from "@/lib/supabase";
 
 interface PostCardProps {
   post: any;
@@ -55,6 +57,56 @@ export function PostCard({ post, onDelete }: PostCardProps) {
     setLikes(Array.isArray(post?.postLikes) ? post.postLikes : []);
   }, [post?.postLikes]);
 
+  useEffect(() => {
+    if (!post?.id) return;
+
+    const likeChannel = supabase
+      .channel(`postLikes:${post.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "postLikes",
+          filter: `postId=eq.${post.id}`,
+        },
+        (payload) => {
+          const newLike = payload.new;
+          setLikes((prev) => {
+            const exists = prev.some((item) => item.userId === newLike.userId);
+
+            if (exists) {
+              return prev.map((item) =>
+                item.userId === newLike.userId ? newLike : item
+              );
+            }
+            return [newLike, ...prev];
+          });
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "postLikes",
+          filter: `postId=eq.${post.id}`,
+        },
+        (payload) => {
+          const deletedId = payload.old.id;
+
+          setLikes((prev) =>
+            prev.filter((c) => String(c.id) !== String(deletedId))
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(likeChannel);
+    };
+  }, [post.id]);
+
   const liked = useMemo(() => {
     return (likes ?? []).some(
       (like) => String(like?.userId) === String(user?.id)
@@ -63,23 +115,48 @@ export function PostCard({ post, onDelete }: PostCardProps) {
 
   const onLike = async () => {
     if (liked) {
-      // unlike
-      const updatedLikes = likes.filter((like) => like.userId != user?.id);
+      const myLike = likes.find((l) => String(l.userId) === String(user?.id));
+
+      const updatedLikes = likes.filter(
+        (like) => String(like.userId) !== String(user?.id)
+      );
       setLikes([...updatedLikes]);
+
       const res = await unlikePost(post?.id, user?.id);
+
       if (!res.success) {
-        toast.error("Something went wrong!");
+        if (myLike) setLikes((prev) => [...prev, myLike]);
+        toast.error("Failed to unlike");
       }
     } else {
-      // like
-      const data = {
+      const optimisticLike = {
         userId: user?.id,
         postId: post?.id,
+        created_at: new Date().toISOString(),
       };
-      setLikes([...likes, data]);
-      const res = await likePost(data);
+
+      setLikes((prev) => [...prev, optimisticLike]);
+
+      const res = await likePost({
+        userId: user?.id,
+        postId: post?.id,
+      });
+
       if (!res.success) {
-        toast.error("Something went wrong!");
+        setLikes((prev) => prev.filter((l) => l.userId !== user?.id));
+        toast.error("Failed to like");
+      } else {
+        if (user?.id !== post.user.id) {
+          const notify = {
+            senderId: user?.id,
+            receiverId: post.user.id,
+            title: t("dashboard.likedYourPost"),
+            content: JSON.stringify({
+              postId: post.id,
+            }),
+          };
+          createNotification(notify);
+        }
       }
     }
   };

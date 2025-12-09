@@ -176,7 +176,7 @@ export default function SpeakingPage() {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center justify-center ml-14 p-3 bg-white rounded-2xl shadow-sm border border-slate-100 mb-4 -translate-x-1/2 animate-bounce"
             >
-              <Volume2 className="w-8 h-8 text-orange-500" />
+              <Volume2 className="w-8 h-8 text-orange-500 fill-orange-500" />
             </motion.div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               {t("learning.practiceSpeaking")}
