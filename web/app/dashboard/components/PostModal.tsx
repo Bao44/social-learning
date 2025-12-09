@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import {
   addComment,
   deleteComment,
+  deletePost,
   fetchComments,
 } from "@/app/apiClient/post/post";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -176,6 +177,20 @@ export function PostModal({
     );
   };
 
+  const handleDeletePost = async (postId: number) => {
+    // Xóa bài viết
+    if (!postId) return;
+    try {
+      const res = await deletePost(postId);
+      if (res.success) {
+        toast.success(t("dashboard.deletePostSuccess"), { autoClose: 1000 });
+      }
+      onClose();
+    } catch (error) {
+      toast.error(t("dashboard.deletePostFailed"), { autoClose: 1000 });
+    }
+  };
+
   useEffect(() => {
     if (highlightCommentId && comments.length > 0) {
       const el = document.getElementById(`comment-${highlightCommentId}`);
@@ -252,16 +267,27 @@ export function PostModal({
               <DialogHeader className="p-6 border-b max-sm:p-4">
                 <div className="flex items-center justify-between">
                   {post?.user?.id === userId && (
-                    <Button
-                      onClick={() => {
-                        setEditingPost(post); // state cha giữ post đang sửa
-                        setIsEdit(true);
-                        setIsOpenModal(true); // mở modal
-                      }}
-                      className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
-                    >
-                      {t("dashboard.edit")}
-                    </Button>
+                    <div className="space-x-2">
+                      <Button
+                        onClick={() => {
+                          setEditingPost(post); // state cha giữ post đang sửa
+                          setIsEdit(true);
+                          setIsOpenModal(true); // mở modal
+                        }}
+                        className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
+                      >
+                        {t("dashboard.edit")}
+                      </Button>
+
+                      <Button
+                        onClick={() => {
+                          handleDeletePost(post.id);
+                        }}
+                        className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
+                      >
+                        {t("dashboard.delete")}
+                      </Button>
+                    </div>
                   )}
                 </div>
               </DialogHeader>

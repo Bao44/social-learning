@@ -4,7 +4,7 @@ import type React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Settings } from "lucide-react";
+import { Crown, Settings } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -24,6 +24,7 @@ import FollowModal from "./FollowModal";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { countPostsByUserId } from "@/app/apiClient/post/post";
+import { Badge } from "@/components/ui/badge";
 
 interface User {
   id: string;
@@ -42,7 +43,7 @@ interface Follower {
 
 export default function ProfileHeader() {
   const router = useRouter();
-  const { user, setUser } = useAuth<User>();
+  const { user, setUser } = useAuth<User | any>();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [openFollowing, setOpenFollowing] = useState(false);
@@ -140,6 +141,23 @@ export default function ProfileHeader() {
     setIsLoading(false);
   };
 
+  const getLevelBadgeColor = (level: number) => {
+    if (level >= 8) return "bg-purple-100 text-purple-800";
+    if (level >= 6) return "bg-blue-100 text-blue-800";
+    if (level >= 4) return "bg-green-100 text-green-800";
+    if (level >= 2) return "bg-yellow-100 text-yellow-800";
+    return "bg-gray-100 text-gray-800";
+  };
+
+  const getLevelName = (level: number) => {
+    if (level >= 10) return t("dashboard.master");
+    if (level >= 8) return t("dashboard.expert");
+    if (level >= 6) return t("dashboard.advanced");
+    if (level >= 4) return t("dashboard.intermediate");
+    if (level >= 2) return t("dashboard.beginner");
+    return t("dashboard.newbie");
+  };
+
   return (
     <>
       <motion.div
@@ -217,8 +235,32 @@ export default function ProfileHeader() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="flex-1 text-center sm:text-left mt-2 sm:mt-0"
           >
-            <h1 className="text-lg font-semibold sm:text-xl">{user?.name}</h1>
-            <p className="text-sm text-muted-foreground">{user?.nick_name}</p>
+            <div className="flex justify-between">
+              <div>
+                <h1 className="text-lg font-semibold sm:text-xl">
+                  {user?.name}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {user?.nick_name}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <div className="text-lg font-semibold sm:text-xl">
+                  {user?.isPremium && (
+                    <Crown className="w-10 h-10 text-yellow-400" />
+                  )}
+                </div>
+                <Badge
+                  variant="secondary"
+                  className={`text-xs mt-1 transform transition-all duration-300 hover:scale-105 ${getLevelBadgeColor(
+                    user?.level
+                  )}`}
+                >
+                  Level {user?.level || 1} {getLevelName(user?.level || 1)}
+                </Badge>
+              </div>
+            </div>
 
             <div className="grid grid-cols-3 text-xs sm:text-sm mt-2 gap-2">
               <motion.div whileHover={{ scale: 1.05 }}>
@@ -296,7 +338,7 @@ export default function ProfileHeader() {
         isOpen={openFollowing}
         onClose={() => setOpenFollowing(false)}
         title={t("dashboard.following")}
-        currentUserId={user?.id}
+        currentUser={user}
         data={following}
       />
 
@@ -304,7 +346,7 @@ export default function ProfileHeader() {
         isOpen={openFollower}
         onClose={() => setOpenFollower(false)}
         title={t("dashboard.followers")}
-        currentUserId={user?.id}
+        currentUser={user}
         data={follower}
       />
     </>

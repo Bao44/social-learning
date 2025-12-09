@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Ellipsis, LoaderIcon } from "lucide-react";
+import { Crown, Ellipsis, LoaderIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { getUserImageSrc } from "@/app/apiClient/image/image";
@@ -16,10 +16,15 @@ import UserFollowModal from "./UserFollowModal";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import MessageModal from "./MessageModal";
-import { createConversation, findConversationBetweenUsers } from "@/app/apiClient/chat/conversation/conversation";
+import {
+  createConversation,
+  findConversationBetweenUsers,
+} from "@/app/apiClient/chat/conversation/conversation";
 import { useRouter } from "next/navigation";
 import { useConversation } from "@/components/contexts/ConversationContext";
 import { sendMessage } from "@/app/apiClient/chat/message/message";
+import { createNotification } from "@/app/apiClient/notification/notification";
+import { Badge } from "@/components/ui/badge";
 
 interface User {
   id: string;
@@ -27,6 +32,8 @@ interface User {
   nick_name: string;
   avatar?: string;
   bio?: string;
+  isPremium?: boolean;
+  level?: any;
 }
 
 interface Follower {
@@ -114,6 +121,20 @@ export default function ProfileFollowerHeader({
       } else {
         await followUser(user?.id, userSearch.id);
         setIsFollowing(true);
+
+        if (user?.id !== userSearch.id) {
+          // Gửi thông báo cho chủ tài khoản khi có người theo dõi
+          const notify = {
+            senderId: user?.id,
+            receiverId: userSearch.id,
+            title: t("dashboard.startedFollowingYou"),
+            content: JSON.stringify({
+              senderId: user?.nick_name, // người theo dõi
+              receiverId: userSearch.id, // ID của người được theo dõi
+            }),
+          };
+          createNotification(notify);
+        }
       }
     } catch (err) {
       console.error("Follow toggle failed:", err);
@@ -127,7 +148,10 @@ export default function ProfileFollowerHeader({
       const res = await findConversationBetweenUsers(userSearch?.id);
       if (res.message === "Yes") {
         setSelectedConversation(res.conversation);
-        localStorage.setItem("selectedConversation", JSON.stringify(res.conversation));
+        localStorage.setItem(
+          "selectedConversation",
+          JSON.stringify(res.conversation)
+        );
         router.push(`/dashboard/chat/${res.conversation.id}`);
       } else {
         setOpenMessage(true);
@@ -135,7 +159,7 @@ export default function ProfileFollowerHeader({
     } catch (err) {
       console.error("Error checking conversation:", err);
     }
-  }
+  };
 
   const handleSendMessage = async (text: string) => {
     // Tạo cuộc trò chuyện mới
@@ -155,7 +179,7 @@ export default function ProfileFollowerHeader({
         },
       ],
       avatar: "",
-      admin: ""
+      admin: "",
     };
 
     const creatRes = await createConversation(conversationData);
@@ -167,13 +191,30 @@ export default function ProfileFollowerHeader({
       const res = await sendMessage({
         conversationId: creatRes?.id,
         senderId: user?.id,
-        text
+        text,
       });
       setSelectedConversation(creatRes);
       localStorage.setItem("selectedConversation", JSON.stringify(creatRes));
       router.push(`/dashboard/chat/${creatRes.id}`);
       setOpenMessage(false);
     }
+  };
+
+  const getLevelBadgeColor = (level: number) => {
+    if (level >= 8) return "bg-purple-100 text-purple-800";
+    if (level >= 6) return "bg-blue-100 text-blue-800";
+    if (level >= 4) return "bg-green-100 text-green-800";
+    if (level >= 2) return "bg-yellow-100 text-yellow-800";
+    return "bg-gray-100 text-gray-800";
+  };
+
+  const getLevelName = (level: number) => {
+    if (level >= 10) return t("dashboard.master");
+    if (level >= 8) return t("dashboard.expert");
+    if (level >= 6) return t("dashboard.advanced");
+    if (level >= 4) return t("dashboard.intermediate");
+    if (level >= 2) return t("dashboard.beginner");
+    return t("dashboard.newbie");
   };
 
   if (loading) return <p className="p-6">{t("dashboard.loading")}</p>;
@@ -221,10 +262,11 @@ export default function ProfileFollowerHeader({
                 whileTap={{ scale: 0.95 }}
                 onClick={handleFollowToggle}
                 disabled={followLoading}
-                className={`md:w-45 w-full h-8 px-4 py-1.5 rounded-lg font-medium cursor-pointer ${isFollowing
-                  ? "bg-gray-200 text-black hover:bg-gray-300"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-                  }`}
+                className={`md:w-45 w-full h-8 px-4 py-1.5 rounded-lg font-medium cursor-pointer ${
+                  isFollowing
+                    ? "bg-gray-200 text-black hover:bg-gray-300"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
               >
                 {followLoading ? (
                   <LoaderIcon className="h-4 w-4 m-auto animate-spin" />
@@ -243,8 +285,22 @@ export default function ProfileFollowerHeader({
               >
                 {t("dashboard.message")}
               </motion.button>
-              <div className="mt-2 cursor-pointer sm:ml-2 max-lg:hidden">
-                <Ellipsis className="w-5 h-5" />
+
+              <div className="flex flex-col items-center">
+                <div className="text-lg font-semibold sm:text-xl">
+                  {userSearch?.isPremium && (
+                    <Crown className="w-10 h-10 text-yellow-400" />
+                  )}
+                </div>
+                <Badge
+                  variant="secondary"
+                  className={`text-xs mt-1 transform transition-all duration-300 hover:scale-105 ${getLevelBadgeColor(
+                    userSearch?.level
+                  )}`}
+                >
+                  Level {userSearch?.level || 1}{" "}
+                  {getLevelName(userSearch?.level || 1)}
+                </Badge>
               </div>
             </div>
 
