@@ -117,14 +117,21 @@ export function NotificationsPanel({
   const handleOpenPostFromNotif = async (notif: any) => {
     try {
       const data = JSON.parse(notif.content);
-      if (!data.postId) return;
+      console.log("Notification data:", data);
+      if (!data) return;
 
-      const res = await getPostById(data.postId);
+      if (data.postId) {
+        const res = await getPostById(data.postId);
 
-      setSelectedPostId(data.postId);
-      setSelectedCommentId(data.commentId);
-      setSelectedPost(res.data);
-      setIsPostModalOpen(true);
+        setSelectedPostId(data.postId);
+        setSelectedCommentId(data.commentId);
+        setSelectedPost(res.data);
+        setIsPostModalOpen(true);
+      }
+
+      if (data.senderId) {
+        route.push(`/dashboard/profile/${data.senderId}`);
+      }
 
       markAsRead(notif.id);
     } catch (err) {

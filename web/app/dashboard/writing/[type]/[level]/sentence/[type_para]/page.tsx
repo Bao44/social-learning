@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { getListWritingParagraphsByTypeLevelTypeParagraph } from "@/app/apiClient/learning/writing/writing";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/components/contexts/LanguageContext";
-import page from "@/app/dashboard/admin/achievements/page";
 
 interface WritingExercise {
   id: string;
