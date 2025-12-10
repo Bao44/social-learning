@@ -21,6 +21,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/contexts/LanguageContext";
+import { createNotification } from "@/app/apiClient/notification/notification";
 
 interface User {
   id: string;
@@ -33,7 +34,7 @@ interface UserListModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  currentUserId?: string;
+  currentUser?: User;
   data: User[];
 }
 
@@ -41,7 +42,7 @@ export default function FollowModal({
   isOpen,
   onClose,
   title,
-  currentUserId,
+  currentUser,
   data,
 }: UserListModalProps) {
   const router = useRouter();
@@ -52,14 +53,14 @@ export default function FollowModal({
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen && data.length > 0 && currentUserId) {
+    if (isOpen && data.length > 0 && currentUser?.id) {
       const fetchStatus = async () => {
         setIsLoadingAll(true);
         try {
           const results = await Promise.all(
             data.map(async (u) => {
               try {
-                const res = await checkIsFollowing(currentUserId, u.id);
+                const res = await checkIsFollowing(currentUser.id, u.id);
                 return { id: u.id, isFollowing: res.isFollowing };
               } catch {
                 return { id: u.id, isFollowing: false };
@@ -79,7 +80,7 @@ export default function FollowModal({
 
       fetchStatus();
     }
-  }, [isOpen, data, currentUserId]);
+  }, [isOpen, data, currentUser?.id]);
 
   const filteredData = data.filter(
     (user) =>
@@ -90,15 +91,30 @@ export default function FollowModal({
 
   const handleFollowBack = async (userId: string) => {
     setFollowStatus((prev) => ({ ...prev, [userId]: true }));
-    if (currentUserId) {
-      await followUser(currentUserId, userId);
+    if (currentUser?.id) {
+      await followUser(currentUser.id, userId);
+
+      // userId là người mình muốn theo dõi
+      if (currentUser.id !== userId) {
+        // Gửi thông báo cho chủ tài khoản khi có người theo dõi
+        const notify = {
+          senderId: currentUser.id,
+          receiverId: userId,
+          title: t("dashboard.startedFollowingYou"),
+          content: JSON.stringify({
+            senderId: currentUser.nick_name, // người theo dõi
+            receiverId: userId, // ID của người được theo dõi
+          }),
+        };
+        createNotification(notify);
+      }
     }
   };
 
   const handleUnfollow = async (userId: string) => {
     setFollowStatus((prev) => ({ ...prev, [userId]: false }));
-    if (currentUserId) {
-      await unfollowUser(currentUserId, userId);
+    if (currentUser?.id) {
+      await unfollowUser(currentUser.id, userId);
     }
   };
 

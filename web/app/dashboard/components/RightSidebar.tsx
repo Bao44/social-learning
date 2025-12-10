@@ -17,7 +17,14 @@ import {
 import FollowModal from "../profile/components/FollowModal";
 import { useLanguage } from "@/components/contexts/LanguageContext";
 import { getScoreUserByUserId } from "@/app/apiClient/learning/score/score";
-import { Trophy, Award, Snowflake, TrendingUp, Sparkles, Crown } from "lucide-react";
+import {
+  Trophy,
+  Award,
+  Snowflake,
+  TrendingUp,
+  Sparkles,
+  Crown,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Tooltip,
@@ -264,7 +271,9 @@ export function RightSidebar() {
                         <div className="flex-shrink-0">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                             <span className="text-xs font-bold text-orange-700">
-                              {(score?.practice_score ?? 0) >= 1000 ? "🔥" : "💪"}
+                              {(score?.practice_score ?? 0) >= 1000
+                                ? "🔥"
+                                : "💪"}
                             </span>
                           </div>
                         </div>
@@ -277,7 +286,8 @@ export function RightSidebar() {
                   className="bg-orange-600 text-white border-orange-700"
                 >
                   <p className="font-semibold">
-                    {formatFullNumber(score?.practice_score || 0)} {t("dashboard.score")}
+                    {formatFullNumber(score?.practice_score || 0)}{" "}
+                    {t("dashboard.score")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -323,7 +333,8 @@ export function RightSidebar() {
                   className="bg-pink-600 text-white border-pink-700"
                 >
                   <p className="font-semibold">
-                    {formatFullNumber(score?.test_score || 0)} {t("dashboard.score")}
+                    {formatFullNumber(score?.test_score || 0)}{" "}
+                    {t("dashboard.score")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -356,7 +367,9 @@ export function RightSidebar() {
                         <div className="flex-shrink-0">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
                             <span className="text-xs font-bold text-purple-700">
-                              {(score?.number_snowflake ?? 0) >= 1000 ? "❄️" : "⭐"}
+                              {(score?.number_snowflake ?? 0) >= 1000
+                                ? "❄️"
+                                : "⭐"}
                             </span>
                           </div>
                         </div>
@@ -369,7 +382,8 @@ export function RightSidebar() {
                   className="bg-purple-600 text-white border-purple-700"
                 >
                   <p className="font-semibold">
-                    {formatFullNumber(score?.number_snowflake || 0)} {t("dashboard.snowFlakes")}
+                    {formatFullNumber(score?.number_snowflake || 0)}{" "}
+                    {t("dashboard.snowFlakes")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -556,7 +570,7 @@ export function RightSidebar() {
         isOpen={openFollowing}
         onClose={() => setOpenFollowing(false)}
         title={t("dashboard.following")}
-        currentUserId={user?.id}
+        currentUser={user}
         data={following}
       />
 
@@ -564,7 +578,7 @@ export function RightSidebar() {
         isOpen={openFollower}
         onClose={() => setOpenFollower(false)}
         title={t("dashboard.followers")}
-        currentUserId={user?.id}
+        currentUser={user}
         data={follower}
       />
     </div>
