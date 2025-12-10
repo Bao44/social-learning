@@ -5,7 +5,7 @@
 ## 📚 Social Learning
 ### Nền tảng Mạng xã hội hỗ trợ học tập Tiếng Anh và Giao tiếp Đa phương tiện
 
-![Banner Dự Án](link_to_your_banner_image.png)
+![Banner Dự Án](image/Banner.png)
 </div>
 
 ---
@@ -14,8 +14,8 @@
 
 ##### 💬 "Học không chỉ đến từ sách vở, mà còn đến từ cộng đồng, nhóm và xã hội."
 
-[![React Native](https://img.shields.io/badge/React_Native-v0.7x-blue.svg)](https://reactnative.dev/)
-[![Next.js](https://img.shields.io/badge/Next.js-v14-black.svg)](https://nextjs.org/)
+[![React Native](https://img.shields.io/badge/React_Native-v0.8-blue.svg)](https://reactnative.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-v16-black.svg)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-v20-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -25,7 +25,7 @@
 
 ## 📖 GIỚI THIỆU
 
-**Social Learning** là một hệ sinh thái học tập toàn diện kết hợp giữa mạng xã hội và các công cụ rèn luyện tiếng Anh (Nghe, Nói, Đọc, Viết). Dự án giải quyết vấn đề thiếu tính tương tác và môi trường giao tiếp thực tế trong các ứng dụng học tập hiện nay bằng cách tích hợp **Trí tuệ nhân tạo (AI)** và **Giao tiếp thời gian thực (Real-time Communication)**.
+**Social Learning** là một hệ sinh thái học tập toàn diện kết hợp giữa mạng xã hội và các công cụ rèn luyện tiếng Anh (Nghe, Nói, Viết). Dự án giải quyết vấn đề thiếu tính tương tác và môi trường giao tiếp thực tế trong các ứng dụng học tập hiện nay bằng cách tích hợp **Trí tuệ nhân tạo (AI)** và **Giao tiếp thời gian thực (Real-time Communication)**.
 
 **Mục tiêu:** Tạo ra một cộng đồng năng động nơi người học không chỉ tiếp thu kiến thức cá nhân hóa mà còn có thể kết nối, chia sẻ và luyện tập trực tiếp với nhau.
 
@@ -61,12 +61,12 @@ Dự án được xây dựng trên kiến trúc **Client-Server** với các c�
 ### Backend
 - **Core:** Node.js, Express.js.
 - **AI Service:** Google Gemini API, Google Cloud Speech-to-Text.
-- **Real-time:** Socket.IO (Chat/Notification), ZegoCloud SDK (Video/Voice Call).
-- **Storage:** Cloudinary (Lưu trữ ảnh/video).
+- **Real-time:** Socket.IO (Chat/Notification), ZegoCloud SDK (Video/Voice Call), Supabase Realtime.
+- **Storage:** Cloudinary (Lưu trữ ảnh/video tin nhắn), Supabase Storage (Lưu trữ ảnh/video).
 
 ### Database
-- **SQL:** Supabase (PostgreSQL) - Quản lý dữ liệu người dùng, bài học.
-- **NoSQL:** MongoDB - Quản lý tin nhắn, thông báo, lịch sử hoạt động.
+- **SQL:** Supabase (PostgreSQL) - Quản lý dữ liệu người dùng, bài học, thông báo, lịch sử hoạt động ....
+- **NoSQL:** MongoDB - Quản lý tin nhắn.
 
 ### Infrastructure & Deployment
 - **Server:** Digital Ocean (Droplets).
@@ -79,7 +79,7 @@ Dự án được xây dựng trên kiến trúc **Client-Server** với các c�
 ### 1. Sơ đồ Use Case
 Tổng quan các chức năng của Người dùng và Admin.
 <div align="center">
-  <img src="path/to/hinh_3.1.png" alt="Sơ đồ Use Case Tổng Quát" width="800"/>
+  <img src="/image/usecase.jpg" alt="Sơ đồ Use Case Tổng Quát" width="800"/>
   <br>
   <i>(Hình 3.1 - Mô hình Use-case tổng quát)</i>
 </div>
@@ -100,7 +100,7 @@ Tổng quan các chức năng của Người dùng và Admin.
 ### 3. Kiến trúc Phần mềm
 Mô hình kết nối giữa Client, Server, Database và các dịch vụ bên thứ 3 (AI, Payment, Storage).
 <div align="center">
-  <img src="path/to/hinh_4.6.png" alt="Kiến trúc phần mềm" width="800"/>
+  <img src="/image/system.jpg" alt="Kiến trúc phần mềm" width="800"/>
 </div>
 
 ---
@@ -109,12 +109,12 @@ Mô hình kết nối giữa Client, Server, Database và các dịch vụ bên 
 
 | Trang chủ & Newsfeed | Giao diện Nhắn tin |
 |:---:|:---:|
-| <img src="path/to/hinh_4.10.png" width="300"/> | <img src="path/to/hinh_4.12.png" width="300"/> |
+| <img src="/image/Banner.png" width="300"/>| <img src="/image/Banner.png" width="300"/> |
 | *Giao diện người dùng chính* | *Chat & Gọi Video* |
 
 | Luyện Viết với AI | Luyện Nói (Roleplay) |
 |:---:|:---:|
-| <img src="path/to/hinh_4.19.png" width="300"/> | <img src="path/to/hinh_4.24.png" width="300"/> |
+| <img src="/image/Banner.png" width="300"/> | <img src="/image/Banner.png" width="300"/> |
 | *AI chấm điểm và gợi ý* | *Hội thoại trực tiếp với AI* |
 
 ---
@@ -122,7 +122,7 @@ Mô hình kết nối giữa Client, Server, Database và các dịch vụ bên 
 ## 🔗 LIÊN KẾT
 
 - **Demo Video:** [Youtube Link](...)
-- **Website:** [https://social-learning-demo.com](...)
+- **Website:** [https://www.socialonlinelearning.tech/](...)
 - **API Documentation:** [Swagger/Postman Link](...)
 - **Mobile App:** [Download APK](...)
 
@@ -136,8 +136,8 @@ Dự án được thực hiện bởi nhóm sinh viên trường Đại học C�
 
 | **Họ và Tên** | **Vai Trò Chính** | **Trách Nhiệm Cụ Thể** |
 | :--- | :--- | :--- |
-| **Nguyễn Thanh Thuận** <br> *(Trưởng nhóm)* | Project Manager, Backend, AI | Quản lý dự án, thiết kế hệ thống, phát triển Backend API, tích hợp Gemini AI & Speech-to-Text. |
-| **Trương Quốc Bảo** | Frontend (Mobile/Web) | Phát triển giao diện Mobile App (React Native) và Web (Next.js), xử lý UI/UX, tích hợp Socket.IO client. |
+| **Nguyễn Thanh Thuận** <br> *(21080071)* | Fullstack | Quản lý dự án, thiết kế hệ thống, phát triển Frontend - Backend, tích hợp Gemini AI & Deploy. |
+| **Trương Quốc Bảo** <br> *(21017351)* | Fullstack | Quản lý dự án, thiết kế hệ thống, phát triển Frontend - Backend, tích hợp Gemini AI, xử lý UI/UX. |
 
 ### 👩‍🏫 Giảng Viên Hướng Dẫn
 
