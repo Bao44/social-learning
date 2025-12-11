@@ -504,7 +504,7 @@ function LessonAIContent() {
 
   if (!isClient) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50">
         <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
       </div>
     );
@@ -512,7 +512,7 @@ function LessonAIContent() {
 
   if (!browserSupports) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -542,7 +542,7 @@ function LessonAIContent() {
       {/* BACKGROUND */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -554,7 +554,7 @@ function LessonAIContent() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -584,7 +584,7 @@ function LessonAIContent() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowExerciseList(!showExerciseList)}
-                className="flex lg:hidden items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl font-semibold"
+                className="flex lg:hidden items-center gap-2 px-5 py-2.5 rounded-xl bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl font-semibold"
               >
                 <List className="w-5 h-5" />
                 {t("learning.exerciseList")}
@@ -611,7 +611,7 @@ function LessonAIContent() {
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 shadow-sm"
+                    className="h-full bg-linear-to-r from-purple-500 via-pink-500 to-purple-600 shadow-sm"
                   />
                 </div>
               </div>
@@ -626,7 +626,7 @@ function LessonAIContent() {
                 transition={{ type: "spring", stiffness: 260, damping: 25 }}
                 className="relative"
               >
-                <div className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 text-white shadow-2xl border-4 border-white/20">
+                <div className="bg-linear-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 text-white shadow-2xl border-4 border-white/20">
                   {sentenceComplete && (
                     <motion.div
                       initial={{ scale: 0, rotate: -180 }}
@@ -636,7 +636,7 @@ function LessonAIContent() {
                         stiffness: 200,
                         damping: 15,
                       }}
-                      className="absolute -top-6 -right-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full p-4 shadow-2xl border-4 border-white"
+                      className="absolute -top-6 -right-6 bg-linear-to-br from-yellow-400 to-orange-500 rounded-full p-4 shadow-2xl border-4 border-white"
                     >
                       <Star className="w-10 h-10 text-white fill-white" />
                     </motion.div>
@@ -695,7 +695,7 @@ function LessonAIContent() {
                       ? "bg-gray-400 cursor-not-allowed"
                       : isRecording
                       ? "bg-red-500 hover:bg-red-600 animate-pulse"
-                      : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
+                      : "bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
                   }`}
                 >
                   {isProcessing ? (
@@ -717,10 +717,10 @@ function LessonAIContent() {
               <div className="space-y-5">
                 <div>
                   <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
+                    <div className="w-1 h-6 bg-linear-to-b from-purple-500 to-pink-500 rounded-full" />
                     {t("learning.yourSpeech")}
                   </h3>
-                  <div className="p-5 border-2 border-gray-200 rounded-xl bg-gradient-to-br from-gray-50 to-white min-h-[70px] shadow-inner">
+                  <div className="p-5 border-2 border-gray-200 rounded-xl bg-linear-to-br from-gray-50 to-white min-h-[70px] shadow-inner">
                     <p className="text-gray-700 text-base leading-relaxed">
                       {isRecording
                         ? "Đang lắng nghe..."
@@ -733,10 +733,10 @@ function LessonAIContent() {
 
                 <div>
                   <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full" />
+                    <div className="w-1 h-6 bg-linear-to-b from-green-500 to-emerald-500 rounded-full" />
                     {t("learning.result")}
                   </h3>
-                  <div className="p-5 border-2 border-gray-200 rounded-xl bg-gradient-to-br from-gray-50 to-white min-h-[70px] shadow-inner">
+                  <div className="p-5 border-2 border-gray-200 rounded-xl bg-linear-to-br from-gray-50 to-white min-h-[70px] shadow-inner">
                     {result || (
                       <p className="text-gray-500 text-base">
                         {t("learning.noResult")}
@@ -773,7 +773,7 @@ function LessonAIContent() {
                     disabled={isLocked}
                     className={`w-full p-4 rounded-xl text-left transition-all ${
                       isCurrent
-                        ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                        ? "bg-linear-to-r from-orange-500 to-pink-500 text-white shadow-lg"
                         : isCompleted
                         ? "bg-green-50 border-2 border-green-200 hover:bg-green-100"
                         : isLocked
@@ -895,7 +895,7 @@ function LessonAIContent() {
                       whileTap={!isLocked ? { scale: 0.98 } : {}}
                       className={`w-full p-4 rounded-xl text-left transition-all ${
                         isCurrent
-                          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                          ? "bg-linear-to-r from-orange-500 to-pink-500 text-white shadow-lg"
                           : isCompleted
                           ? "bg-green-50 border-2 border-green-200"
                           : isLocked
@@ -973,7 +973,7 @@ function LessonAIContent() {
       </AnimatePresence>
 
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
-        <DialogContent className="max-w-lg rounded-3xl bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white">
+        <DialogContent className="max-w-lg rounded-3xl bg-linear-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white">
           <DialogHeader className="text-center">
             <motion.div
               animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.1, 1] }}

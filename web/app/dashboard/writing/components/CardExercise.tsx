@@ -44,7 +44,7 @@ export default function CardWritingExercise({
       </div>
 
       <div className="mb-4 pr-12">
-        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
+        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
           {title}
         </h3>
         <span className="inline-block px-2 py-0.5 bg-slate-50 border border-slate-200 rounded text-[10px] font-bold uppercase text-slate-500 tracking-wider">
@@ -57,7 +57,7 @@ export default function CardWritingExercise({
       </p>
 
       <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
+        <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
           {isCompleted
             ? "Review"
             : isStarted
@@ -67,7 +67,7 @@ export default function CardWritingExercise({
         {isStarted && (
           <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-pink-500"
+              className="h-full bg-linear-to-r from-orange-500 to-pink-500"
               style={{ width: `${progress}%` }}
             />
           </div>

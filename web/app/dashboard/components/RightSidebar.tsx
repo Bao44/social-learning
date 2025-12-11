@@ -222,19 +222,19 @@ export function RightSidebar() {
       }`}
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full opacity-20 animate-float"></div>
-        <div className="absolute top-1/2 -left-12 w-24 h-24 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full opacity-25 animate-float-delayed"></div>
-        <div className="absolute bottom-1/4 -right-6 w-20 h-20 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full opacity-30 animate-float-slow"></div>
+        <div className="absolute -top-8 -right-8 w-32 h-32 bg-linear-to-br from-purple-100 to-pink-100 rounded-full opacity-20 animate-float"></div>
+        <div className="absolute top-1/2 -left-12 w-24 h-24 bg-linear-to-br from-blue-100 to-teal-100 rounded-full opacity-25 animate-float-delayed"></div>
+        <div className="absolute bottom-1/4 -right-6 w-20 h-20 bg-linear-to-br from-orange-100 to-yellow-100 rounded-full opacity-30 animate-float-slow"></div>
       </div>
 
       {/* Điểm số người dùng */}
       <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform animate-slide-in-right relative z-10 overflow-hidden">
         {/* Decorative gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 opacity-50"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-orange-50 via-pink-50 to-purple-50 opacity-50"></div>
 
         <CardHeader className="relative">
           <CardTitle className="text-base font-bold flex items-center">
-            <span className="bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               {t("dashboard.yourAchievements")}
             </span>
           </CardTitle>
@@ -250,10 +250,10 @@ export function RightSidebar() {
                     whileHover={{ scale: 1.02, x: 4 }}
                     className="relative group cursor-default"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                    <div className="relative bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl px-4 py-2 border border-orange-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                    <div className="absolute inset-0 bg-linear-to-r from-orange-400 to-orange-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-linear-to-r from-orange-50 to-orange-100 rounded-xl px-4 py-2 border border-orange-200 shadow-sm group-hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-md flex-shrink-0">
+                        <div className="p-3 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl shadow-md flex-shrink-0">
                           <Trophy className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -263,13 +263,13 @@ export function RightSidebar() {
                           <p
                             className={`${getResponsiveFontSize(
                               score?.practice_score || 0
-                            )} font-bold bg-gradient-to-br from-orange-600 to-orange-700 bg-clip-text text-transparent leading-none`}
+                            )} font-bold bg-linear-to-br from-orange-600 to-orange-700 bg-clip-text text-transparent leading-none`}
                           >
                             {formatCompactNumber(score?.practice_score || 0)}
                           </p>
                         </div>
                         <div className="flex-shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                             <span className="text-xs font-bold text-orange-700">
                               {(score?.practice_score ?? 0) >= 1000
                                 ? "🔥"
@@ -299,10 +299,10 @@ export function RightSidebar() {
                     whileHover={{ scale: 1.02, x: 4 }}
                     className="relative group cursor-default"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-pink-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                    <div className="relative bg-gradient-to-r from-pink-50 to-pink-100 rounded-xl p-4 border border-pink-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                    <div className="absolute inset-0 bg-linear-to-r from-pink-400 to-pink-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-linear-to-r from-pink-50 to-pink-100 rounded-xl p-4 border border-pink-200 shadow-sm group-hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl shadow-md flex-shrink-0">
+                        <div className="p-3 bg-linear-to-br from-pink-500 to-pink-600 rounded-xl shadow-md flex-shrink-0">
                           <Award className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -312,13 +312,13 @@ export function RightSidebar() {
                           <p
                             className={`${getResponsiveFontSize(
                               score?.test_score || 0
-                            )} font-bold bg-gradient-to-br from-pink-600 to-pink-700 bg-clip-text text-transparent leading-none`}
+                            )} font-bold bg-linear-to-br from-pink-600 to-pink-700 bg-clip-text text-transparent leading-none`}
                           >
                             {formatCompactNumber(score?.test_score || 0)}
                           </p>
                         </div>
                         <div className="flex-shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-br from-pink-100 to-pink-200 flex items-center justify-center">
                             <span className="text-xs font-bold text-pink-700">
                               {(score?.test_score ?? 0) >= 1000 ? "🏆" : "📝"}
                             </span>
@@ -346,10 +346,10 @@ export function RightSidebar() {
                     whileHover={{ scale: 1.02, x: 4 }}
                     className="relative group cursor-default"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                    <div className="relative bg-gradient-to-r from-blue-50 to-purple-100 rounded-xl p-4 border border-purple-200 shadow-sm group-hover:shadow-md transition-all duration-300">
+                    <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-purple-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="relative bg-linear-to-r from-blue-50 to-purple-100 rounded-xl p-4 border border-purple-200 shadow-sm group-hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-md flex-shrink-0">
+                        <div className="p-3 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl shadow-md flex-shrink-0">
                           <Snowflake className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -359,13 +359,13 @@ export function RightSidebar() {
                           <p
                             className={`${getResponsiveFontSize(
                               score?.number_snowflake || 0
-                            )} font-bold bg-gradient-to-br from-blue-600 to-purple-700 bg-clip-text text-transparent leading-none`}
+                            )} font-bold bg-linear-to-br from-blue-600 to-purple-700 bg-clip-text text-transparent leading-none`}
                           >
                             {formatCompactNumber(score?.number_snowflake || 0)}
                           </p>
                         </div>
                         <div className="flex-shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-100 to-purple-200 flex items-center justify-center">
                             <span className="text-xs font-bold text-purple-700">
                               {(score?.number_snowflake ?? 0) >= 1000
                                 ? "❄️"
@@ -393,7 +393,7 @@ export function RightSidebar() {
       </Card>
 
       {/* Thông tin cá nhân */}
-      <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-slide-in-right relative z-10 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+      <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-slide-in-right relative z-10 bg-linear-to-br from-orange-50 via-pink-50 to-purple-50">
         <CardContent className="p-4 relative">
           <div className="flex items-center space-x-3">
             <Avatar className="h-14 w-14 ring-2 ring-orange-200 hover:ring-orange-400 transition-all duration-300 transform hover:scale-110">
@@ -449,7 +449,7 @@ export function RightSidebar() {
 
       {/* Gợi ý */}
       <Card
-        className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in-right relative z-10 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50"
+        className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in-right relative z-10 bg-linear-to-br from-orange-50 via-pink-50 to-purple-50"
         style={{ animationDelay: "200ms" }}
       >
         <CardHeader>
@@ -476,13 +476,13 @@ export function RightSidebar() {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full animate-shimmer"></div>
+                  <div className="h-10 w-10 bg-linear-to-r from-gray-200 to-gray-300 rounded-full animate-shimmer"></div>
                   <div>
-                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20 mb-1 animate-shimmer"></div>
-                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
+                    <div className="h-4 bg-linear-to-r from-gray-200 to-gray-300 rounded w-20 mb-1 animate-shimmer"></div>
+                    <div className="h-3 bg-linear-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
                   </div>
                 </div>
-                <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
+                <div className="h-8 bg-linear-to-r from-gray-200 to-gray-300 rounded w-16 animate-shimmer"></div>
               </div>
             ))
           ) : suggestions.length > 0 ? (
@@ -535,7 +535,7 @@ export function RightSidebar() {
                   size="sm"
                   disabled={followingUser === suggestion.id}
                   onClick={() => handleFollowUser(suggestion.id)}
-                  className="text-xs bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="text-xs bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   {followingUser === suggestion.id ? (
                     <div className="flex items-center gap-1">

@@ -40,7 +40,7 @@ export default function CardExercise({
       </div>
 
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
+        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-1 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
           {exercise[`title_${language}`]}
         </h3>
         <p className="text-slate-500 text-sm line-clamp-2 h-10 leading-relaxed">
@@ -49,7 +49,7 @@ export default function CardExercise({
       </div>
 
       <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-        <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
+        <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
           {t("learning.start")}
         </div>
         {isCompleted && (

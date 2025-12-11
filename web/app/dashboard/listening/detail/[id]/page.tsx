@@ -333,7 +333,7 @@ export default function ListeningDetailPage() {
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -345,7 +345,7 @@ export default function ListeningDetailPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -357,7 +357,7 @@ export default function ListeningDetailPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -right-10 w-96 h-96 bg-gradient-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -right-10 w-96 h-96 bg-linear-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -622,7 +622,7 @@ export default function ListeningDetailPage() {
           <div className="absolute top-0 right-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-gradient-to-l hover:cursor-pointer">
+                <button className="px-4 py-2 text-sm bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-linear-to-l hover:cursor-pointer">
                   {t("learning.buttonHistorySubmissions")}
                 </button>
               </DropdownMenuTrigger>
@@ -716,7 +716,7 @@ export default function ListeningDetailPage() {
           transition={{ duration: 0.3 }}
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
-          <DialogContent className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl w-[430px] p-6 text-center">
+          <DialogContent className="bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl w-[430px] p-6 text-center">
             <div className="flex flex-col items-center">
               <div className="text-6xl mb-3 animate-bounce">🎧</div>
               <DialogTitle className="text-2xl font-bold mb-2">
@@ -799,7 +799,7 @@ export default function ListeningDetailPage() {
                     // Chuyển hướng sang trang mua
                     window.location.href = "/learning/store";
                   }}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 rounded-lg shadow hover:opacity-90 transition-all"
+                  className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 rounded-lg shadow hover:opacity-90 transition-all"
                 >
                   {t("learning.buyMoreSnowflake")}
                 </button>

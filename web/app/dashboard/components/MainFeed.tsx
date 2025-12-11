@@ -125,7 +125,7 @@ export function MainFeed() {
         <div className="text-center mt-4">
           <button
             onClick={loadMorePosts}
-            className="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px] cursor-pointer"
+            className="px-4 py-2 bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-6 text-[16px] cursor-pointer"
             disabled={loadingPost}
           >
             {t("dashboard.loadMore")}

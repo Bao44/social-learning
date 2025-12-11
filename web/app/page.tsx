@@ -361,7 +361,7 @@ export default function Page() {
           transition={{ type: "spring", damping: 20 }}
         >
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-1.5 rounded-lg transform group-hover:rotate-12 transition-transform shadow-md shadow-orange-500/20">
+            <div className="bg-linear-to-r from-orange-500 to-pink-500 text-white p-1.5 rounded-lg transform group-hover:rotate-12 transition-transform shadow-md shadow-orange-500/20">
               <PenTool size={18} />
             </div>
             <span className="font-bold text-lg tracking-tight">
@@ -387,7 +387,7 @@ export default function Page() {
                 </Button>
                 <Button
                   asChild
-                  className="rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 px-6 shadow-md font-bold"
+                  className="rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 px-6 shadow-md font-bold"
                 >
                   <Link href="/auth/register">{t("layout.register")}</Link>
                 </Button>
@@ -452,7 +452,7 @@ export default function Page() {
                   <>
                     <Button
                       asChild
-                      className="w-full h-14 text-lg rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 font-bold"
+                      className="w-full h-14 text-lg rounded-2xl bg-linear-to-r from-orange-500 to-pink-500 font-bold"
                     >
                       <Link href="/dashboard">{t("layout.dashboard")}</Link>
                     </Button>
@@ -468,7 +468,7 @@ export default function Page() {
                   <>
                     <Button
                       asChild
-                      className="w-full h-14 text-lg rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 font-bold"
+                      className="w-full h-14 text-lg rounded-2xl bg-linear-to-r from-orange-500 to-pink-500 font-bold"
                     >
                       <Link href="/auth/register">{t("layout.register")}</Link>
                     </Button>
@@ -504,7 +504,7 @@ export default function Page() {
               <h1 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight">
                 {t("layout.socialNetworkCommunity")}{" "}
                 <br className="hidden lg:block" />
-                <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
                   {t("layout.englishLearning")}
                 </span>
               </h1>
@@ -526,7 +526,7 @@ export default function Page() {
                   <Button
                     asChild
                     size="lg"
-                    className="h-14 px-8 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-lg font-bold shadow-xl shadow-orange-500/30 hover:scale-105 transition-transform"
+                    className="h-14 px-8 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-white text-lg font-bold shadow-xl shadow-orange-500/30 hover:scale-105 transition-transform"
                   >
                     <Link href="/auth/register">{t("layout.joinNow")}</Link>
                   </Button>
@@ -560,7 +560,7 @@ export default function Page() {
                 <div className="absolute inset-0 pointer-events-none" />
                 {/* fake mess */}
                 <div className="p-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white">
                     <Bot size={20} />
                   </div>
                   <div>
@@ -575,13 +575,13 @@ export default function Page() {
                   <div className="self-start bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm border border-slate-100 max-w-[85%]">
                     {t("layout.helloMessage")}
                   </div>
-                  <div className="self-end bg-gradient-to-r from-orange-500 to-pink-500 text-white p-3 rounded-2xl rounded-tr-none shadow-md text-sm max-w-[85%]">
+                  <div className="self-end bg-linear-to-r from-orange-500 to-pink-500 text-white p-3 rounded-2xl rounded-tr-none shadow-md text-sm max-w-[85%]">
                     {t("layout.responseMessage")}
                   </div>
                   <div className="self-start bg-green-50 text-green-800 p-2 rounded-xl text-xs flex items-center gap-2 border border-green-100">
                     <Sparkles size={12} /> AI: {t("layout.praiseMessage")}
                   </div>
-                  <div className="flex self-end bg-gradient-to-r from-orange-500 to-pink-500 text-white p-3 rounded-2xl rounded-tr-none shadow-md text-sm max-w-[85%]">
+                  <div className="flex self-end bg-linear-to-r from-orange-500 to-pink-500 text-white p-3 rounded-2xl rounded-tr-none shadow-md text-sm max-w-[85%]">
                     <AudioWave color="bg-white" height="h-4" />
                   </div>
                 </div>
@@ -638,7 +638,7 @@ export default function Page() {
               </Floating3DElement>
 
               <Floating3DElement xOffset={180} yOffset={-150} delay={2}>
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-2xl font-bold">
                   A+
                 </div>
               </Floating3DElement>
@@ -785,7 +785,7 @@ export default function Page() {
                     </p>
                     <div className="flex items-center gap-4 mt-auto">
                       <Avatar className="h-12 w-12 ring-2 ring-orange-100">
-                        <AvatarFallback className="bg-gradient-to-br from-orange-400 to-pink-400 text-white font-bold">
+                        <AvatarFallback className="bg-linear-to-br from-orange-400 to-pink-400 text-white font-bold">
                           {item.name[0]}
                         </AvatarFallback>
                       </Avatar>
@@ -810,7 +810,7 @@ export default function Page() {
       <footer className="py-12 border-t border-slate-200 relative z-10">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 group">
-            <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-1.5 rounded-lg shadow-md">
+            <div className="bg-linear-to-r from-orange-500 to-pink-500 text-white p-1.5 rounded-lg shadow-md">
               <PenTool size={16} />
             </div>
             <span className="font-bold text-lg text-slate-900">
@@ -832,7 +832,7 @@ const UserDropdown = ({ user, handleLogout, t }: any) => (
     <DropdownMenuTrigger asChild>
       <Avatar className="cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-orange-500 transition-all ml-2">
         <AvatarImage src={getUserImageSrc(user.avatar)} />
-        <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold">
+        <AvatarFallback className="bg-linear-to-r from-orange-500 to-pink-500 text-white font-bold">
           {user.name?.[0]}
         </AvatarFallback>
       </Avatar>

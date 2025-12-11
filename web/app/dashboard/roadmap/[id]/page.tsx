@@ -102,7 +102,7 @@ export default function RoadmapZigzagPage() {
     <div className="relative max-w-7xl mx-auto py-16 px-6 min-h-screen">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -114,7 +114,7 @@ export default function RoadmapZigzagPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -202,7 +202,7 @@ export default function RoadmapZigzagPage() {
         })}
 
         {/* Đường line trung tâm (đã có pointer-events-none) */}
-        <div className="absolute left-1/2 top-8 bottom-8 w-[2px] bg-gradient-to-b from-emerald-200 via-sky-200 to-emerald-200 -translate-x-1/2 rounded-full pointer-events-none"></div>
+        <div className="absolute left-1/2 top-8 bottom-8 w-[2px] bg-linear-to-b from-emerald-200 via-sky-200 to-emerald-200 -translate-x-1/2 rounded-full pointer-events-none"></div>
       </div>
 
       {loading && (

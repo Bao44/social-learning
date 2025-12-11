@@ -51,14 +51,14 @@ const WeekNode = ({
             >
                 {/* Hiệu ứng phát sáng - KHÔNG nhận event */}
                 <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-300 to-sky-300 blur-lg opacity-70 pointer-events-none"
+                    className="absolute inset-0 rounded-full bg-linear-to-br from-emerald-300 to-sky-300 blur-lg opacity-70 pointer-events-none"
                     animate={{ opacity: [0.5, 0.9, 0.5], scale: [1, 1.3, 1] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 />
 
                 {/* Vòng tròn chính - CÓ nhận event */}
                 <motion.div
-                    className="relative w-16 h-16 bg-gradient-to-br from-emerald-400 to-sky-400 rounded-full shadow-xl flex items-center justify-center pointer-events-auto"
+                    className="relative w-16 h-16 bg-linear-to-br from-emerald-400 to-sky-400 rounded-full shadow-xl flex items-center justify-center pointer-events-auto"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                 >
                     <span className="text-white font-extrabold text-xl drop-shadow-md">

@@ -111,7 +111,7 @@ export const ModalByLesson = ({
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
           >
-            <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-center">
+            <div className="p-6 bg-linear-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-center">
               <div className="flex items-center gap-2 font-bold text-lg">
                 {t("learning.confirmationNotification")}
               </div>
@@ -161,7 +161,7 @@ export const ModalByLesson = ({
               <button
                 onClick={handleConfirm}
                 disabled={isLoading}
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-blue-600 transition cursor-pointer disabled:opacity-70 flex items-center gap-2 min-w-[100px] justify-center"
+                className="px-6 py-2 bg-linear-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-blue-600 transition cursor-pointer disabled:opacity-70 flex items-center gap-2 min-w-[100px] justify-center"
               >
                 {isLoading ? (
                   <>

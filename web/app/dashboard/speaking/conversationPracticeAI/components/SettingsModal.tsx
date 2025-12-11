@@ -27,7 +27,7 @@ export default function SettingsModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -45,7 +45,7 @@ export default function SettingsModal({
             className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden z-10"
           >
             {/* Header */}
-            <div className="px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-between text-white">
+            <div className="px-6 py-4 bg-linear-to-r from-indigo-500 to-purple-600 flex items-center justify-between text-white">
               <div className="flex items-center gap-2 font-bold text-lg">
                 {t("learning.voiceSettings")}
               </div>

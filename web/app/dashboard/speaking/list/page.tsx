@@ -58,7 +58,7 @@ function SpeakingListInner() {
     <div className="mx-auto xl:pl-18 xl:pr-10 w-full max-w-md pt-4 sm:max-w-2xl lg:max-w-3xl xl:max-w-full pr-5 sm:pl-10">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -70,7 +70,7 @@ function SpeakingListInner() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -84,7 +84,7 @@ function SpeakingListInner() {
       </div>
 
       <div className="flex items-center justify-between mb-3 max-sm:pt-12">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
           {t("learning.exerciseList")}
         </h1>
       </div>

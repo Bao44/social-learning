@@ -283,7 +283,7 @@ export default function OverviewRangeView({
                 onClick={() => setSelectedLetter(null)}
                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors shrink-0 ${
                   !selectedLetter
-                    ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
+                    ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
@@ -299,7 +299,7 @@ export default function OverviewRangeView({
                   }}
                   className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors shrink-0 ${
                     selectedLetter === letter
-                      ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
+                      ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
                       : "bg-white border border-slate-200 text-slate-600 hover:border-black hover:text-black"
                   }`}
                 >
@@ -355,7 +355,7 @@ export default function OverviewRangeView({
                       <div
                         className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
                           isSelected
-                            ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 border-orange-600"
+                            ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 border-orange-600"
                             : "bg-white border-slate-200 group-hover:border-orange-300"
                         }`}
                         onClick={() => handleToggleWord(v.id)}
@@ -367,7 +367,7 @@ export default function OverviewRangeView({
                     </div>
 
                     <div className="pr-8">
-                      <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
+                      <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
                         {v.word}
                       </h3>
                       <p className="text-slate-500 text-sm line-clamp-1 h-5">
@@ -456,7 +456,7 @@ export default function OverviewRangeView({
             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-6 border border-slate-800"
           >
             <div className="font-bold text-lg">
-              <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent text-2xl mr-1">
+              <span className="bg-linear-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent text-2xl mr-1">
                 {selectedWords.length}
               </span>
               <span className="text-sm font-normal opacity-80 max-sm:hidden">
@@ -483,7 +483,7 @@ export default function OverviewRangeView({
                   );
                   router.push("/dashboard/vocabulary/wordPracticesAI");
                 }}
-                className="bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white font-bold rounded-xl px-6 shadow-lg shadow-indigo-900/50 cursor-pointer"
+                className="bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white font-bold rounded-xl px-6 shadow-lg shadow-indigo-900/50 cursor-pointer"
               >
                 {t("learning.practiceNow")}
               </Button>

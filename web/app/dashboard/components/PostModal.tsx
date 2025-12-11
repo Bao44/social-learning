@@ -274,7 +274,7 @@ export function PostModal({
                           setIsEdit(true);
                           setIsOpenModal(true); // mở modal
                         }}
-                        className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
+                        className="bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
                       >
                         {t("dashboard.edit")}
                       </Button>
@@ -283,7 +283,7 @@ export function PostModal({
                         onClick={() => {
                           handleDeletePost(post.id);
                         }}
-                        className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
+                        className="bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full p-4 text-[14px] cursor-pointer"
                       >
                         {t("dashboard.delete")}
                       </Button>
@@ -321,7 +321,7 @@ export function PostModal({
                     className={`flex items-start space-x-3 p-2 rounded-md transition
       ${
         comment.id === highlightCommentId
-          ? "bg-gradient-to-r from-pink-100 to-orange-100"
+          ? "bg-linear-to-r from-pink-100 to-orange-100"
           : ""
       }
     `}

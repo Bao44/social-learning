@@ -67,7 +67,7 @@ export default function LeaderboardPage() {
     switch (rank) {
       case 1: // Gold
         return {
-          bg: "bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-500",
+          bg: "bg-linear-to-b from-yellow-300 via-amber-400 to-amber-500",
           shadow: "shadow-amber-500/50",
           border: "border-yellow-200",
           text: "text-amber-700",
@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
         };
       case 2: // Silver
         return {
-          bg: "bg-gradient-to-b from-slate-300 via-slate-400 to-slate-500",
+          bg: "bg-linear-to-b from-slate-300 via-slate-400 to-slate-500",
           shadow: "shadow-slate-400/50",
           border: "border-slate-200",
           text: "text-slate-700",
@@ -85,7 +85,7 @@ export default function LeaderboardPage() {
         };
       case 3: // Bronze
         return {
-          bg: "bg-gradient-to-b from-orange-300 via-orange-400 to-orange-600",
+          bg: "bg-linear-to-b from-orange-300 via-orange-400 to-orange-600",
           shadow: "shadow-orange-500/50",
           border: "border-orange-200",
           text: "text-orange-800",
@@ -107,7 +107,7 @@ export default function LeaderboardPage() {
       {/* Decorative Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl hidden sm:block"
+          className="absolute -top-40 -right-40 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl hidden sm:block"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -119,7 +119,7 @@ export default function LeaderboardPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-40 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl hidden sm:block"
+          className="absolute -bottom-40 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl hidden sm:block"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -131,7 +131,7 @@ export default function LeaderboardPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -right-20 w-96 h-96 bg-gradient-to-br from-purple-600/30 to-orange-400/30 rounded-full blur-3xl hidden sm:block"
+          className="absolute -bottom-20 -right-20 w-96 h-96 bg-linear-to-br from-purple-600/30 to-orange-400/30 rounded-full blur-3xl hidden sm:block"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -154,7 +154,7 @@ export default function LeaderboardPage() {
           >
             <Trophy className="w-8 h-8 text-amber-500 fill-amber-500" />
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 tracking-tight flex items-center justify-center gap-3">
+          <h1 className="text-3xl md:text-4xl font-black bg-linear-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 tracking-tight flex items-center justify-center gap-3">
             {t("learning.leaderboardTitle")}
           </h1>
           <p className="text-slate-500 font-medium">
@@ -202,7 +202,7 @@ export default function LeaderboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-1 shadow-xl shadow-indigo-200"
+            className="mb-10 bg-linear-to-r from-indigo-600 to-violet-600 rounded-2xl p-1 shadow-xl shadow-indigo-200"
           >
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 flex items-center justify-between text-white">
               <div className="flex items-center gap-4">
@@ -326,7 +326,7 @@ export default function LeaderboardPage() {
                     style.bg
                   } ${isFirst ? "h-40" : entry.rank === 2 ? "h-28" : "h-20"}`}
                 >
-                  <div className="w-full h-full bg-gradient-to-b from-white/20 to-transparent" />
+                  <div className="w-full h-full bg-linear-to-b from-white/20 to-transparent" />
                 </div>
               </motion.div>
             );

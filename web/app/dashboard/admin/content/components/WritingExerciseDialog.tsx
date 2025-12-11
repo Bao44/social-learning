@@ -349,7 +349,7 @@ export function WritingExerciseDialog({
             >
               {t("dashboard.cancel")}
             </Button>
-            <Button type="submit" disabled={isSaving} className="bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer">
+            <Button type="submit" disabled={isSaving} className="bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer">
               {isSaving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>
           </div>

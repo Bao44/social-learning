@@ -294,7 +294,7 @@ export default function ProfileEditPage() {
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -306,7 +306,7 @@ export default function ProfileEditPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -387,7 +387,7 @@ export default function ProfileEditPage() {
             <Button
               type="button"
               onClick={() => setOpen(true)}
-              className="mt-2 cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+              className="mt-2 cursor-pointer bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
             >
               {t("dashboard.changePhoto")}
             </Button>
@@ -486,7 +486,7 @@ export default function ProfileEditPage() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 disabled:opacity-50"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 disabled:opacity-50"
           >
             {isLoading ? t("dashboard.saving") : t("dashboard.saveChanges")}
           </Button>

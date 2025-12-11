@@ -38,7 +38,7 @@ export const SettingsModal = ({
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
           >
-            <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-center">
+            <div className="p-6 bg-linear-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-center">
               <div className="flex items-center gap-2 font-bold text-lg">
                 <Sliders size={20} /> {t("learning.voiceSettings")}
               </div>
