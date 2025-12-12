@@ -183,6 +183,7 @@
   "selectAll": "Select All",
   "deselectAll": "Deselect All",
   "clearSelection": "Clear Selection",
+  "creating": "Loading...",
   "creatingExercise": "Creating exercise...",
   "creatingTopics": "Creating topics...",
   "submittingExercise": "Submitting exercise...",
@@ -353,5 +354,15 @@
   "audioTrack": "Audio Track",
   "byPremiumToUse": "Buy premium to use",
   "grammarScore": "Grammar Score",
-  "vocabularyScore": "Vocabulary Score"
+  "vocabularyScore": "Vocabulary Score",
+
+  "resetMasteryScoreMessage": "Your mastery score will be reset to 70% for further practice. Do you want to proceed?",
+  "insufficientSnowflakes": "You do not have enough ❄️ to use this feature.",
+  "usedSnowflakesBonusLife": "You have used 5 ❄️ and gained 1 extra life!",
+  "masteredCompletely": "Completely mastered!",
+  "graduationCongratulations": "Congratulations on graduating!",
+  "normalPassCongratulations": "Congratulations!",
+  "deeplyRemembered": "You have deeply remembered this word. It will be removed from your personal vocabulary.",
+  "masteredAndHidden": "You have mastered this word. It will be hidden and scheduled for review.",
+  "allCompleted": "You have completed all the exercises."
 }

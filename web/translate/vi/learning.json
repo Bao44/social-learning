@@ -185,6 +185,7 @@
 
   "clearSelection": "Xóa lựa chọn",
   "mission": "Nhiệm vụ của bạn:",
+  "creating": "Đang tải...",
   "creatingExercise": "Đang tạo bài tập...",
   "creatingTopics": "Đang tạo chủ đề...",
   "submittingExercise": "Đang nộp bài...",
@@ -357,5 +358,15 @@
 
   "byPremiumToUse":"Mua premium để sử dụng",
   "grammarScore":"Điểm ngữ pháp",
-  "vocabularyScore":"Điểm từ vựng"
+  "vocabularyScore":"Điểm từ vựng",
+
+  "resetMasteryScoreMessage":"Đã reset điểm thông thạo về 70% do chưa hoàn thành bài tập.",
+  "insufficientSnowflakes":"Bạn không đủ ❄️ để mua mạng. Vui lòng nạp thêm",
+  "usedSnowflakesBonusLife":"Bạn đã dùng 5 ❄️ và được cộng 1 mạng!",
+  "masteredCompletely":"Đã hoàn toàn làm chủ!",
+  "graduationCongratulations":"Chúc mừng Tốt nghiệp!",
+  "normalPassCongratulations":"Chúc mừng bạn!",
+  "deeplyRemembered":"Bạn đã ghi nhớ từ này rất sâu. Từ vựng này sẽ được xóa khỏi bộ nhớ cá nhân.",
+  "masteredAndHidden":"Bạn đã làm chủ từ này. Từ vựng sẽ được ẩn và hẹn ngày ôn tập.",
+  "allCompleted":"Bạn đã hoàn thành tất cả các câu."
 }

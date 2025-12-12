@@ -45,7 +45,8 @@ type ListeningParagraph = {
   title_vi: string;
   text_content: string;
   audio_url: string;
-  description: string;
+  description_vi: string;
+  description_en: string;
   level_id: number;
   topic_id: number;
   level_name: string;
@@ -112,6 +113,7 @@ export function ListeningParagraphs({ t }: { t: (key: string) => string }) {
   };
 
   const handleEdit = (paragraph: ListeningParagraph) => {
+    console.log("Editing paragraph:", paragraph);
     setSelectedParagraph(paragraph);
     setDialogOpen(true);
   };

@@ -100,8 +100,6 @@ export default function VocabularyDetailPage() {
     );
   }
 
-  const vocab = relatedVocab[0];
-
   if (!personalVocab) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 to-pink-50">
@@ -119,6 +117,8 @@ export default function VocabularyDetailPage() {
       </div>
     );
   }
+
+  const vocab = relatedVocab[0].word;
 
   const getWords = relatedVocab.map((v) => v.word);
 
@@ -238,7 +238,8 @@ export default function VocabularyDetailPage() {
                   onClick={() => {
                     sessionStorage.setItem(
                       "practiceWords",
-                      JSON.stringify(getWords)
+                      // JSON.stringify(getWords) // Gửi tất cả từ liên quan 
+                      JSON.stringify([personalVocab.word]) // Chỉ gửi từ gốc
                     );
                     // ID của từ gốc
                     sessionStorage.setItem("masteryReviewId", personalVocab.id);
