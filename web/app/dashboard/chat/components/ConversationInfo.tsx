@@ -218,7 +218,7 @@ export default function ConversationInfo({
             {/* --- BANNER CẢNH BÁO --- */}
             {isTransferMode && (
                 <div className="bg-orange-100 p-3 px-4 text-xs text-orange-800 border-b border-orange-200 flex gap-2 items-center">
-                    <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>Bạn cần chọn một thành viên để làm <strong>Trưởng nhóm</strong> trước khi rời đi.</span>
                 </div>
             )}
@@ -296,7 +296,7 @@ export default function ConversationInfo({
                             {conversation.members?.map((member: any) => (
                                 <div key={member.id} className="flex items-center justify-between group">
                                     <div className="flex items-center gap-2 overflow-hidden">
-                                        <Avatar className="w-8 h-8 flex-shrink-0">
+                                        <Avatar className="w-8 h-8 shrink-0">
                                             <AvatarImage src={getUserImageSrc(member?.avatarUrl) || undefined} />
                                             <AvatarFallback>{member.name?.[0] || "U"}</AvatarFallback>
                                         </Avatar>

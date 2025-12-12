@@ -26,7 +26,7 @@ export default function LikeListModal({ isOpen, onClose, likes, members }: LikeL
     });
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-xs sm:max-w-sm overflow-hidden relative animate-in zoom-in-95 duration-200">
 
                 {/* Header */}
