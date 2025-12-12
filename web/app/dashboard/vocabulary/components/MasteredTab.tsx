@@ -128,7 +128,7 @@ export default function MasteredTab({
                   onClick={() => setSelectedLetter(null)}
                   className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors shrink-0 ${
                     !selectedLetter
-                      ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
+                      ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
@@ -143,7 +143,7 @@ export default function MasteredTab({
                     }}
                     className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors shrink-0 ${
                       selectedLetter === letter
-                        ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
+                        ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
                         : "bg-white border border-slate-200 text-slate-600 hover:border-black hover:text-black"
                     }`}
                   >
@@ -183,7 +183,7 @@ export default function MasteredTab({
                   </div>
 
                   <div className="mb-4 pr-6">
-                    <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
+                    <h3 className="text-2xl font-bold text-gray-800 group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all">
                       {v.word}
                     </h3>
                     <p className="text-slate-500 text-sm line-clamp-1">
@@ -207,7 +207,7 @@ export default function MasteredTab({
                   </div>
 
                   {/* Decorative Shine */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
                 </motion.div>
               ))}
             </AnimatePresence>

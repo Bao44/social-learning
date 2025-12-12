@@ -70,6 +70,7 @@ const botCoverLearningController = {
   // Generate paragraph exercise lưu vào bảng writingParagraphs
   createGenerateParagraphExercise: async (req, res) => {
     const { level_slug, type_paragraph_slug } = req.body;
+    const userId = req.user.id;
 
     if (!level_slug || !type_paragraph_slug) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -123,13 +124,18 @@ const botCoverLearningController = {
       const data = {
         content_vi: json.content_vi,
         content_en: json.content_en,
-        title: json.title,
+        title_vi: json.title_vi,
+        title_en: json.title_en,
         level_id: level.id,
         type_exercise_id: typeExerciseData.id,
         topic_id:
           topics.find((topic) => topic.name_vi === json.topic)?.id || null,
         type_paragraph_id: typeParagraph.id,
         number_sentence: json.number_of_sentences,
+        genAI: {
+          userId: userId,
+          isPublic: false,
+        }
       };
 
       const resultSave = await botCoverLearningService.createParagraphExercise(

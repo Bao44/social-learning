@@ -60,17 +60,17 @@ export default function CardTopic({
       className="group"
     >
       <div className="relative h-full bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-orange-200/30 to-pink-200/30 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-500" />
-        <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500" />
+        <div className="absolute inset-0 bg-linear-to-br from-orange-50 via-white to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute -top-8 -right-8 w-32 h-32 bg-linear-to-br from-orange-200/30 to-pink-200/30 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-500" />
+        <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-linear-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500" />
 
         <div className="relative p-6 flex flex-col h-full gap-4">
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-orange-100 to-pink-100 flex-shrink-0">
+            <div className="p-2 rounded-lg bg-linear-to-br from-orange-100 to-pink-100 flex-shrink-0">
               <BookOpen className="w-5 h-5 text-orange-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-1 truncate break-words whitespace-pre-line">
+              <h3 className="text-xl font-bold bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-1 truncate break-words whitespace-pre-line">
                 {topic[`sub_topic_${language}`]}
               </h3>
               <p className="text-xs text-gray-500 font-medium">
@@ -94,7 +94,7 @@ export default function CardTopic({
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleStart}
-            className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg gap-2 group/btn cursor-pointer"
+            className="w-full py-3 px-4 bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg gap-2 group/btn cursor-pointer"
           >
             {t("learning.start")}
           </motion.button>

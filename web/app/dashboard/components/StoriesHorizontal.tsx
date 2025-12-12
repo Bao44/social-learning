@@ -76,13 +76,13 @@ export function StoriesHorizontal() {
                   </Avatar>
                   <Button
                     size="icon"
-                    className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+                    className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
                   >
                     <Plus className="h-3 w-3 text-white" />
                   </Button>
                 </div>
               ) : (
-                <div className="p-0.5 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full">
+                <div className="p-0.5 bg-linear-to-r from-orange-500 to-pink-500 rounded-full">
                   <Avatar className="h-16 w-16 border-2 border-white">
                     <AvatarImage src={story.avatar || "/placeholder.svg"} />
                     <AvatarFallback className="bg-gray-200">

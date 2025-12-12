@@ -177,7 +177,7 @@ export default function CardGroup({ conversation, onClick }: CardGroupProps) {
               </h3>
             )}
             {unreadCount > 0 && (
-              <Badge className="h-7 w-7 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
+              <Badge className="h-7 w-7 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </Badge>
             )}

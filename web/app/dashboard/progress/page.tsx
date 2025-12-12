@@ -25,7 +25,7 @@ export default function LearningProgressChart() {
       {/* Background Blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -37,7 +37,7 @@ export default function LearningProgressChart() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -60,7 +60,7 @@ export default function LearningProgressChart() {
           >
             <ChartNoAxesCombined className="w-6 h-6 text-orange-600" />
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-black bg-linear-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent tracking-tight">
             {t("learning.progressLearning")}
           </h1>
 
@@ -136,7 +136,7 @@ export default function LearningProgressChart() {
                   className="border-0 shadow-lg shadow-slate-200/50 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
                 >
                   <div
-                    className={`h-1.5 w-full bg-gradient-to-r ${
+                    className={`h-1.5 w-full bg-linear-to-r ${
                       skillType === "speaking"
                         ? "from-orange-400 to-red-500"
                         : skillType === "writing"

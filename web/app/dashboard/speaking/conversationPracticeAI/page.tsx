@@ -503,7 +503,7 @@ function ConversationPracticeContent() {
     }
   if (!browserSupports) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -535,7 +535,7 @@ function ConversationPracticeContent() {
       {/* Background Decorative */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{
             duration: 20,
@@ -544,7 +544,7 @@ function ConversationPracticeContent() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
           transition={{
             duration: 20,
@@ -636,7 +636,7 @@ function ConversationPracticeContent() {
       {/* Controls */}
       {role && hasStarted && (
         <div className="absolute bottom-0 left-0 w-full z-20">
-          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F0F4F8] via-[#F0F4F8]/95 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-linear-to-t from-[#F0F4F8] via-[#F0F4F8]/95 to-transparent pointer-events-none" />
           <div className="relative max-w-3xl mx-auto w-full px-6 pb-6 pt-4">
             <ConversationControls
               t={t}
@@ -660,7 +660,7 @@ function ConversationPracticeContent() {
       )}
 
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
-        <DialogContent className="max-w-lg rounded-3xl bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white">
+        <DialogContent className="max-w-lg rounded-3xl bg-linear-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white">
           <DialogHeader className="text-center">
             <motion.div
               animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.1, 1] }}

@@ -245,7 +245,7 @@ export function CreateOrUpdatePostModal({
                   <Button
                     onClick={handleUpdate}
                     disabled={isLoading}
-                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full px-6 mr-[30px] text-[14px] cursor-pointer"
+                    className="bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full px-6 mr-[30px] text-[14px] cursor-pointer"
                   >
                     {isLoading
                       ? t("dashboard.updating")
@@ -255,7 +255,7 @@ export function CreateOrUpdatePostModal({
                   <Button
                     onClick={handleShare}
                     disabled={isLoading}
-                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full px-6 mr-[30px] text-[14px] cursor-pointer"
+                    className="bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white hover:text-white rounded-full px-6 mr-[30px] text-[14px] cursor-pointer"
                   >
                     {isLoading ? t("dashboard.posting") : t("dashboard.share")}
                   </Button>
@@ -426,7 +426,7 @@ export function CreateOrUpdatePostModal({
                         1 {t("dashboard.attachedFile")}
                       </p>
                       <div className="text-xs text-gray-500 flex items-center space-x-1">
-                        <div className="w-4 h-4 flex-shrink-0 mr-6">
+                        <div className="w-4 h-4 shrink-0 mr-6">
                           {getFileIcon(selectedFile)}
                         </div>
                         <span className="truncate">{selectedFile.name}</span>

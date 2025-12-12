@@ -66,7 +66,7 @@ export default function ChartComparison({
 
   return (
     <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500" />
+      <div className="h-1.5 bg-linear-to-r from-orange-500 via-pink-500 to-purple-500" />
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-gray-900">
           {t("learning.skillComparison")}

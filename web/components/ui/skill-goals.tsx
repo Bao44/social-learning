@@ -77,7 +77,7 @@
 
 //   return (
 //     <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-//       <div className="h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500" />
+//       <div className="h-1.5 bg-linear-to-r from-orange-500 via-pink-500 to-purple-500" />
 //       <CardHeader className="p-4 sm:p-6">
 //         <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
 //           {t("learning.skillGoals")}
@@ -116,7 +116,7 @@
 //                 <div className="relative">
 //                   <Progress value={percentage} className="h-2 sm:h-3" />
 //                   <div
-//                     className={`absolute inset-0 h-2 sm:h-3 rounded-full bg-gradient-to-r ${goal.gradient} opacity-80`}
+//                     className={`absolute inset-0 h-2 sm:h-3 rounded-full bg-linear-to-r ${goal.gradient} opacity-80`}
 //                     style={{ width: `${percentage}%` }}
 //                   />
 //                 </div>

@@ -356,8 +356,8 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                     <div className="absolute top-0 right-0 -mt-3 mr-3">
                                         <span
                                             className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-wide shadow-sm ${isSub
-                                                ? "bg-gradient-to-r from-orange-500 to-rose-500"
-                                                : "bg-gradient-to-r from-sky-400 to-cyan-500"
+                                                ? "bg-linear-to-r from-orange-500 to-rose-500"
+                                                : "bg-linear-to-r from-sky-400 to-cyan-500"
                                                 }`}
                                         >
                                             <Star className="w-3 h-3 mr-1 fill-current" />
@@ -405,8 +405,8 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                 <Button
                                     className={`w-full py-2 rounded-xl font-bold text-white shadow-md transition-all ${plan.isPopular
                                         ? isSub
-                                            ? "bg-gradient-to-r from-orange-500 to-rose-600 hover:shadow-rose-200"
-                                            : "bg-gradient-to-r from-sky-400 to-cyan-600 hover:shadow-sky-200"
+                                            ? "bg-linear-to-r from-orange-500 to-rose-600 hover:shadow-rose-200"
+                                            : "bg-linear-to-r from-sky-400 to-cyan-600 hover:shadow-sky-200"
                                         : isSub
                                             ? "bg-rose-50 text-rose-600 hover:bg-rose-100"
                                             : "bg-sky-50 text-sky-600 hover:bg-sky-100"
@@ -438,7 +438,7 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                 </button>
 
                 <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col w-full relative">
-                    <div className={`p-8 ${isSub ? "bg-gradient-to-br from-orange-100 to-rose-100" : "bg-gradient-to-br from-sky-100 to-cyan-100"}`}>
+                    <div className={`p-8 ${isSub ? "bg-linear-to-br from-orange-100 to-rose-100" : "bg-linear-to-br from-sky-100 to-cyan-100"}`}>
                         <div className="flex flex-col items-center">
                             {isSub ? (
                                 <Crown className="w-10 h-10 text-rose-600" />
@@ -481,8 +481,8 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                             onClick={handleProceedPayment}
                             disabled={loadingId === selectedPlan.id}
                             className={`w-fit py-6 px-8 rounded-2xl font-bold text-white shadow-xl flex items-center justify-center transition-transform hover:scale-[1.02] ${isSub
-                                ? "bg-gradient-to-r from-orange-500 to-rose-600 shadow-rose-200"
-                                : "bg-gradient-to-r from-sky-400 to-cyan-600 shadow-sky-200"
+                                ? "bg-linear-to-r from-orange-500 to-rose-600 shadow-rose-200"
+                                : "bg-linear-to-r from-sky-400 to-cyan-600 shadow-sky-200"
                                 }`}
                         >
                             {loadingId ? "Processing..." : <>{t("plan.getQRcode")}</>}
@@ -508,8 +508,8 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
             // Màu chủ đạo dựa theo loại gói
             const bgColor = isSub ? "bg-rose-100" : "bg-sky-100";
             const buttonGradient = isSub
-                ? "bg-gradient-to-r from-orange-500 to-rose-600 shadow-rose-200"
-                : "bg-gradient-to-r from-sky-400 to-cyan-600 shadow-sky-200";
+                ? "bg-linear-to-r from-orange-500 to-rose-600 shadow-rose-200"
+                : "bg-linear-to-r from-sky-400 to-cyan-600 shadow-sky-200";
             const iconColor = isSub ? "text-rose-600" : "text-sky-500";
 
             return (
@@ -652,7 +652,7 @@ export default function PricingModal({ isOpen, onClose }: PricingModalProps) {
                 </div>
 
                 {/* Cột phải: QR Code & Timer */}
-                <div className={`flex-1 p-8 flex flex-col items-center justify-center text-white bg-gradient-to-br ${gradientBg} relative overflow-hidden`}>
+                <div className={`flex-1 p-8 flex flex-col items-center justify-center text-white bg-linear-to-br ${gradientBg} relative overflow-hidden`}>
                     {/* Background decoration */}
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>

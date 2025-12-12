@@ -201,7 +201,7 @@ const WeekCard = ({
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${percent}%` }}
                                                 transition={{ duration: 0.6 }}
-                                                className={`h-2 bg-gradient-to-r ${getProgressColor(percent)} rounded-full`}
+                                                className={`h-2 bg-linear-to-r ${getProgressColor(percent)} rounded-full`}
                                             />
                                         </div>
                                         <div className="w-12 text-right text-sm font-medium text-gray-700">

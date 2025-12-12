@@ -122,7 +122,7 @@ export default function TopicsTab({
                 onClick={() => setSelectedLetter(null)}
                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-colors shrink-0 ${
                   !selectedLetter
-                    ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
+                    ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
@@ -134,7 +134,7 @@ export default function TopicsTab({
                   onClick={() => handleLetterClick(letter)}
                   className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors shrink-0 ${
                     selectedLetter === letter
-                      ? "bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
+                      ? "bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white shadow-md shadow-indigo-200"
                       : "bg-white border border-slate-200 text-slate-600 hover:border-black hover:text-black"
                   }`}
                 >
@@ -169,13 +169,13 @@ export default function TopicsTab({
                   whileHover={{ y: -4 }}
                   className="group relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-pink-50 rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-orange-100 to-pink-50 rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform" />
 
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-indigo-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 shadow-sm bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:text-white transition-colors">
+                    <div className="w-12 h-12 bg-indigo-50 text-orange-600 rounded-xl flex items-center justify-center mb-4 shadow-sm bg-linear-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:text-white transition-colors">
                       <FolderOpen size={24} />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 mb-1 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
+                    <h3 className="text-xl font-bold text-slate-800 mb-1 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text group-hover:text-transparent transition-colors">
                       {topic.name_en}
                     </h3>
                     <p className="text-slate-500 text-sm mb-4">
