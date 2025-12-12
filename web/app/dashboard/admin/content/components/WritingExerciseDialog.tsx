@@ -34,7 +34,8 @@ type TypeExercise = { id: number; title_en: string; [key: string]: any };
 type TypeParagraph = { id: number; name_en: string; [key: string]: any };
 
 type FormData = {
-  title: string;
+  title_vi: string;
+  title_en: string;
   contentVi: string;
   contentEn: string;
   levelId: string;
@@ -45,7 +46,8 @@ type FormData = {
 };
 
 const defaultValues: FormData = {
-  title: "",
+  title_vi: "",
+  title_en: "",
   contentVi: "",
   contentEn: "",
   levelId: "",
@@ -108,7 +110,8 @@ export function WritingExerciseDialog({
     if (open && exercise) {
       // Edit
       setFormData({
-        title: exercise.title,
+        title_vi: exercise.title_vi,
+        title_en: exercise.title_en,
         contentVi: exercise.content_vi,
         contentEn: exercise.content_en,
         levelId: exercise.level_id?.toString(),
@@ -204,11 +207,26 @@ export function WritingExerciseDialog({
         {/* Đây là form đã bỏ react-hook-form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">{t("dashboard.titleContent")}</Label>
+            <Label htmlFor="title_vi">
+              {t("dashboard.titleContent")} (Vietnamese)
+            </Label>
             <Input
-              id="title"
-              name="title"
-              value={formData.title}
+              id="title_vi"
+              name="title_vi"
+              value={formData.title_vi}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="title_en">
+              {t("dashboard.titleContent")} (English)
+            </Label>
+            <Input
+              id="title_en"
+              name="title_en"
+              value={formData.title_en}
               onChange={handleInputChange}
               required
             />
@@ -349,7 +367,11 @@ export function WritingExerciseDialog({
             >
               {t("dashboard.cancel")}
             </Button>
-            <Button type="submit" disabled={isSaving} className="bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+            >
               {isSaving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>
           </div>

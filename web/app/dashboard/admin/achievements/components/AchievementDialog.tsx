@@ -215,7 +215,7 @@ export function AchievementDialog({
             <Button
               type="submit"
               disabled={saving}
-              className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600"
+              className="cursor-pointer bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600"
             >
               {saving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>

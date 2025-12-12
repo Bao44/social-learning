@@ -79,7 +79,7 @@ export const ActiveChatSession = ({
     : "Tutor";
 
   const [userTurnCount, setUserTurnCount] = useState(0);
-  const [maxTurns, setMaxTurns] = useState(5);
+  const [maxTurns, setMaxTurns] = useState(6);
   const [hasPurchased, setHasPurchased] = useState(false);
   const isChatLocked = userTurnCount >= maxTurns;
 
@@ -433,7 +433,7 @@ export const ActiveChatSession = ({
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{
             duration: 20,
@@ -442,7 +442,7 @@ export const ActiveChatSession = ({
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
           transition={{
             duration: 20,
@@ -532,7 +532,7 @@ export const ActiveChatSession = ({
               <div
                 className={`relative max-w-[85%] sm:max-w-[75%] p-4 rounded-2xl text-base leading-relaxed shadow-sm ${
                   isUser
-                    ? "bg-gradient-to-br from-indigo-600 to-blue-600 text-white rounded-tr-sm"
+                    ? "bg-linear-to-br from-indigo-600 to-blue-600 text-white rounded-tr-sm"
                     : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm"
                 }`}
               >
@@ -687,10 +687,10 @@ export const ActiveChatSession = ({
                 isProcessing
                   ? "bg-purple-400 cursor-wait"
                   : isRecording
-                  ? "bg-gradient-to-r from-rose-500 to-red-600 scale-110 shadow-red-500/40"
+                  ? "bg-linear-to-r from-rose-500 to-red-600 scale-110 shadow-red-500/40"
                   : isChatLocked
                   ? "bg-slate-200 border-slate-100 text-slate-400 cursor-pointer hover:bg-slate-300"
-                  : "bg-gradient-to-r from-green-500 to-green-600 hover:shadow-indigo-500/40 hover:-translate-y-1"
+                  : "bg-linear-to-r from-green-500 to-green-600 hover:shadow-indigo-500/40 hover:-translate-y-1"
               }`}
             >
               {isProcessing ? (
@@ -726,7 +726,7 @@ export const ActiveChatSession = ({
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 onClick={() => setShowTranscript(true)}
-                className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg shadow-orange-500/30 flex items-center gap-2 text-xs sm:text-sm font-bold hover:scale-105 transition-transform whitespace-nowrap"
+                className="bg-linear-to-r from-amber-400 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg shadow-orange-500/30 flex items-center gap-2 text-xs sm:text-sm font-bold hover:scale-105 transition-transform whitespace-nowrap"
               >
                 <BookOpen size={16} /> {t("learning.aiComments")}
               </motion.button>
@@ -742,7 +742,7 @@ export const ActiveChatSession = ({
       </div>
 
       <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
-        <DialogContent className="max-w-lg rounded-3xl bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white z-[110]">
+        <DialogContent className="max-w-lg rounded-3xl bg-linear-to-br from-yellow-400 via-orange-500 to-pink-500 text-white shadow-2xl border-4 border-white z-[110]">
           <DialogHeader className="text-center">
             <motion.div
               animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.1, 1] }}

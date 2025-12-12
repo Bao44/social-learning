@@ -90,7 +90,7 @@ export default function NewPasswordPage() {
             : "-translate-x-full opacity-0"
         }`}
       >
-        <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300">
+        <div className="w-8 h-8 bg-linear-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300">
           <PenTool className="w-5 h-5 text-white" />
         </div>
         <span className="text-3xl ml-2 mt-1 font-bold text-gray-900 hover:text-orange-600 transition-colors duration-300">
@@ -101,7 +101,7 @@ export default function NewPasswordPage() {
         </div>
       </div>
 
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-linear-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-4 -left-4 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
           <div className="absolute -top-4 -right-4 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
@@ -118,7 +118,7 @@ export default function NewPasswordPage() {
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
               <div
-                className={`w-12 h-12 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center transition-all duration-500 hover:rotate-12 hover:scale-110 ${
+                className={`w-12 h-12 bg-linear-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center transition-all duration-500 hover:rotate-12 hover:scale-110 ${
                   isVisible ? "animate-bounce" : ""
                 }`}
               >
@@ -217,7 +217,7 @@ export default function NewPasswordPage() {
             <Button
               onClick={handleNewPassword}
               disabled={loading}
-              className={`w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full transition-all duration-700 delay-600 hover:scale-105 hover:shadow-xl active:scale-95 ${
+              className={`w-full bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer rounded-full transition-all duration-700 delay-600 hover:scale-105 hover:shadow-xl active:scale-95 ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"

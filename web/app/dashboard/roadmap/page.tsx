@@ -95,7 +95,7 @@ export default function LearningPathPage() {
     <div className="flex-1 px-6 py-6">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -107,7 +107,7 @@ export default function LearningPathPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -160,7 +160,7 @@ export default function LearningPathPage() {
             <div className="flex justify-end">
               <Button
                 variant="outline"
-                className="mb-6 text-lg flex items-center p-6 rounded-full cursor-pointer bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white shadow-lg hover:shadow-xl transition-all"
+                className="mb-6 text-lg flex items-center p-6 rounded-full cursor-pointer bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white shadow-lg hover:shadow-xl transition-all"
                 onClick={() => setOpenModal(true)}
               >
                 <PlusCircle
@@ -243,7 +243,7 @@ export default function LearningPathPage() {
                     </div>
                   )}
 
-                  <CardTitle className="ml-6 text-3xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-green-500 via-emerald-600 to-green-700 bg-clip-text text-transparent">
+                  <CardTitle className="ml-6 text-3xl font-extrabold uppercase tracking-wide bg-linear-to-r from-green-500 via-emerald-600 to-green-700 bg-clip-text text-transparent">
                     {path[`pathName_${language}`] || "Chưa có tên"}
                   </CardTitle>
 
@@ -255,8 +255,8 @@ export default function LearningPathPage() {
                         <span className="text-green-600 font-semibold mb-2 text-sm tracking-wide">
                           🎯 {t("learning.roadmap.target")}
                         </span>
-                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-green-100 to-green-50 border border-green-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-linear-to-br from-green-100 to-green-50 border border-green-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
+                          <div className="absolute inset-0 rounded-full bg-linear-to-br from-green-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <span className="text-gray-800 font-bold text-sm px-4">
                             {path[`goal_${language}`] || "—"}
                           </span>
@@ -268,8 +268,8 @@ export default function LearningPathPage() {
                         <span className="text-blue-600 font-semibold mb-2 text-sm tracking-wide">
                           📘 {t("learning.roadmap.field")}
                         </span>
-                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-linear-to-br from-blue-100 to-blue-50 border border-blue-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
+                          <div className="absolute inset-0 rounded-full bg-linear-to-br from-blue-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <span className="text-gray-800 font-bold text-sm px-4">
                             {path[`field_${language}`] || "—"}
                           </span>
@@ -281,8 +281,8 @@ export default function LearningPathPage() {
                         <span className="text-yellow-600 font-semibold mb-2 text-sm tracking-wide">
                           💡 {t("learning.roadmap.skill")}
                         </span>
-                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-50 border border-yellow-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="group relative flex items-center justify-center w-32 h-32 rounded-full bg-linear-to-br from-yellow-100 to-yellow-50 border border-yellow-300 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-out">
+                          <div className="absolute inset-0 rounded-full bg-linear-to-br from-yellow-200/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <span className="text-gray-800 font-bold text-sm px-4">
                             {path?.targetSkills?.join(", ") || "—"}
                           </span>

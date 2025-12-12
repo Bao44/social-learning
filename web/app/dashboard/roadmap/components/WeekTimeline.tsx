@@ -21,7 +21,7 @@ const WeekTimeline = ({ totalWeeks, currentWeek, isUsed }: { totalWeeks: number;
                 {/* Đường tiến trình */}
                 {isUsed && (
                     <div
-                        className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full -translate-y-1/2 transition-all duration-500"
+                        className="absolute top-1/2 left-0 h-2 bg-linear-to-r from-blue-500 to-purple-500 rounded-full -translate-y-1/2 transition-all duration-500"
                         style={{ width: `${(currentWeek / totalWeeks) * 100}%` }}
                     />
                 )}

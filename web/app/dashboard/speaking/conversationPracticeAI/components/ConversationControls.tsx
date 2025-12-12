@@ -46,7 +46,7 @@ export default function ConversationControls({
   return (
     <div className="bg-white/80 backdrop-blur-md rounded-3xl p-4 shadow-2xl shadow-slate-200/50 border border-white">
       {/* Status Text */}
-      <div className="min-h-[24px] mb-4 flex justify-center items-center text-sm font-medium">
+      <div className="min-h-6 mb-4 flex justify-center items-center text-sm font-medium">
         {result && accuracyScore !== null ? (
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
             {result}
@@ -89,7 +89,7 @@ export default function ConversationControls({
                 className={`w-16 h-16 rounded-full text-white shadow-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:grayscale ${
                   listening
                     ? "bg-red-500 shadow-red-500/30"
-                    : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-indigo-500/30"
+                    : "bg-linear-to-r from-indigo-500 to-purple-600 hover:shadow-indigo-500/30"
                 }`}
               >
                 {listening ? (

@@ -184,7 +184,7 @@ export default function ListeningDetailPage() {
 
     const randomPos =
       unansweredPositions[
-        Math.floor(Math.random() * unansweredPositions.length)
+      Math.floor(Math.random() * unansweredPositions.length)
       ];
     const correctWord = hiddenMap[parseInt(randomPos)];
 
@@ -212,9 +212,10 @@ export default function ListeningDetailPage() {
 
   // Hàm nộp bài
   const handleSubmit = async () => {
-    // Tạo mảng wordAnswers từ object answers
     setLoadingSubmit(true);
-    const wordAnswers = exercise.wordHidden.map((wh: any) => ({
+
+    // Tạo mảng đầy đủ để kiểm tra UI (hiển thị đúng/sai cho người dùng thấy)
+    const allAnswersProcessed = exercise.wordHidden.map((wh: any) => ({
       word_hidden_id: wh.id,
       position: wh.position,
       answer: wh.answer,
@@ -224,25 +225,32 @@ export default function ListeningDetailPage() {
         wh.answer.trim().toLowerCase(),
     }));
 
-    wordAnswers;
+    // Chỉ lấy những đáp án người dùng thực sự điền để gửi xuống Server
+    const filledAnswersPayload = allAnswersProcessed.filter(
+      (item: any) => item.answer_input.trim() !== ""
+    );
 
     try {
+      // Gửi mảng đã lọc (filledAnswersPayload) thay vì toàn bộ
       const res = await listeningService.submitListeningResults(
         user?.id,
         exercise?.id,
-        wordAnswers
+        filledAnswersPayload
       );
+
       setSubmitResult(res);
       setShowCelebration(true);
       setLoadingSubmit(false);
 
+      // Cập nhật UI: Vẫn dùng mảng đầy đủ (allAnswersProcessed) để hiển thị đỏ/xanh cho tất cả các ô
       const newCheckResult: Record<number, boolean> = {};
-      wordAnswers.forEach((ans: { position: number; is_correct: boolean }) => {
+      allAnswersProcessed.forEach((ans: { position: number; is_correct: boolean }) => {
         newCheckResult[ans.position] = ans.is_correct;
       });
       setCheckResult(newCheckResult);
     } catch (error) {
       console.error("Error submitting results:", error);
+      setLoadingSubmit(false); // Nhớ tắt loading nếu lỗi
     }
   };
 
@@ -253,13 +261,13 @@ export default function ListeningDetailPage() {
       return;
     }
 
-    // 1. Tạo một Map để tra cứu nhanh: { word_hidden_id => position }
+    //Tạo một Map để tra cứu nhanh: { word_hidden_id => position }
     // `exercise.wordHidden` là mảng chứa thông tin các từ bị ẩn, bao gồm cả id và position
     const wordIdToPositionMap = new Map(
       exercise.wordHidden.map((wh: any) => [wh.id, wh.position])
     );
 
-    // 2. Tạo các object state mới từ dữ liệu lịch sử
+    //Tạo các object state mới từ dữ liệu lịch sử
     const historicalAnswers: Record<number, string> = {};
     const historicalCheckResult: Record<number, boolean> = {};
 
@@ -271,7 +279,7 @@ export default function ListeningDetailPage() {
       }
     }
 
-    // 3. Cập nhật lại state của component để UI thay đổi theo
+    //Cập nhật lại state của component để UI thay đổi theo
     setAnswers(historicalAnswers);
     setCheckResult(historicalCheckResult);
   };
@@ -281,7 +289,7 @@ export default function ListeningDetailPage() {
       <AnimatePresence>
         {loadingSubmit && (
           <motion.div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[9999] px-4"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -333,7 +341,7 @@ export default function ListeningDetailPage() {
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
@@ -345,7 +353,7 @@ export default function ListeningDetailPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -357,7 +365,7 @@ export default function ListeningDetailPage() {
           }}
         />
         <motion.div
-          className="absolute -bottom-20 -right-10 w-96 h-96 bg-gradient-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
+          className="absolute -bottom-20 -right-10 w-96 h-96 bg-linear-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
@@ -445,16 +453,14 @@ export default function ListeningDetailPage() {
                     width: `${length}rem`,
                   }}
                   className={`border-b-2 text-center bg-white px-1 py-0.5 rounded-sm tracking-widest
-                                    ${
-                                      isCorrect === true
-                                        ? "border-green-500"
-                                        : ""
-                                    }
-                                    ${
-                                      isCorrect === false
-                                        ? "border-red-500"
-                                        : "border-gray-400"
-                                    }`}
+                                    ${isCorrect === true
+                      ? "border-green-500"
+                      : ""
+                    }
+                                    ${isCorrect === false
+                      ? "border-red-500"
+                      : "border-gray-400"
+                    }`}
                   value={answers[position] || ""}
                   onChange={(e) =>
                     setAnswers({ ...answers, [position]: e.target.value })
@@ -484,13 +490,13 @@ export default function ListeningDetailPage() {
               onClick={handleSuggestHint}
               className="px-6 py-2 bg-yellow-600 text-white rounded-lg shadow-md hover:bg-yellow-700 cursor-pointer"
             >
-              {t("learning.recommendation")} (-2)
+              {t("learning.recommendation")} (-2 ❄)
             </button>
             <button
               onClick={handleCheckAnswers}
               className="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 cursor-pointer"
             >
-              {t("learning.check")} (-1)
+              {t("learning.check")} (-1 ❄)
             </button>
             <button
               onClick={handleSubmit}
@@ -622,7 +628,7 @@ export default function ListeningDetailPage() {
           <div className="absolute top-0 right-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-gradient-to-l hover:cursor-pointer">
+                <button className="px-4 py-2 text-sm bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-linear-to-l hover:cursor-pointer">
                   {t("learning.buttonHistorySubmissions")}
                 </button>
               </DropdownMenuTrigger>
@@ -716,7 +722,7 @@ export default function ListeningDetailPage() {
           transition={{ duration: 0.3 }}
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
-          <DialogContent className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl w-[430px] p-6 text-center">
+          <DialogContent className="bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl w-[430px] p-6 text-center">
             <div className="flex flex-col items-center">
               <div className="text-6xl mb-3 animate-bounce">🎧</div>
               <DialogTitle className="text-2xl font-bold mb-2">
@@ -799,7 +805,7 @@ export default function ListeningDetailPage() {
                     // Chuyển hướng sang trang mua
                     window.location.href = "/learning/store";
                   }}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 rounded-lg shadow hover:opacity-90 transition-all"
+                  className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 rounded-lg shadow hover:opacity-90 transition-all"
                 >
                   {t("learning.buyMoreSnowflake")}
                 </button>

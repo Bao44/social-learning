@@ -43,7 +43,7 @@ function ChatBotAI() {
         <button
           ref={chatIconRef}
           onClick={toggleChat}
-          className="rounded-full size-14 p-2 shadow-lg bg-gradient-to-r from-orange-500 to-pink-500 text-white cursor-pointer"
+          className="rounded-full size-14 p-2 shadow-lg bg-linear-to-r from-orange-500 to-pink-500 text-white cursor-pointer"
         >
           {!isChatOpen ? (
             <MessageCircle className="size-8 m-auto" />
@@ -179,7 +179,7 @@ function ChatBotAI() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="size-9 flex items-center justify-center rounded-md bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white shadow-lg disabled:opacity-50 cursor-pointer"
+                    className="size-9 flex items-center justify-center rounded-md bg-linear-to-r from-orange-600 to-pink-600 hover:from-orange-500 hover:to-pink-500 text-white hover:text-white shadow-lg disabled:opacity-50 cursor-pointer"
                   >
                     <Send className="size-4" />
                   </button>

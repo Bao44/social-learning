@@ -13,7 +13,7 @@ export default function WritingPage() {
       <div className="flex-1 px-6 py-6">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <motion.div
-            className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
+            className="absolute -top-20 -right-20 w-96 h-96 bg-linear-to-br from-orange-300/30 to-pink-300/30 rounded-full blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               rotate: [0, 90, 0],
@@ -25,7 +25,7 @@ export default function WritingPage() {
             }}
           />
           <motion.div
-            className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
+            className="absolute -bottom-20 -left-20 w-96 h-96 bg-linear-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-3xl"
             animate={{
               scale: [1.2, 1, 1.2],
               rotate: [90, 0, 90],
@@ -37,7 +37,7 @@ export default function WritingPage() {
             }}
           />
           <motion.div
-            className="absolute -bottom-20 -right-20 w-96 h-96 bg-gradient-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
+            className="absolute -bottom-20 -right-20 w-96 h-96 bg-linear-to-br from-purple-300/30 to-orange-300/30 rounded-full blur-3xl"
             animate={{
               scale: [1.2, 1, 1.2],
               rotate: [90, 0, 90],
@@ -59,7 +59,7 @@ export default function WritingPage() {
           >
             <PencilLine className="w-8 h-8 md:w-10 md:h-10 text-orange-500" />
           </motion.div>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
             {t("learning.titleParagraphExercise")}
           </h1>
           <p className="text-slate-500 text-lg max-w-2xl mx-auto">

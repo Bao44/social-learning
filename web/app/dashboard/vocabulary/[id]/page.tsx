@@ -87,7 +87,7 @@ export default function VocabularyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 p-4 md:p-8">
+      <div className="min-h-screen bg-linear-to-br from-orange-50 to-pink-50 p-4 md:p-8">
         <div className="mx-auto max-w-6xl space-y-6">
           <div className="h-12 w-32 animate-pulse rounded-lg bg-white/50" />
           <div className="h-64 animate-pulse rounded-2xl bg-white/50" />
@@ -100,11 +100,9 @@ export default function VocabularyDetailPage() {
     );
   }
 
-  const vocab = relatedVocab[0];
-
   if (!personalVocab) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 to-pink-50">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-orange-50 to-pink-50">
         <Card className="mx-4 max-w-md">
           <CardContent className="pt-6 text-center">
             <AlertCircle className="mx-auto mb-4 h-12 w-12 text-orange-500" />
@@ -120,6 +118,8 @@ export default function VocabularyDetailPage() {
     );
   }
 
+  const vocab = relatedVocab[0].word;
+
   const getWords = relatedVocab.map((v) => v.word);
 
   return (
@@ -127,12 +127,12 @@ export default function VocabularyDetailPage() {
       {/* Decorative Background Elements */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
-          className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gradient-to-br from-orange-200/30 to-pink-200/30 blur-3xl"
+          className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-linear-to-br from-orange-200/30 to-pink-200/30 blur-3xl"
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY }}
         />
         <motion.div
-          className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-gradient-to-br from-pink-200/30 to-orange-200/30 blur-3xl"
+          className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-linear-to-br from-pink-200/30 to-orange-200/30 blur-3xl"
           animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
           transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY }}
         />
@@ -146,24 +146,24 @@ export default function VocabularyDetailPage() {
           transition={{ delay: 0.1 }}
         >
           <Card className="overflow-hidden border-0 bg-white/80 shadow-xl backdrop-blur-sm">
-            <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-orange-100/50 to-transparent" />
+            <div className="absolute right-0 top-0 h-full w-1/3 bg-linear-to-l from-orange-100/50 to-transparent" />
             <CardContent className="relative p-6 md:p-8">
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 {/* Word Info */}
                 <div className="flex-1 space-y-4">
                   <div className="flex items-start gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 shadow-lg">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-orange-500 to-pink-500 shadow-lg">
                       <BookOpen className="h-8 w-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h1 className="mb-2 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+                      <h1 className="mb-2 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
                         {personalVocab.word}
                       </h1>
 
                       {/* ipa */}
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <span className="text-lg">{vocab.ipa}</span>
-                        <span className="inline-block rounded-full bg-gradient-to-r from-orange-100 to-pink-100 px-3 py-1 text-sm font-medium text-orange-700">
+                        <span className="inline-block rounded-full bg-linear-to-r from-orange-100 to-pink-100 px-3 py-1 text-sm font-medium text-orange-700">
                           {vocab.word_type}
                         </span>
                       </div>
@@ -171,7 +171,7 @@ export default function VocabularyDetailPage() {
                   </div>
 
                   {/* Translation */}
-                  <div className="rounded-xl bg-gradient-to-r from-orange-50 to-pink-50 p-4">
+                  <div className="rounded-xl bg-linear-to-r from-orange-50 to-pink-50 p-4">
                     <p className="text-lg font-medium text-gray-700">
                       {vocab.word_vi}
                     </p>
@@ -181,7 +181,7 @@ export default function VocabularyDetailPage() {
                 {/* Stats */}
                 <div className="flex gap-4 md:flex-col">
                   {/* Mastery Score */}
-                  <div className="flex-1 rounded-2xl bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg md:w-48">
+                  <div className="flex-1 rounded-2xl bg-linear-to-br from-white to-gray-50 p-4 shadow-lg md:w-48">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-600">
                         {t("learning.masteryLevel")}
@@ -190,7 +190,7 @@ export default function VocabularyDetailPage() {
                     </div>
                     <div className="relative mb-2 h-2 overflow-hidden rounded-full bg-gray-200">
                       <motion.div
-                        className={`h-full bg-gradient-to-r ${getMasteryColor(
+                        className={`h-full bg-linear-to-r ${getMasteryColor(
                           personalVocab.mastery_score
                         )}`}
                         initial={{ width: 0 }}
@@ -200,7 +200,7 @@ export default function VocabularyDetailPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span
-                        className={`text-2xl font-bold bg-gradient-to-r ${getMasteryColor(
+                        className={`text-2xl font-bold bg-linear-to-r ${getMasteryColor(
                           personalVocab.mastery_score
                         )} bg-clip-text text-transparent`}
                       >
@@ -213,7 +213,7 @@ export default function VocabularyDetailPage() {
                   </div>
 
                   {/* Error Count */}
-                  <div className="flex-1 rounded-2xl bg-gradient-to-br from-red-50 to-pink-50 p-4 shadow-lg md:w-48">
+                  <div className="flex-1 rounded-2xl bg-linear-to-br from-red-50 to-pink-50 p-4 shadow-lg md:w-48">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-600">
                         {t("learning.totalMistakes")}
@@ -221,7 +221,7 @@ export default function VocabularyDetailPage() {
                       <AlertCircle className="h-4 w-4 text-red-500" />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-3xl font-bold text-transparent">
+                      <span className="bg-linear-to-r from-red-500 to-pink-500 bg-clip-text text-3xl font-bold text-transparent">
                         {personalVocab.error_count}
                       </span>
                       <span className="text-xs text-gray-500">
@@ -238,7 +238,8 @@ export default function VocabularyDetailPage() {
                   onClick={() => {
                     sessionStorage.setItem(
                       "practiceWords",
-                      JSON.stringify(getWords)
+                      // JSON.stringify(getWords) // Gửi tất cả từ liên quan 
+                      JSON.stringify([personalVocab.word]) // Chỉ gửi từ gốc
                     );
                     // ID của từ gốc
                     sessionStorage.setItem("masteryReviewId", personalVocab.id);
@@ -251,7 +252,7 @@ export default function VocabularyDetailPage() {
 
                     router.push("/dashboard/vocabulary/wordPracticesAI");
                   }}
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+                  className="bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 cursor-pointer"
                 >
                   {t("learning.practice")}
                 </Button>
@@ -287,7 +288,7 @@ export default function VocabularyDetailPage() {
           >
             <Card className="border-0 bg-white/80 shadow-lg backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                <CardTitle className="flex items-center gap-2 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
                   <Link2 className="h-5 w-5 text-orange-500" />
                   {t("learning.relatedWords")}
                 </CardTitle>
@@ -301,7 +302,7 @@ export default function VocabularyDetailPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.1 }}
                       whileHover={{ scale: 1.02 }}
-                      className="group cursor-pointer rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-4 shadow-sm transition-all hover:border-orange-300 hover:shadow-md"
+                      className="group cursor-pointer rounded-xl border border-gray-200 bg-linear-to-br from-white to-gray-50 p-4 shadow-sm transition-all hover:border-orange-300 hover:shadow-md"
                     >
                       <div className="mb-2 flex items-start justify-between">
                         <div>

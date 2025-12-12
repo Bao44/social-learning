@@ -44,7 +44,7 @@ import { WritingExerciseDialog } from "./WritingExerciseDialog";
 
 type WritingExercise = {
   id: number;
-  title: string;
+  title_vi: string;
   exercise_type: string;
   level_name: string;
   topic_name: string;
@@ -172,7 +172,7 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("dashboard.writingExercises")}</CardTitle>
-          <Button onClick={handleCreate} className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600">
+          <Button onClick={handleCreate} className="cursor-pointer bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600">
             <Plus className="w-4 h-4 mr-2" />
             {t("dashboard.createNew")}
           </Button>
@@ -291,7 +291,7 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
                     exercises.map((exercise) => (
                       <TableRow key={exercise.id}>
                         <TableCell className="font-medium max-w-xs truncate">
-                          {exercise.title}
+                          {exercise.title_vi}
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary">

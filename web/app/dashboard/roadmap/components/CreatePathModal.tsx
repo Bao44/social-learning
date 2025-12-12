@@ -107,7 +107,7 @@ export default function CreatePathModal({ open, onClose, onCreated }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-lg bg-gradient-to-br from-white via-blue-50 to-indigo-100 rounded-2xl shadow-xl p-6">
+            <DialogContent className="sm:max-w-lg bg-linear-to-br from-white via-blue-50 to-indigo-100 rounded-2xl shadow-xl p-6">
                 <DialogHeader className="text-center">
                     <DialogTitle className="text-2xl font-semibold text-indigo-700">
                         ✨ {t("learning.roadmap.createRoadmapTitle")}

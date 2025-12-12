@@ -35,7 +35,7 @@ export default function IPAPage() {
           </motion.div>
         </div>
         <div className="flex-grow">
-          <h1 className="text-4xl font-bold mb-2 text-center bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 text-center bg-linear-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
             {t("learning.ipaTitle")}
           </h1>
           <p className="text-center text-gray-600">
@@ -92,7 +92,7 @@ function IPAEntry({
       className="p-6 border-2 border-gray-200 rounded-2xl shadow-sm hover:shadow-xl hover:border-blue-300 transition-all bg-white"
     >
       <div className="flex items-center justify-between mb-4">
-        <span className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+        <span className="text-4xl font-bold bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
           {symbol}
         </span>
         {audio ? (
@@ -101,7 +101,7 @@ function IPAEntry({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handlePlay}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-full hover:from-orange-600 hover:to-pink-600 transition-all shadow-md cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-linear-to-r from-orange-500 to-pink-500 text-white rounded-full hover:from-orange-600 hover:to-pink-600 transition-all shadow-md cursor-pointer"
             >
               <Play className="w-4 h-4" />
               <Volume2 className="w-4 h-4" />

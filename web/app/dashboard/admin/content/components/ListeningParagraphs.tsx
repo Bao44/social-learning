@@ -45,7 +45,8 @@ type ListeningParagraph = {
   title_vi: string;
   text_content: string;
   audio_url: string;
-  description: string;
+  description_vi: string;
+  description_en: string;
   level_id: number;
   topic_id: number;
   level_name: string;
@@ -112,6 +113,7 @@ export function ListeningParagraphs({ t }: { t: (key: string) => string }) {
   };
 
   const handleEdit = (paragraph: ListeningParagraph) => {
+    console.log("Editing paragraph:", paragraph);
     setSelectedParagraph(paragraph);
     setDialogOpen(true);
   };
@@ -141,7 +143,7 @@ export function ListeningParagraphs({ t }: { t: (key: string) => string }) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("dashboard.listeningParagraphs")}</CardTitle>
-          <Button onClick={handleCreate} className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600">
+          <Button onClick={handleCreate} className="cursor-pointer bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600">
             <Plus className="w-4 h-4 mr-2" />
             {t("dashboard.createNew")}
           </Button>

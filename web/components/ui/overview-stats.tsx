@@ -98,7 +98,7 @@
 //             key={index}
 //             className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group overflow-hidden"
 //           >
-//             <div className={`h-1.5 bg-gradient-to-r ${stat.gradient}`} />
+//             <div className={`h-1.5 bg-linear-to-r ${stat.gradient}`} />
 //             <CardContent className="p-4 sm:p-6">
 //               <div className="flex items-center justify-between">
 //                 <div className="space-y-1 sm:space-y-2">

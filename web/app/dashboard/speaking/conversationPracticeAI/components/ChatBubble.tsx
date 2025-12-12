@@ -59,7 +59,7 @@ export default function ChatBubble({
             className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
+          <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
             <Bot size={20} />
           </div>
         )}

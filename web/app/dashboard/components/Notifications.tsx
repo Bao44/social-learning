@@ -334,7 +334,7 @@ export function NotificationsPanel({
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="font-semibold text-lg bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                <h2 className="font-semibold text-lg bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
                   {t("dashboard.notifications")}
                 </h2>
                 <button onClick={onClose}>
@@ -347,7 +347,7 @@ export function NotificationsPanel({
                 <button
                   className={`flex-1 py-2 text-sm font-medium cursor-pointer ${
                     activeTab === "social"
-                      ? "border-b-2 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
+                      ? "border-b-2 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
                       : "text-gray-500"
                   }`}
                   onClick={() => setActiveTab("social")}
@@ -357,7 +357,7 @@ export function NotificationsPanel({
                 <button
                   className={`flex-1 py-2 text-sm font-medium cursor-pointer ${
                     activeTab === "learning"
-                      ? "border-b-2 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
+                      ? "border-b-2 bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent"
                       : "text-gray-500"
                   }`}
                   onClick={() => setActiveTab("learning")}

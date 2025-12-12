@@ -9,12 +9,14 @@ const botCoverLearningService = {
                 {
                     content_vi: data.content_vi,
                     content_en: data.content_en,
-                    title: data.title,
+                    title_vi: data.title_vi,
+                    title_en: data.title_en,
                     level_id: data.level_id,
                     type_exercise_id: data.type_exercise_id,
                     topic_id: data.topic_id,
                     type_paragraph_id: data.type_paragraph_id,
-                    number_sentence: data.number_sentence
+                    number_sentence: data.number_sentence,
+                    genAI: data.genAI || null,
                 }
             ])
             .select();
@@ -28,7 +30,7 @@ const botCoverLearningService = {
     },
 
     // Lưu feedback bài tập viết
-    async saveWritingFeedback(data) {
+    async  saveWritingFeedback(data) {
         const { data: insertedData, error } = await supabase
             .from("feedbackParagraphAI")
             .insert([

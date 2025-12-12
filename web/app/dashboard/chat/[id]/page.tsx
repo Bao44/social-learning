@@ -361,7 +361,7 @@ export default function ChatDetail() {
   const handleSendMessage = async () => {
     if (text.trim() === "" && files.length === 0) return;
 
-    sendMessage(text, files, replyingTo);
+    await sendMessage(text, files, replyingTo);
 
     setText("");
     setFiles([]);
@@ -824,7 +824,7 @@ export default function ChatDetail() {
                       <img
                         src={getFileIconUrl(file)}
                         alt={file.name}
-                        className="w-6 h-6 flex-shrink-0"
+                        className="w-6 h-6 shrink-0"
                       />
                       <span className="text-sm text-gray-700 truncate" title={file.name}>
                         {file.name}

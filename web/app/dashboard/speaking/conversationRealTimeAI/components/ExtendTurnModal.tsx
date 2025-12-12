@@ -103,7 +103,7 @@ export const ExtendTurnModal = ({
             className="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-sky-400 to-blue-600 p-6 text-white text-center relative overflow-hidden">
+            <div className="bg-linear-to-r from-sky-400 to-blue-600 p-6 text-white text-center relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
               <div className="relative flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md mb-1">
@@ -184,7 +184,7 @@ export const ExtendTurnModal = ({
               <button
                 onClick={handlePurchase}
                 disabled={isLoading}
-                className="w-full py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-linear-to-r from-sky-500 to-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>

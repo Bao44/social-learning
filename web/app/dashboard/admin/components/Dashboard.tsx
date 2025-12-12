@@ -324,7 +324,7 @@ export function Dashboard({ user }: { user: any }) {
                         src={getUserImageSrc(activity?.avatar)}
                         alt={activity?.name}
                       />
-                      <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
+                      <AvatarFallback className="bg-linear-to-r from-orange-500 to-pink-500 text-white">
                         {activity?.name?.charAt(0)?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>

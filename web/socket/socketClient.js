@@ -4,7 +4,7 @@ let socket = null;
 
 export const getSocket = () => {
     if (!socket && typeof window !== "undefined") {
-        socket = io("http://localhost:5000", {
+        socket = io(process.env.NEXT_PUBLIC_API_URL, {
             transports: ["websocket"],
             reconnection: true,
             reconnectionAttempts: 5,

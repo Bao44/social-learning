@@ -304,15 +304,15 @@ export function LeftSidebar() {
           }`}
       >
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-full opacity-30 animate-float"></div>
-          <div className="absolute top-1/3 -right-8 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-20 animate-float-delayed"></div>
-          <div className="absolute bottom-1/4 -left-6 w-20 h-20 bg-gradient-to-br from-green-100 to-teal-100 rounded-full opacity-25 animate-float-slow"></div>
+          <div className="absolute -top-4 -left-4 w-24 h-24 bg-linear-to-br from-orange-100 to-pink-100 rounded-full opacity-30 animate-float"></div>
+          <div className="absolute top-1/3 -right-8 w-32 h-32 bg-linear-to-br from-blue-100 to-purple-100 rounded-full opacity-20 animate-float-delayed"></div>
+          <div className="absolute bottom-1/4 -left-6 w-20 h-20 bg-linear-to-br from-green-100 to-teal-100 rounded-full opacity-25 animate-float-slow"></div>
         </div>
 
         {/* Logo */}
         <div className="p-4 border-b border-gray-100 relative z-10">
           <div className="flex items-center space-x-3 animate-slide-in-left">
-            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center transform transition-all duration-300 hover:scale-110 hover:rotate-12 hover:shadow-lg">
+            <div className="w-8 h-8 bg-linear-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center transform transition-all duration-300 hover:scale-110 hover:rotate-12 hover:shadow-lg">
               <PenTool className="w-5 h-5 text-white" />
             </div>
             <Link
@@ -338,8 +338,8 @@ export function LeftSidebar() {
                   key={item.label}
                   variant="ghost"
                   className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${pathname === item.path
-                    ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
-                    : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+                    ? "bg-linear-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
+                    : "text-gray-700 hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100"
                     }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => handleMenuClick(item.path)} // Admin chỉ cần push route
@@ -366,8 +366,8 @@ export function LeftSidebar() {
                       key={item.label}
                       variant="ghost"
                       className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${pathname === item.path
-                        ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
-                        : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+                        ? "bg-linear-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
+                        : "text-gray-700 hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100"
                         }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() =>
@@ -382,12 +382,12 @@ export function LeftSidebar() {
                             }`}
                         />
                         {isNotification && notificationCount > 0 && (
-                          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
+                          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
                             {notificationCount}
                           </Badge>
                         )}
                         {isMessages && messagesCount > 0 && (
-                          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
+                          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0 animate-pulse">
                             {messagesCount}
                           </Badge>
                         )}
@@ -414,8 +414,8 @@ export function LeftSidebar() {
                         key={item.label}
                         variant="ghost"
                         className={`w-full justify-start h-12 px-3 hover:cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-slide-in-left group ${pathname === item.path
-                          ? "bg-gradient-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
-                          : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+                          ? "bg-linear-to-r from-orange-50 to-pink-50 text-orange-700 border border-orange-200 shadow-sm"
+                          : "text-gray-700 hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100"
                           }`}
                         style={{ animationDelay: `${(index + 6) * 100}ms` }}
                         onClick={() => handleMenuClick(item.path)}
@@ -440,7 +440,7 @@ export function LeftSidebar() {
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <div className="p-4 border-t border-gray-100 cursor-pointer ">
-              <div className="p-3 rounded-lg bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-100 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:from-orange-100 hover:to-pink-100">
+              <div className="p-3 rounded-lg bg-linear-to-r from-orange-50 to-pink-50 border border-orange-100 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:from-orange-100 hover:to-pink-100">
                 <div className="flex items-center space-x-3">
                   <MenuIcon className="h-4 w-4 transition-transform duration-300 hover:rotate-180" />
                   <p className="font-medium">{t("dashboard.seeMore")}</p>
@@ -452,20 +452,20 @@ export function LeftSidebar() {
             <DropdownMenuLabel>{t("dashboard.myAccount")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
+              className="cursor-pointer hover:bg-linear-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
               onClick={() => handleMenuClick("/dashboard/plan")}
             >
               <div>{t("dashboard.premium")}</div>
               <Crown className="w-4 h-4 ml-2 text-yellow-500 inline-block" />
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200"
+              className="cursor-pointer hover:bg-linear-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200"
               onClick={() => handleMenuClick("/dashboard/profile")}
             >
               {t("dashboard.profile")}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
+              className="cursor-pointer hover:bg-linear-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
               onClick={() => toggleLanguage()}
             >
               {language === "vi" ? "Tiếng việt" : "English"}

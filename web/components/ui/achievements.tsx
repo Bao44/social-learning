@@ -64,7 +64,7 @@ export default function Achievements({ t, user }: AchievementsProps) {
     <Card className="border-0 shadow-lg shadow-slate-200/50 h-full rounded-2xl overflow-hidden flex flex-col">
       {/* Header Section */}
       <div className="relative">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500" />
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-orange-500 via-pink-500 to-purple-500" />
         <CardHeader className="py-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -144,7 +144,7 @@ export default function Achievements({ t, user }: AchievementsProps) {
                   key={achievement.id}
                   className={`group relative p-4 rounded-2xl border transition-all duration-300 ${
                     achievement.unlocked
-                      ? "bg-gradient-to-br from-white to-orange-50 border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300"
+                      ? "bg-linear-to-br from-white to-orange-50 border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300"
                       : "bg-slate-50 border-slate-100 opacity-80 grayscale-[0.8] hover:grayscale-[0.5]"
                   }`}
                 >
@@ -197,7 +197,7 @@ export default function Achievements({ t, user }: AchievementsProps) {
                           }
                           className={`h-1.5 ${
                             achievement.unlocked
-                              ? "bg-gradient-to-r from-orange-500 to-pink-500"
+                              ? "bg-linear-to-r from-orange-500 to-pink-500"
                               : "bg-slate-200"
                           }`}
                         />

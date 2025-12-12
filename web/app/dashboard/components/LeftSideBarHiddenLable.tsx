@@ -285,7 +285,7 @@ export function LeftSideBarHiddenLabel() {
       <div className="fixed left-0 top-0 h-full sm:w-20 bg-white border-r border-gray-200 flex flex-col w-15">
         {/* Logo */}
         <div className="p-4 border-b border-gray-100 flex items-center justify-center">
-          <div className="sm:w-8 sm:h-8 w-6 h-6 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center">
+          <div className="sm:w-8 sm:h-8 w-6 h-6 bg-linear-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center">
             <PenTool
               className="sm:w-5 sm:h-5 w-4 h-4 text-white"
               onClick={handleClickLogo}
@@ -352,12 +352,12 @@ export function LeftSideBarHiddenLabel() {
                       {/* FIX 3: Giảm kích thước icon về 24 (chuẩn) */}
                       <item.icon size={24} />
                       {badge && (
-                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs">
+                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-white text-xs">
                           {badge}
                         </span>
                       )}
                       {badgeMessages && (
-                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs">
+                        <span className="absolute top-2 right-2 flex items-center justify-center h-5 w-5 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-white text-xs">
                           {badgeMessages}
                         </span>
                       )}
@@ -405,7 +405,7 @@ export function LeftSideBarHiddenLabel() {
               <DropdownMenuLabel>{t("dashboard.myAccount")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
+                className="cursor-pointer hover:bg-linear-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
                 onClick={() => handleMenuClick("/dashboard/plan")}
               >
                 <div>{t("dashboard.premium")}</div>
@@ -418,7 +418,7 @@ export function LeftSideBarHiddenLabel() {
                 {t("dashboard.profile")}
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
+                className="cursor-pointer hover:bg-linear-to-r hover:from-orange-50 hover:to-pink-50 transition-all duration-200 flex items-center justify-between"
                 onClick={() => toggleLanguage()}
               >
                 {language === "vi" ? "Tiếng Việt" : "English"}

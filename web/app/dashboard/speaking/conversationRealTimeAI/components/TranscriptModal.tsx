@@ -87,7 +87,7 @@ export const TranscriptModal = ({
 
             {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto p-6 bg-[#F8FAFC] space-y-8">
-              <div className="bg-gradient-to-br from-white to-indigo-50 rounded-2xl p-6 border border-indigo-100 shadow-sm relative overflow-hidden">
+              <div className="bg-linear-to-br from-white to-indigo-50 rounded-2xl p-6 border border-indigo-100 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-200/20 rounded-bl-[100px] -mr-4 -mt-4" />
 
                 <h4 className="font-bold text-indigo-900 flex items-center gap-2 mb-4 text-lg relative z-10">

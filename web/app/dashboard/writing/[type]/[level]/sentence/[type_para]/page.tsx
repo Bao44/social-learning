@@ -10,14 +10,17 @@ import { useLanguage } from "@/components/contexts/LanguageContext";
 
 interface WritingExercise {
   id: string;
-  title: string;
+  title_vi: string;
+  title_en: string;
   content_vi: string;
   label: string;
-  progress: number;
+  submit_times: number;
+  genAI?: any;
+  isCorrect?: boolean | null;
 }
 
 export default function Page() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { type, level, type_para } = useParams();
   const router = useRouter();
   const [writingExercises, setWritingExercises] = useState<WritingExercise[]>(
@@ -130,10 +133,12 @@ export default function Page() {
             <CardWritingExercise
               t={t}
               key={exercise.id}
-              title={exercise.title}
+              title={exercise[`title_${language}`]}
               content_vi={exercise.content_vi}
               label={exercise.label}
-              progress={70}
+              submit_times={exercise.submit_times}
+              genAI={exercise.genAI}
+              isCorrect={exercise.isCorrect}
               handleStart={() => handleStartWritingExercise(exercise.id)}
             />
           ))}

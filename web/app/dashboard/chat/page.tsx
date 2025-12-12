@@ -13,7 +13,7 @@ export default function ChatPage() {
     <div className="flex flex-col justify-center items-center h-full relative">
       <h1 className="text-2xl font-bold">{t("dashboard.chat")}</h1>
       <p className="my-4">{t("dashboard.startChat")}</p>
-      <Button onClick={() => setOpenNewChat(true)} className="rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 px-6 shadow-md font-bold">
+      <Button onClick={() => setOpenNewChat(true)} className="rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 px-6 shadow-md font-bold">
         {t("dashboard.newMessage")}
       </Button>
       <ModalSearchNewChat open={openNewChat} setOpen={setOpenNewChat} />

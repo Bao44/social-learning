@@ -32,7 +32,7 @@ export function TopHeader() {
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" className="relative hover:bg-gray-100">
             <Bell className="h-5 w-5" />
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
+            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-linear-to-r from-orange-500 to-pink-500 text-xs flex items-center justify-center p-0">
               3
             </Badge>
           </Button>
@@ -46,7 +46,7 @@ export function TopHeader() {
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/globe.svg?height=32&width=32" />
-                  <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
+                  <AvatarFallback className="bg-linear-to-r from-orange-500 to-pink-500 text-white">
                     JD
                   </AvatarFallback>
                 </Avatar>
