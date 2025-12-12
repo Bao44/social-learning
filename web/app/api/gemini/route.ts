@@ -61,3 +61,46 @@ export async function POST(request: Request) {
     return new Response("Internal Server Error", { status: 500 });
   }
 }
+
+// import { createGoogleGenerativeAI } from "@ai-sdk/google";
+// import { streamText } from "ai";
+
+// const google = createGoogleGenerativeAI({
+//   apiKey: process.env.GEMINI_API_KEY,
+// });
+
+// export const runtime = "edge";
+
+// const SYSTEM_PROMPT = `Bạn là một trợ lý AI thông minh và hữu ích. Hãy:
+// - Trả lời bằng tiếng Việt một cách tự nhiên và dễ hiểu
+// - Cung cấp thông tin chính xác và hữu ích
+// - Giữ câu trả lời súc tích nhưng đầy đủ
+// - Thân thiện và lịch sự trong giao tiếp
+// - Nếu không chắc chắn về thông tin, hãy thành thật nói rằng bạn không biết`;
+
+// export async function POST(request: Request) {
+//   try {
+//     const { messages } = await request.json();
+
+//     // Validation
+//     if (!messages || !Array.isArray(messages)) {
+//       return new Response("Invalid messages format", { status: 400 });
+//     }
+
+//     const stream = await streamText({
+//       model: google("gemma-3-27b-it"),
+//       system: SYSTEM_PROMPT,
+//       messages: messages,
+//       temperature: 0.7,
+//       maxTokens: 1000,
+//       topP: 0.9,
+//       frequencyPenalty: 0.1,
+//       presencePenalty: 0.1,
+//     });
+
+//     return stream?.toDataStreamResponse();
+//   } catch (error) {
+//     console.error("Gemini API Error:", error);
+//     return new Response("Internal Server Error", { status: 500 });
+//   }
+// }

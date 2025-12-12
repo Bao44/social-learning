@@ -44,7 +44,7 @@ import { WritingExerciseDialog } from "./WritingExerciseDialog";
 
 type WritingExercise = {
   id: number;
-  title: string;
+  title_vi: string;
   exercise_type: string;
   level_name: string;
   topic_name: string;
@@ -291,7 +291,7 @@ export function WritingExercises({ t }: { t: (key: string) => string }) {
                     exercises.map((exercise) => (
                       <TableRow key={exercise.id}>
                         <TableCell className="font-medium max-w-xs truncate">
-                          {exercise.title}
+                          {exercise.title_vi}
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary">

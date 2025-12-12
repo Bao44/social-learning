@@ -98,6 +98,8 @@ const contentService = {
         level_id: paragraphData.levelId,
         topic_id: paragraphData.topicId,
         audio_url: paragraphData.audioUrl,
+        description_vi: paragraphData.description_vi,
+        description_en: paragraphData.description_en,
         created_at: new Date().toISOString(),
       })
       .select()
@@ -127,7 +129,8 @@ const contentService = {
       .insert({
         type_exercise_id: exerciseData.typeExerciseId,
         type_paragraph_id: exerciseData.typeParagraphId,
-        title: exerciseData.title,
+        title_vi: exerciseData.title_vi,
+        title_en: exerciseData.title_en,
         content_en: exerciseData.contentEn,
         content_vi: exerciseData.contentVi,
         level_id: exerciseData.levelId,

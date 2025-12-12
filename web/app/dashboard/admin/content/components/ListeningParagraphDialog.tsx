@@ -34,7 +34,8 @@ type FormData = {
   titleVi: string;
   textContent: string;
   audioUrl: string;
-  description: string;
+  description_vi: string;
+  description_en: string;
   levelId: string;
   topicId: string;
 };
@@ -44,7 +45,8 @@ const defaultValues: FormData = {
   titleVi: "",
   textContent: "",
   audioUrl: "",
-  description: "",
+  description_vi: "",
+  description_en: "",
   levelId: "",
   topicId: "",
 };
@@ -96,7 +98,8 @@ export function ListeningParagraphDialog({
         titleVi: paragraph.title_vi,
         textContent: paragraph.text_content,
         audioUrl: paragraph.audio_url,
-        description: paragraph.description,
+        description_vi: paragraph.description_vi,
+        description_en: paragraph.description_en,
         levelId: paragraph.level_id?.toString(),
         topicId: paragraph.topic_id?.toString(),
       });
@@ -228,11 +231,23 @@ export function ListeningParagraphDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t("dashboard.description")}</Label>
+            <Label htmlFor="description_vi">{t("dashboard.description")} (Vietnamese)</Label>
             <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="description_vi"
+              name="description_vi"
+              value={formData.description_vi}
+              onChange={handleInputChange}
+              rows={3}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description_en">{t("dashboard.description")} (English)</Label>
+            <Textarea
+              id="description_en"
+              name="description_en"
+              value={formData.description_en}
               onChange={handleInputChange}
               rows={3}
               required
@@ -288,7 +303,11 @@ export function ListeningParagraphDialog({
             >
               {t("dashboard.cancel")}
             </Button>
-            <Button type="submit" disabled={isSaving} className="bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-linear-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 cursor-pointer"
+            >
               {isSaving ? `${t("dashboard.saving")}` : `${t("dashboard.save")}`}
             </Button>
           </div>

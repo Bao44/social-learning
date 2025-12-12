@@ -85,7 +85,17 @@ export default function WordPracticeAI() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const data = sessionStorage.getItem("practiceWords");
-      setWords(data ? JSON.parse(data) : []);
+      // setWords(data ? JSON.parse(data) : []);
+      if (data) {
+        const parsedData = JSON.parse(data);
+        // Kiểm tra: Nếu là mảng thì dùng luôn, nếu là string thì bọc vào mảng
+        const wordsArray = Array.isArray(parsedData)
+          ? parsedData
+          : [parsedData];
+        setWords(wordsArray);
+      } else {
+        setWords([]);
+      }
     }
   }, []);
 
@@ -205,9 +215,6 @@ export default function WordPracticeAI() {
 
             setGraduationType("review_pass_delete"); // Thông báo XÓA thành công
           } else if (firstGraduationId && score === 100) {
-            console.log("DEBUG: First graduation archive word", {
-              firstGraduationId,
-            });
             // Thành công "Luyện tập Lần đầu để ẩn từ"
             // -> ẨN từ vựng
             await archiveMasteredWordRPC({
@@ -322,11 +329,11 @@ export default function WordPracticeAI() {
     if (!user) return;
     const balance = await getSnowFlakeBalance(user.id);
     if (balance < 5) {
-      toast.error("Bạn không đủ ❄️ để mua mạng. Vui lòng nạp thêm!");
+      toast.error(t("learning.insufficientSnowflakes"), { autoClose: 2000 });
       return;
     }
     await deductSnowflakeFromUser(user.id, -5);
-    toast.success("Bạn đã dùng 5 ❄️ và được cộng 1 mạng!", { autoClose: 1500 });
+    toast.success(t("learning.usedSnowflakesBonusLife"), { autoClose: 1500 });
     setLives(1);
     setHasUsedRefill(true);
     setShowOutOfLivesModal(false);
@@ -343,8 +350,25 @@ export default function WordPracticeAI() {
   };
 
   // Xử lý khi người dùng chọn "Quay về"
-  const handleGoBack = () => {
+  const handleGoBack = async () => {
+    const reviewGraduationId = JSON.parse(
+      sessionStorage.getItem("reviewGraduationId") || "null"
+    );
+
+    if (reviewGraduationId) {
+      try {
+        await resetReviewWordRPC({ personalVocabId: reviewGraduationId });
+        sessionStorage.removeItem("reviewGraduationId");
+        toast.info(t("learning.resetMasteryScoreMessage"), {
+          autoClose: 2000,
+        });
+      } catch (err) {
+        console.error("Error resetting review:", err);
+      }
+    }
+
     setShowOutOfLivesModal(false);
+
     router.back(); // Quay về trang trước
   };
 
@@ -378,7 +402,7 @@ export default function WordPracticeAI() {
               </motion.div>
               <div className="flex flex-col items-center gap-2">
                 <span className="text-gray-800 font-semibold text-base md:text-lg text-center">
-                  {t("learning.creatingExercise")}
+                  {t("learning.creating")}
                 </span>
                 <span className="text-gray-500 text-xs md:text-sm text-center">
                   {t("learning.pleaseWait")}
@@ -507,20 +531,20 @@ export default function WordPracticeAI() {
               <DialogTitle className="text-4xl font-bold mb-3 drop-shadow-lg">
                 {/* Tiêu đề động */}
                 {graduationType === "review_pass_delete" &&
-                  "Đã hoàn toàn làm chủ!"}
+                  t("learning.masteredCompletely")}
                 {graduationType === "first_pass_archive" &&
-                  "Chúc mừng Tốt nghiệp!"}
-                {graduationType === "normal_pass" && "Chúc mừng bạn!"}
+                  t("learning.graduationCongratulations")}
+                {graduationType === "normal_pass" &&
+                  t("learning.normalPassCongratulations")}
               </DialogTitle>
 
               <DialogDescription className="text-2xl mb-8 font-semibold text-white/90">
                 {/* Mô tả động */}
                 {graduationType === "review_pass_delete" &&
-                  "Bạn đã ghi nhớ từ này rất sâu. Từ vựng này sẽ được xóa khỏi bộ nhớ cá nhân."}
+                  t("learning.deeplyRemembered")}
                 {graduationType === "first_pass_archive" &&
-                  "Bạn đã làm chủ từ này. Từ vựng sẽ được ẩn và hẹn ngày ôn tập."}
-                {graduationType === "normal_pass" &&
-                  "Bạn đã hoàn thành tất cả các câu."}
+                  t("learning.masteredAndHidden")}
+                {graduationType === "normal_pass" && t("learning.allCompleted")}
               </DialogDescription>
             </DialogHeader>
 
@@ -535,8 +559,8 @@ export default function WordPracticeAI() {
             >
               {/* Text nút động */}
               {graduationType === "normal_pass"
-                ? "Luyện tập từ mới"
-                : "Tuyệt vời!"}
+                ? t("learning.practiceNewWords")
+                : t("learning.congratulations")}
             </motion.button>
           </DialogContent>
         </Dialog>

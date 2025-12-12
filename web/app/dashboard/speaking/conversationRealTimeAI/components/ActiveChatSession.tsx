@@ -79,7 +79,7 @@ export const ActiveChatSession = ({
     : "Tutor";
 
   const [userTurnCount, setUserTurnCount] = useState(0);
-  const [maxTurns, setMaxTurns] = useState(5);
+  const [maxTurns, setMaxTurns] = useState(6);
   const [hasPurchased, setHasPurchased] = useState(false);
   const isChatLocked = userTurnCount >= maxTurns;
 
