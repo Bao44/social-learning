@@ -19,7 +19,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             # --- 1. CẬP NHẬT CODE ---
-            cd /var/www/hero-app/social-learning
+            cd /home/project/social-learning
             
             # Reset cứng code server theo nhánh deploy (An toàn tuyệt đối)
             git fetch --all
