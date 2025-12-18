@@ -81,8 +81,8 @@ const botCoverLearningService = {
                 {
                     title_en: data.title_en,
                     title_vi: data.title_vi,
-                    description_en: data.description_en,
                     description_vi: data.description_vi,
+                    description_en: data.description_en,
                     text_content: data.text_content,
                     audio_url: data.audio_url,
                     level_id: data.level_id,

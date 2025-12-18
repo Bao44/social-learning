@@ -123,27 +123,34 @@ const listeningController = {
         ex_listen_id
       );
 
+      const hasUsedSuggestion = progress ? progress.is_used_suggestion : false;
+      const alreadyCorrectBefore = progress ? progress.isCorrect : false;
+      const previousSubmitTimes = progress ? progress.submit_times : 0;
+
       // Tính điểm (dùng biến isPerfect mới)
       const scoreSubmit = calculateScore(
         levelListening.slug === "beginner" ? 10 : levelListening.slug === "intermediate" ? 20 : 30,
         isPerfect,
-        progress ? progress.submit_times : 0,
-        progress ? progress.isCorrect : false
+        previousSubmitTimes,
+        alreadyCorrectBefore
       );
+
+      // Cộng điểm kỹ năng
+      if (!hasUsedSuggestion && scoreSubmit > 0) {
+        await scoreUserService.addSkillScore(user_id, "listening", scoreSubmit);
+        console.log(`Added ${scoreSubmit} points to user ${user_id}`);
+      }
 
       // Tính bông tuyết
       const snowflakeScore = calculateSnowflake(
         levelListening.slug === "beginner" ? 1 : levelListening.slug === "intermediate" ? 2 : 3,
         isPerfect,
-        progress ? progress.submit_times : 0,
-        progress ? progress.isCorrect : false
+        previousSubmitTimes,
+        alreadyCorrectBefore
       );
 
-      // Cộng điểm và bông tuyết
-      if (!progress.is_used_suggestion && scoreSubmit > 0) {
-        await scoreUserService.addSkillScore(user_id, "listening", scoreSubmit);
-      }
-      if (!progress.is_used_suggestion && snowflakeScore > 0) {
+      // Cộng điểm bông tuyết
+      if (!hasUsedSuggestion && snowflakeScore > 0) {
         await scoreUserService.deductSnowflakeFromUser(user_id, snowflakeScore);
       }
 
@@ -165,7 +172,11 @@ const listeningController = {
       if (progress) {
         await listeningService.updateUserProgress(user_id, ex_listen_id, progressData);
       } else {
-        await listeningService.createUserProgress(progressData);
+        await listeningService.createUserProgress({
+          user_id,
+          listen_para_id: ex_listen_id,
+          ...progressData,
+        });
       }
 
       res.json({
@@ -173,7 +184,7 @@ const listeningController = {
         score: progress && progress.is_used_suggestion ? 0 : scoreSubmit,
         snowflake: progress && progress.is_used_suggestion ? 0 : snowflakeScore,
         correctCount,
-        totalCount, // Trả về tổng số câu hỏi thực tế để Frontend hiển thị "5/10"
+        totalCount,
       });
     } catch (error) {
       console.error("Error submitting listening results:", error);
