@@ -21,11 +21,13 @@ jobs:
           script: |
             # --- 1. CẬP NHẬT CODE ---
             cd /home/project/social-learning
+            echo "Current Directory: $(pwd)"
             
             # Reset cứng code server theo nhánh deploy (An toàn tuyệt đối)
             git fetch --all
             git checkout deploy
             git reset --hard origin/deploy
+            echo "Latest Commit: $(git log -1 --format='%s (%h)')"
             
             # --- 2. XỬ LÝ SERVER (BACKEND) ---
             echo "Deploying Server..."
