@@ -7,7 +7,7 @@
 ### Nền tảng Mạng xã hội hỗ trợ học tập Tiếng Anh và Giao tiếp Đa phương tiện
 
 ![Banner Dự Án](image/Banner.png)
-[https://www.socialonlinelearning.tech/][1]
+[https://social-learning-henna.vercel.app/][1]
 
 </div>
 
