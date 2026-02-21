@@ -163,7 +163,7 @@ Mô hình kết nối giữa Client, Server, Database và các dịch vụ bên 
 - **Mobile App:** [Download APK](...)
 - **Demo Video:** [Youtube Link](...)
 
-[1]: https://www.socialonlinelearning.tech/
+[1]: https://social-learning-henna.vercel.app/
 
 ---
 
